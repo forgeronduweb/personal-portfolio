@@ -98,7 +98,7 @@ export default function Footer() {
     const currentYear = new Date().getFullYear();
     
     return (
-        <footer className="bg-slate-50 w-full py-16">
+        <footer className="bg-zinc-50 w-full py-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <nav className="flex flex-wrap justify-center gap-x-8 gap-y-4 mb-8" aria-label="Navigation du pied de page">
                     {navigation.map((item) => (
@@ -140,7 +140,7 @@ export default function Footer() {
                         href="https://monsite.com" 
                         className="hover:text-indigo-500 transition-colors"
                     >
-                        Mon Portfolio
+                        Forgeron du web
                     </a>
                     . Tous droits réservés.
                 </p>
