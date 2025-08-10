@@ -5,6 +5,7 @@ export default function Pricecard() {
 
     const toggleBilling = () => {
         setIsYearly(!isYearly);
+        console.log('Toggle billing:', !isYearly); // Debug log
     };
 
     const plans = [
@@ -84,44 +85,57 @@ export default function Pricecard() {
                     <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-4">
                         Nos offres de création web
                     </h1>
-                                         <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                         Des solutions web professionnelles adaptées à tous les budgets. 
-                         Basculez entre facturation mensuelle et annuelle pour des économies importantes.
-                     </p>
-                     
-                     {/* Toggle Billing */}
-                     <div className="flex items-center justify-center space-x-4 mb-8 ml-5">
-                         <span className={`text-lg ${!isYearly ? 'font-semibold text-gray-900' : 'text-gray-500'}`}>
-                             Mensuel
-                         </span>
-                         <button 
-                             type="button"
-                             className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all duration-300 ${
-                                 isYearly ? 'bg-black' : 'bg-gray-300'
-                             }`}
-                             onClick={toggleBilling}
-                         >
-                             <span 
-                                 className={`inline-block h-6 w-6 transform rounded-full bg-white transition-all duration-300 shadow-lg ${
-                                     isYearly ? 'translate-x-7' : 'translate-x-1'
-                                 }`}
-                             ></span>
-                         </button>
-                         <span className={`text-lg ${isYearly ? 'font-semibold text-gray-900' : 'text-gray-500'}`}>
-                             Annuel
-                         </span>
-                         <div className="w-48 h-8 flex items-center justify-start ml-2">
-                             {isYearly && (
-                                 <span className="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
-                                     Économisez jusqu'à 20%
-                                 </span>
-                             )}
-                         </div>
-                     </div>
-                 </div>
+                    <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                        Des solutions web professionnelles adaptées à tous les budgets. 
+                        Basculez entre facturation mensuelle et annuelle pour des économies importantes.
+                    </p>
+                    
+                    {/* Toggle Billing */}
+                    <div className="flex items-center justify-center space-x-4 mb-8 ml-5">
+                        <span className={`text-lg ${!isYearly ? 'font-semibold text-gray-900' : 'text-gray-500'}`}>
+                            Mensuel
+                        </span>
+                        <button 
+                            type="button"
+                            className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all duration-300 ${
+                                isYearly ? 'bg-black' : 'bg-gray-300'
+                            }`}
+                            onClick={toggleBilling}
+                        >
+                            <span 
+                                className={`inline-block h-6 w-6 transform rounded-full bg-white transition-all duration-300 shadow-lg ${
+                                    isYearly ? 'translate-x-7' : 'translate-x-1'
+                                }`}
+                            ></span>
+                        </button>
+                        <span className={`text-lg ${isYearly ? 'font-semibold text-gray-900' : 'text-gray-500'}`}>
+                            Annuel
+                        </span>
+                        <div className="w-48 h-8 hidden md:flex items-center justify-start ml-2">
+                            {isYearly && (
+                                <span className="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
+                                    Économisez jusqu'à 20%
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                    
+                    {/* Badge en bas du toggle sur mobile */}
+                    <div className="text-center mb-8 md:hidden">
+                        {isYearly ? (
+                            <span className="bg-green-100 text-green-800 text-sm font-medium px-3 py-2 rounded-full">
+                                Économisez jusqu'à 20%
+                            </span>
+                        ) : (
+                            <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-2 rounded-full">
+                                Facturation mensuelle
+                            </span>
+                        )}
+                    </div>
+                </div>
 
-                 {/* Pricing Cards */}
-                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                {/* Pricing Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     {plans.map((plan, index) => (
                         <div 
                             key={index}
@@ -191,15 +205,17 @@ export default function Pricecard() {
                                     ))}
                                 </ul>
 
-                                <button 
-                                    className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all duration-300 mt-auto ${
-                                        plan.popular 
-                                            ? 'bg-black hover:bg-gray-800 shadow-lg hover:shadow-xl' 
-                                            : 'bg-gray-900 hover:bg-black'
-                                    }`}
-                                >
-                                    Commencer maintenant
-                                </button>
+                                <div className="mt-auto flex flex-col items-center">
+                                    <button 
+                                        className={`w-full md:w-auto px-8 py-4 rounded-xl font-semibold text-white transition-all duration-300 ${
+                                            plan.popular 
+                                                ? 'bg-black hover:bg-gray-800 shadow-lg hover:shadow-xl' 
+                                                : 'bg-gray-900 hover:bg-black'
+                                        }`}
+                                    >
+                                        Commencer maintenant
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     ))}
