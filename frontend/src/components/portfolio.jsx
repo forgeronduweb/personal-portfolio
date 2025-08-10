@@ -10,10 +10,13 @@ import {
     SiTypescript, 
     SiMongodb 
 } from "react-icons/si";
+import img1 from "../assets/img_1.jpg";
+import img2 from "../assets/img_2.jpg";
+import img3 from "../assets/img_3.jpg";
 
 const portfolioItems = [
     {
-        image: "src/assets/img_1.jpg",
+        image: img1,
         title: "Site E-commerce Moderne",
         category: "Boutique en ligne",
         alt: "Site e-commerce avec design moderne",
@@ -24,7 +27,7 @@ const portfolioItems = [
         ]
     },
     {
-        image: "src/assets/img_2.jpg",
+        image: img2,
         title: "Portfolio Créatif",
         category: "Site vitrine",
         alt: "Portfolio avec animations créatives",
@@ -35,7 +38,7 @@ const portfolioItems = [
         ]
     },
     {
-        image: "src/assets/img_3.jpg",
+        image: img3,
         title: "Application Web Responsive",
         category: "Application métier",
         alt: "Application web responsive moderne",
