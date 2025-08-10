@@ -13,7 +13,98 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-S4QYNF3BBW');
+      // Configuration Google Analytics avec tracking avancé
+      gtag('config', 'G-S4QYNF3BBW', {
+        // Tracking de la localisation précise
+        'anonymize_ip': false,
+        'allow_google_signals': true,
+        'allow_ad_personalization_signals': true,
+        
+        // Détection automatique des appareils et marques
+        'custom_map': {
+          'dimension1': 'device_brand',
+          'dimension2': 'device_model',
+          'dimension3': 'device_type',
+          'dimension4': 'user_location'
+        },
+        
+        // Paramètres de géolocalisation
+        'geo_id': 'FR',
+        'send_page_view': true,
+        
+        // Tracking des événements personnalisés
+        'event_callback': function() {
+          // Détection de l'appareil
+          var userAgent = navigator.userAgent;
+          var deviceInfo = {
+            brand: 'Unknown',
+            model: 'Unknown',
+            type: 'Unknown'
+          };
+          
+          // Détection des marques d'appareils
+          if (userAgent.includes('iPhone')) {
+            deviceInfo.brand = 'Apple';
+            deviceInfo.model = 'iPhone';
+            deviceInfo.type = 'Mobile';
+          } else if (userAgent.includes('iPad')) {
+            deviceInfo.brand = 'Apple';
+            deviceInfo.model = 'iPad';
+            deviceInfo.type = 'Tablet';
+          } else if (userAgent.includes('Mac')) {
+            deviceInfo.brand = 'Apple';
+            deviceInfo.model = 'Mac';
+            deviceInfo.type = 'Desktop';
+          } else if (userAgent.includes('Samsung')) {
+            deviceInfo.brand = 'Samsung';
+            deviceInfo.model = 'Samsung Mobile';
+            deviceInfo.type = 'Mobile';
+          } else if (userAgent.includes('Android')) {
+            deviceInfo.brand = 'Android';
+            deviceInfo.model = 'Android Device';
+            deviceInfo.type = 'Mobile';
+          } else if (userAgent.includes('Windows')) {
+            deviceInfo.brand = 'Microsoft';
+            deviceInfo.model = 'Windows PC';
+            deviceInfo.type = 'Desktop';
+          } else if (userAgent.includes('Linux')) {
+            deviceInfo.brand = 'Linux';
+            deviceInfo.model = 'Linux PC';
+            deviceInfo.type = 'Desktop';
+          }
+          
+          // Envoi des données d'appareil
+          gtag('event', 'device_info', {
+            'device_brand': deviceInfo.brand,
+            'device_model': deviceInfo.model,
+            'device_type': deviceInfo.type,
+            'user_agent': userAgent
+          });
+          
+          // Tracking de la localisation (si autorisée)
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+              gtag('event', 'location_detected', {
+                'latitude': position.coords.latitude,
+                'longitude': position.coords.longitude,
+                'accuracy': position.coords.accuracy
+              });
+            }, function(error) {
+              // Fallback: utiliser l'IP pour la localisation
+              gtag('event', 'location_fallback', {
+                'error': error.message
+              });
+            });
+          }
+        }
+      });
+      
+      // Tracking des événements de navigation
+      gtag('event', 'page_view', {
+        'page_title': document.title,
+        'page_location': window.location.href,
+        'page_referrer': document.referrer
+      });
     </script>
   </head>
   <body>
