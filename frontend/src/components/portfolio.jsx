@@ -13,7 +13,7 @@ import {
 
 const portfolioItems = [
     {
-        image: "src/assets/img (1).webp",
+        image: "src/assets/img_1.jpg",
         title: "Site E-commerce Moderne",
         category: "Boutique en ligne",
         alt: "Site e-commerce avec design moderne",
@@ -24,7 +24,7 @@ const portfolioItems = [
         ]
     },
     {
-        image: "src/assets/img (2).webp",
+        image: "src/assets/img_2.jpg",
         title: "Portfolio Créatif",
         category: "Site vitrine",
         alt: "Portfolio avec animations créatives",
@@ -35,7 +35,7 @@ const portfolioItems = [
         ]
     },
     {
-        image: "src/assets/img (3).webp",
+        image: "src/assets/img_3.jpg",
         title: "Application Web Responsive",
         category: "Application métier",
         alt: "Application web responsive moderne",
