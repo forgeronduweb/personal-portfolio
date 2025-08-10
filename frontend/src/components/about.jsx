@@ -1,5 +1,4 @@
-import "@fontsource/poppins";
-import profileImage from "../assets/id.jpg";
+import profileImageJpg from "../assets/id.jpg";
 
 export default function About() {
   return (
@@ -27,11 +26,19 @@ export default function About() {
       </div>
 
       <div className="relative shadow-2xl shadow-indigo-600/40 rounded-2xl overflow-hidden shrink-0">
-        <img
-          className="max-w-md w-full object-cover rounded-2xl"
-          src={profileImage}
-          alt="Photo de profil d'Evrard"
-        />
+        <picture>
+          <source srcSet={new URL('../assets/id-1024.webp', import.meta.url).href} type="image/webp" media="(min-width: 1024px)" />
+          <source srcSet={new URL('../assets/id-768.webp', import.meta.url).href} type="image/webp" media="(min-width: 768px)" />
+          <source srcSet={new URL('../assets/id-480.webp', import.meta.url).href} type="image/webp" />
+          <img
+            className="max-w-md w-full object-cover rounded-2xl"
+            src={profileImageJpg}
+            alt="Photo de profil d'Evrard"
+            loading="lazy"
+            decoding="async"
+            fetchpriority="low"
+          />
+        </picture>
       </div>
     </section>
   );
