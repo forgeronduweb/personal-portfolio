@@ -116,9 +116,9 @@ export default function PortfolioPage() {
                                    {/* Grille des projets */}
            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-0">
                   <div className="max-w-6xl mx-auto">
-                                                                                                                                                                                                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 -mt-16">
+                                                                                                                                                                                                                                                                                                                                                                                                                               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 -mt-16">
             {portfolioItems.map((item, index) => (
-              <div key={index} className="w-full group cursor-pointer">
+                                                                                                                       <div key={index} className="w-full group cursor-pointer bg-white rounded-xl p-6 shadow-xl hover:shadow-2xl border border-gray-200 hover:border-gray-300 transition-all duration-300">
                 <div className="overflow-hidden rounded-xl aspect-video bg-gray-100 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                   <img 
                     className="w-full h-full object-cover transform transition duration-300 group-hover:scale-105" 
