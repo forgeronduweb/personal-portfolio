@@ -1,26 +1,49 @@
 import "@fontsource/poppins";
+import { 
+    SiReact, 
+    SiTailwindcss, 
+    SiNodedotjs, 
+    SiVuedotjs, 
+    SiGithub, 
+    SiSass, 
+    SiNextdotjs, 
+    SiTypescript, 
+    SiMongodb 
+} from "react-icons/si";
 
 const portfolioItems = [
     {
-        image: "/src/assets/img (1).webp",
+        image: "src/assets/img (1).webp",
         title: "Site E-commerce Moderne",
         category: "Boutique en ligne",
         alt: "Site e-commerce avec design moderne",
-        technologies: ["React", "Tailwind CSS", "Node.js"]
+        technologies: [
+            { name: "React", icon: SiReact, color: "text-blue-500" },
+            { name: "Tailwind", icon: SiTailwindcss, color: "text-cyan-500" },
+            { name: "Node.js", icon: SiNodedotjs, color: "text-green-600" }
+        ]
     },
     {
-        image: "/src/assets/img (2).webp",
+        image: "src/assets/img (2).webp",
         title: "Portfolio Créatif",
         category: "Site vitrine",
         alt: "Portfolio avec animations créatives",
-        technologies: ["Vue.js", "GSAP", "SCSS"]
+        technologies: [
+            { name: "Vue.js", icon: SiVuedotjs, color: "text-emerald-500" },
+            { name: "GSAP", icon: SiGithub, color: "text-purple-600" },
+            { name: "SCSS", icon: SiSass, color: "text-pink-500" }
+        ]
     },
     {
-        image: "/src/assets/img (3).webp",
+        image: "src/assets/img (3).webp",
         title: "Application Web Responsive",
         category: "Application métier",
         alt: "Application web responsive moderne",
-        technologies: ["Next.js", "TypeScript", "MongoDB"]
+        technologies: [
+            { name: "Next.js", icon: SiNextdotjs, color: "text-gray-800" },
+            { name: "TS", icon: SiTypescript, color: "text-blue-600" },
+            { name: "MongoDB", icon: SiMongodb, color: "text-green-500" }
+        ]
     }
 ];
 
@@ -64,11 +87,15 @@ export default function Portfolio() {
                                     <div className="flex items-center justify-between mt-3">
                                         <p className="text-sm text-indigo-600 font-medium">{item.category}</p>
                                         <div className="flex items-center gap-2">
-                                            {item.technologies.slice(0, 3).map((tech, techIndex) => (
-                                                <span key={techIndex} className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-md font-medium">
-                                                    {tech}
-                                                </span>
-                                            ))}
+                                            {item.technologies.slice(0, 3).map((tech, techIndex) => {
+                                                const IconComponent = tech.icon;
+                                                return (
+                                                    <span key={techIndex} className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs bg-gray-50 border border-gray-200 rounded-md font-medium hover:bg-gray-100 transition-colors">
+                                                        <IconComponent className={`w-4 h-4 ${tech.color}`} />
+                                                        <span className="text-gray-700 whitespace-nowrap">{tech.name}</span>
+                                                    </span>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
