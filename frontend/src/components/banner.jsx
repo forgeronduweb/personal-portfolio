@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "@fontsource/poppins";
 
 export default function Banner() {
   const [menuOpen, setMenuOpen] = useState(false);

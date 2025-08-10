@@ -1,5 +1,3 @@
-import "@fontsource/poppins";
-
 const portfolioItems = [
     {
         image: "",
