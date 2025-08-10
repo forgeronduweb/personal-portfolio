@@ -61,9 +61,15 @@ export default function Portfolio() {
                         conçus pour offrir performance, style et impact à vos projets en ligne.
                     </p>
                     <div className="text-right mt-4">
-                        <a href="#" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+                        <button 
+                          onClick={() => {
+                            const event = new CustomEvent('navigate', { detail: 'portfolio' });
+                            window.dispatchEvent(event);
+                          }}
+                          className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                        >
                             Voir plus →
-                        </a>
+                        </button>
                     </div>
                 </div>
                 
