@@ -7,6 +7,7 @@ import Pricecard from "./components/pricecard";
 import FAQ from "./components/faq";
 import Footer from "./components/footer";
 import PortfolioPage from "./components/portfolio-page";
+import Features from "./components/features";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -69,6 +70,7 @@ function App() {
         <>
           <Banner /> 
           <Portfolio />
+          <Features />
           <Pricecard />
           <FAQ />
           <About />

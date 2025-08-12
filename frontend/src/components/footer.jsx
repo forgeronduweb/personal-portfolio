@@ -98,31 +98,44 @@ export default function Footer() {
     const currentYear = new Date().getFullYear();
     
     return (
-        <footer className="bg-zinc-50 w-full py-16">
+        <footer className="bg-white border-t border-slate-100 w-full py-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <nav className="flex flex-wrap justify-center gap-x-8 gap-y-4 mb-8" aria-label="Navigation du pied de page">
+                {/* Logo et description */}
+                <div className="text-center mb-12">
+                    <h3 className="text-2xl font-bold text-slate-800 mb-4">
+                        Forgeron du Web
+                    </h3>
+                    <p className="text-slate-600 max-w-2xl mx-auto">
+                        Votre partenaire de confiance pour créer des sites web professionnels, 
+                        performants et sur mesure qui vous démarquent de la concurrence.
+                    </p>
+                </div>
+
+                {/* Navigation */}
+                <nav className="flex flex-wrap justify-center gap-x-8 gap-y-4 mb-12" aria-label="Navigation du pied de page">
                     {navigation.map((item) => (
                         <a
                             key={item.name}
                             href={item.href}
-                            className="text-sm font-medium text-gray-500 hover:text-black transition-all"
+                            className="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors duration-200"
                         >
                             {item.name}
                         </a>
                     ))}
                 </nav>
 
-                <div className="flex justify-center space-x-6 mb-8">
+                {/* Réseaux sociaux */}
+                <div className="flex justify-center space-x-6 mb-12">
                     {socialLinks.map((item) => (
                         <a
                             key={item.name}
                             href={item.href}
-                            className="text-indigo-500 hover:-translate-y-0.5 transition-all duration-300"
+                            className="w-10 h-10 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center text-slate-600 hover:text-slate-800 transition-all duration-200 hover:scale-110"
                             aria-label={`Visitez notre page ${item.name}`}
                         >
                             <svg 
-                                width="24" 
-                                height="24" 
+                                width="20" 
+                                height="20" 
                                 viewBox="0 0 24 24" 
                                 fill="none" 
                                 xmlns="http://www.w3.org/2000/svg"
@@ -134,16 +147,19 @@ export default function Footer() {
                     ))}
                 </div>
 
-                <p className="text-sm text-center text-gray-800/70">
-                    Copyright © {currentYear}{' '}
-                    <a 
-                        href="https://monsite.com" 
-                        className="hover:text-indigo-500 transition-colors"
-                    >
-                        Forgeron du web
-                    </a>
-                    . Tous droits réservés.
-                </p>
+                {/* Séparateur */}
+                <div className="w-full h-px bg-slate-200 mb-8"></div>
+
+                {/* Copyright */}
+                <div className="text-center">
+                    <p className="text-sm text-slate-500">
+                        Copyright © {currentYear}{' '}
+                        <span className="font-semibold text-slate-700">
+                            Forgeron du Web
+                        </span>
+                        . Tous droits réservés.
+                    </p>
+                </div>
             </div>
         </footer>
     );

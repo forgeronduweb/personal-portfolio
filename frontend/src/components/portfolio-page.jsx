@@ -32,9 +32,9 @@ const portfolioItems = [
     type: "premium",
     alt: "Site e-commerce avec design moderne",
     technologies: [
-      { name: "React", icon: SiReact, color: "text-blue-500" },
-      { name: "Tailwind", icon: SiTailwindcss, color: "text-cyan-500" },
-      { name: "Node.js", icon: SiNodedotjs, color: "text-green-600" }
+      { name: "React", shortName: "React", icon: SiReact, color: "text-blue-500" },
+      { name: "Tailwind", shortName: "CSS", icon: SiTailwindcss, color: "text-cyan-500" },
+      { name: "Node.js", shortName: "Node", icon: SiNodedotjs, color: "text-green-600" }
     ]
   },
   {
@@ -44,9 +44,9 @@ const portfolioItems = [
     type: "free",
     alt: "Portfolio avec animations créatives",
     technologies: [
-      { name: "Vue.js", icon: SiVuedotjs, color: "text-emerald-500" },
-      { name: "GSAP", icon: SiGithub, color: "text-purple-600" },
-      { name: "SCSS", icon: SiSass, color: "text-pink-500" }
+      { name: "Vue.js", shortName: "Vue", icon: SiVuedotjs, color: "text-emerald-500" },
+      { name: "GSAP", shortName: "GSAP", icon: SiGithub, color: "text-purple-600" },
+      { name: "SCSS", shortName: "SCSS", icon: SiSass, color: "text-pink-500" }
     ]
   },
   {
@@ -56,9 +56,9 @@ const portfolioItems = [
     type: "premium",
     alt: "Application web responsive moderne",
     technologies: [
-      { name: "Next.js", icon: SiNextdotjs, color: "text-gray-800" },
-      { name: "TS", icon: SiTypescript, color: "text-blue-600" },
-      { name: "MongoDB", icon: SiMongodb, color: "text-green-500" }
+      { name: "Next.js", shortName: "Next", icon: SiNextdotjs, color: "text-gray-800" },
+      { name: "TypeScript", shortName: "TS", icon: SiTypescript, color: "text-blue-600" },
+      { name: "MongoDB", shortName: "Mongo", icon: SiMongodb, color: "text-green-500" }
     ]
   },
   {
@@ -67,11 +67,11 @@ const portfolioItems = [
     category: "Blog",
     type: "free",
     alt: "Blog avec système de gestion de contenu",
-          technologies: [
-        { name: "React", icon: SiReact, color: "text-blue-500" },
-        { name: "Node.js", icon: SiNodedotjs, color: "text-green-600" },
-        { name: "MySQL", icon: SiMysql, color: "text-blue-600" }
-      ]
+    technologies: [
+      { name: "React", shortName: "React", icon: SiReact, color: "text-blue-500" },
+      { name: "Node.js", shortName: "Node", icon: SiNodedotjs, color: "text-green-600" },
+      { name: "MySQL", shortName: "MySQL", icon: SiMysql, color: "text-blue-600" }
+    ]
   },
   {
     image: "/img_2.jpg",
@@ -80,9 +80,9 @@ const portfolioItems = [
     type: "premium",
     alt: "Tableau de bord interactif",
     technologies: [
-      { name: "Vue.js", icon: SiVuedotjs, color: "text-green-500" },
-      { name: "Firebase", icon: SiFirebase, color: "text-orange-500" },
-      { name: "Chart.js", icon: SiJavascript, color: "text-yellow-500" }
+      { name: "Vue.js", shortName: "Vue", icon: SiVuedotjs, color: "text-green-500" },
+      { name: "Firebase", shortName: "Fire", icon: SiFirebase, color: "text-orange-500" },
+      { name: "Chart.js", shortName: "Chart", icon: SiJavascript, color: "text-yellow-500" }
     ]
   },
   {
@@ -92,9 +92,9 @@ const portfolioItems = [
     type: "free",
     alt: "Application web progressive",
     technologies: [
-      { name: "React", icon: SiReact, color: "text-blue-500" },
-      { name: "PWA", icon: SiJavascript, color: "text-yellow-500" },
-      { name: "Firebase", icon: SiFirebase, color: "text-orange-500" }
+      { name: "React", shortName: "React", icon: SiReact, color: "text-blue-500" },
+      { name: "PWA", shortName: "PWA", icon: SiJavascript, color: "text-yellow-500" },
+      { name: "Firebase", shortName: "Fire", icon: SiFirebase, color: "text-orange-500" }
     ]
   },
   {
@@ -104,9 +104,9 @@ const portfolioItems = [
     type: "free",
     alt: "Site vitrine professionnel pour entreprise",
     technologies: [
-      { name: "HTML5", icon: SiHtml5, color: "text-orange-500" },
-      { name: "CSS3", icon: SiCss3, color: "text-blue-500" },
-      { name: "JavaScript", icon: SiJavascript, color: "text-yellow-500" }
+      { name: "HTML5", shortName: "HTML", icon: SiHtml5, color: "text-orange-500" },
+      { name: "CSS3", shortName: "CSS", icon: SiCss3, color: "text-blue-500" },
+      { name: "JavaScript", shortName: "JS", icon: SiJavascript, color: "text-yellow-500" }
     ]
   },
   {
@@ -116,9 +116,9 @@ const portfolioItems = [
     type: "free",
     alt: "Page d'atterrissage optimisée conversion",
     technologies: [
-      { name: "React", icon: SiReact, color: "text-blue-500" },
-      { name: "Tailwind", icon: SiTailwindcss, color: "text-cyan-500" },
-      { name: "Framer Motion", icon: SiGithub, color: "text-purple-600" }
+      { name: "React", shortName: "React", icon: SiReact, color: "text-blue-500" },
+      { name: "Tailwind", shortName: "CSS", icon: SiTailwindcss, color: "text-cyan-500" },
+      { name: "Framer Motion", shortName: "Motion", icon: SiGithub, color: "text-purple-600" }
     ]
   },
   {
@@ -128,9 +128,9 @@ const portfolioItems = [
     type: "free",
     alt: "Portfolio artistique avec galerie",
     technologies: [
-      { name: "Vue.js", icon: SiVuedotjs, color: "text-emerald-500" },
-      { name: "SCSS", icon: SiSass, color: "text-pink-500" },
-      { name: "GSAP", icon: SiGithub, color: "text-purple-600" }
+      { name: "Vue.js", shortName: "Vue", icon: SiVuedotjs, color: "text-emerald-500" },
+      { name: "SCSS", shortName: "SCSS", icon: SiSass, color: "text-pink-500" },
+      { name: "GSAP", shortName: "GSAP", icon: SiGithub, color: "text-purple-600" }
     ]
   }
 ];
@@ -205,13 +205,13 @@ export default function PortfolioPage() {
                      </h3>
                      <div className="flex items-center justify-between mt-3">
                        <p className="text-sm text-indigo-600 font-medium">{item.category}</p>
-                       <div className="flex items-center gap-2">
+                       <div className="flex items-center gap-1.5">
                          {item.technologies.slice(0, 3).map((tech, techIndex) => {
                            const IconComponent = tech.icon;
                            return (
-                             <span key={techIndex} className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs bg-gray-50 border border-gray-200 rounded-md font-medium hover:bg-gray-100 transition-colors">
-                               <IconComponent className={`w-4 h-4 ${tech.color}`} />
-                               <span className="text-gray-700 whitespace-nowrap">{tech.name}</span>
+                             <span key={techIndex} className="flex items-center gap-1.5 px-2 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-md font-medium hover:bg-slate-100 transition-colors duration-200 min-w-[60px] justify-center">
+                               <IconComponent className="w-4 h-4 flex-shrink-0" style={{ color: tech.color.replace('text-', '') === 'blue-500' ? '#3B82F6' : tech.color.replace('text-', '') === 'cyan-500' ? '#06B6D4' : tech.color.replace('text-', '') === 'green-600' ? '#059669' : tech.color.replace('text-', '') === 'emerald-500' ? '#10B981' : tech.color.replace('text-', '') === 'purple-600' ? '#9333EA' : tech.color.replace('text-', '') === 'pink-500' ? '#EC4899' : tech.color.replace('text-', '') === 'gray-800' ? '#1F2937' : tech.color.replace('text-', '') === 'blue-600' ? '#2563EB' : tech.color.replace('text-', '') === 'green-500' ? '#10B981' : tech.color.replace('text-', '') === 'orange-500' ? '#F97316' : tech.color.replace('text-', '') === 'yellow-500' ? '#EAB308' : '#6B7280' }} />
+                               <span className="text-slate-700 font-medium">{tech.shortName}</span>
                              </span>
                            );
                          })}
@@ -261,13 +261,13 @@ export default function PortfolioPage() {
                         </h3>
                         <div className="flex items-center justify-between mt-3">
                           <p className="text-sm text-indigo-600 font-medium">{item.category}</p>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1.5">
                             {item.technologies.slice(0, 3).map((tech, techIndex) => {
                               const IconComponent = tech.icon;
                               return (
-                                <span key={techIndex} className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs bg-gray-50 border border-gray-200 rounded-md font-medium hover:bg-gray-100 transition-colors">
-                                  <IconComponent className={`w-4 h-4 ${tech.color}`} />
-                                  <span className="text-gray-700 whitespace-nowrap">{tech.name}</span>
+                                <span key={techIndex} className="flex items-center gap-1.5 px-2 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-md font-medium hover:bg-slate-100 transition-colors duration-200 min-w-[60px] justify-center">
+                                  <IconComponent className="w-4 h-4 flex-shrink-0" style={{ color: tech.color.replace('text-', '') === 'blue-500' ? '#3B82F6' : tech.color.replace('text-', '') === 'cyan-500' ? '#06B6D4' : tech.color.replace('text-', '') === 'green-600' ? '#059669' : tech.color.replace('text-', '') === 'emerald-500' ? '#10B981' : tech.color.replace('text-', '') === 'purple-600' ? '#9333EA' : tech.color.replace('text-', '') === 'pink-500' ? '#EC4899' : tech.color.replace('text-', '') === 'gray-800' ? '#1F2937' : tech.color.replace('text-', '') === 'blue-600' ? '#2563EB' : tech.color.replace('text-', '') === 'green-500' ? '#10B981' : tech.color.replace('text-', '') === 'orange-500' ? '#F97316' : tech.color.replace('text-', '') === 'yellow-500' ? '#EAB308' : '#6B7280' }} />
+                                  <span className="text-slate-700 font-medium">{tech.shortName}</span>
                                 </span>
                               );
                             })}
