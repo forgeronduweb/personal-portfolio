@@ -50,7 +50,7 @@ export default function Navbar({ onNavigate, user, onLogout }) {
 
       {/* Center menu + mobile drawer */}
       <div
-        className={`max-md:fixed max-md:top-0 max-md:left-0 max-md:w-screen max-md:h-screen max-md:transition-all max-md:duration-700 max-md:ease-out max-md:overflow-hidden max-md:bg-white/95 max-md:backdrop-blur max-md:flex-col max-md:justify-between max-md:items-start max-md:pt-32 max-md:pl-12 max-md:gap-12 flex items-center gap-8 font-medium ${menuOpen ? "max-md:translate-x-0 max-md:opacity-100" : "max-md:-translate-x-full max-md:opacity-0"}`}
+        className={`max-md:fixed max-md:top-0 max-md:left-0 max-md:w-screen max-md:h-screen max-md:transition-all max-md:duration-700 max-md:ease-out max-md:overflow-hidden max-md:bg-white/95 max-md:backdrop-blur max-md:flex-col max-md:justify-start max-md:items-start max-md:pt-24 max-md:pl-12 max-md:gap-8 flex items-center gap-8 font-medium ${menuOpen ? "max-md:translate-x-0 max-md:opacity-100" : "max-md:-translate-x-full max-md:opacity-0"}`}
       >
         <button 
           onClick={() => {
@@ -94,27 +94,27 @@ export default function Navbar({ onNavigate, user, onLogout }) {
 
         {/* Auth controls inside mobile drawer */}
         {user ? (
-          <div className="md:hidden mt-auto mb-12 w-full pr-12">
+          <div className="md:hidden mt-28 w-full flex flex-col items-center">
             <button
               onClick={() => {
                 const event = new CustomEvent('navigate', { detail: 'dashboard' });
                 window.dispatchEvent(event);
                 setMenuOpen(false);
               }}
-              className="w-[85%] bg-slate-800 hover:bg-black text-white px-6 py-3 rounded-md font-medium transition"
+              className="w-[220px] bg-slate-800 hover:bg-black text-white px-6 py-3 rounded-md font-medium transition ml-[-10px]"
             >
               Mon dashboard
             </button>
             <button
               onClick={() => { onLogout && onLogout(); setMenuOpen(false); }}
-              className="w-[85%] mt-3 border border-slate-300 text-slate-800 hover:bg-slate-100 px-6 py-3 rounded-md font-medium transition"
+              className="w-[220px] mt-3 border border-slate-300 text-slate-800 hover:bg-slate-100 px-6 py-3 rounded-md font-medium transition ml-[-10px]"
             >
               Déconnexion
             </button>
           </div>
         ) : (
           <button 
-            className="md:hidden bg-slate-800 hover:bg-black text-white px-12 py-2 rounded-md font-medium transition mt-auto mb-12"
+            className="md:hidden mt-28 mb-6 w-[220px] bg-slate-800 hover:bg-black text-white px-6 py-3 rounded-md font-medium transition ml-[-10px]"
             onClick={() => {
               const event = new CustomEvent('navigate', { detail: 'auth' });
               window.dispatchEvent(event);
