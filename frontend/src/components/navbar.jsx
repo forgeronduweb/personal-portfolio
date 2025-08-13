@@ -38,91 +38,93 @@ export default function Navbar({ onNavigate, user, onLogout }) {
   return (
     <nav className={`fixed top-0 left-0 right-0 flex items-center justify-between p-4 md:px-16 lg:px-24 xl:px-32 md:py-6 w-full transition-all duration-300 z-50 ${scrolled ? 'bg-white/90 backdrop-blur-md shadow-lg' : 'bg-transparent'}`}>
       {/* Logo */}
-      <button 
-        onClick={() => {
-          const event = new CustomEvent('navigate', { detail: 'home' });
-          window.dispatchEvent(event);
-        }}
-        className={`text-2xl font-bold transition-colors ${scrolled ? 'text-black' : 'text-black'}`}
-      >
-        forgeron du web
-      </button>
+                        <button 
+                    onClick={() => {
+                      const event = new CustomEvent('navigate', { detail: 'home' });
+                      window.dispatchEvent(event);
+                    }}
+                    className={`text-2xl font-bold transition-colors ${scrolled ? 'text-black' : 'text-black'}`}
+                  >
+                    forgeron du web
+                  </button>
 
       {/* Center menu + mobile drawer */}
       <div
-        className={`max-md:fixed max-md:top-0 max-md:left-0 max-md:w-screen max-md:h-screen max-md:transition-all max-md:duration-700 max-md:ease-out max-md:overflow-hidden max-md:bg-white/95 max-md:backdrop-blur max-md:flex-col max-md:justify-start max-md:items-start max-md:pt-24 max-md:pl-12 max-md:gap-8 flex items-center gap-8 font-medium ${menuOpen ? "max-md:translate-x-0 max-md:opacity-100" : "max-md:-translate-x-full max-md:opacity-0"}`}
+        className={`max-md:fixed max-md:top-0 max-md:left-0 max-md:w-screen max-md:h-screen max-md:transition-all max-md:duration-700 max-md:ease-out max-md:overflow-hidden max-md:bg-white/95 max-md:backdrop-blur max-md:flex-col max-md:justify-start max-md:items-start max-md:pt-24 max-md:pl-12 max-md:gap-8 flex items-center gap-8 font-medium relative ${menuOpen ? "max-md:translate-x-0 max-md:opacity-100" : "max-md:-translate-x-full max-md:opacity-0"}`}
       >
-        <button 
-          onClick={() => {
-            const event = new CustomEvent('navigate', { detail: 'home' });
-            window.dispatchEvent(event);
-          }}
-          className={`max-md:text-2xl max-md:font-semibold hover:text-indigo-400 transition-all max-md:duration-300 max-md:hover:scale-105 ${scrolled ? 'text-black hover:text-indigo-600' : 'text-black hover:text-white'}`}
-        >
-          Services
-        </button>
-        <button 
-          onClick={() => {
-            const event = new CustomEvent('navigate', { detail: 'home' });
-            window.dispatchEvent(event);
-          }}
-          className={`max-md:text-2xl max-md:font-semibold hover:text-indigo-400 transition-all max-md:duration-300 max-md:delay-100 max-md:hover:scale-105 ${scrolled ? 'text-black hover:text-indigo-600' : 'text-black hover:text-white'}`}
-        >
-          À propos
-        </button>
-        <button 
-          onClick={() => {
-            const event = new CustomEvent('navigate', { detail: 'portfolio' });
-            window.dispatchEvent(event);
-          }}
-          className={`max-md:text-2xl max-md:font-semibold hover:text-indigo-400 transition-all max-md:duration-300 max-md:delay-200 max-md:hover:scale-105 ${scrolled ? 'text-black hover:text-indigo-600' : 'text-black hover:text-white'}`}
-        >
-          Portfolio
-        </button>
+                              <button 
+                        onClick={() => {
+                          const event = new CustomEvent('navigate', { detail: 'home' });
+                          window.dispatchEvent(event);
+                        }}
+                        className={`max-md:text-2xl max-md:font-semibold hover:text-indigo-400 transition-all max-md:duration-300 max-md:hover:scale-105 ${scrolled ? 'text-black hover:text-indigo-600' : 'text-black hover:text-white'}`}
+                      >
+                        Services
+                      </button>
+                      <button 
+                        onClick={() => {
+                          const event = new CustomEvent('navigate', { detail: 'home' });
+                          window.dispatchEvent(event);
+                        }}
+                        className={`max-md:text-2xl max-md:font-semibold hover:text-indigo-400 transition-all max-md:duration-300 max-md:delay-100 max-md:hover:scale-105 ${scrolled ? 'text-black hover:text-indigo-600' : 'text-black hover:text-white'}`}
+                      >
+                        À propos
+                      </button>
+                      <button 
+                        onClick={() => {
+                          const event = new CustomEvent('navigate', { detail: 'portfolio' });
+                          window.dispatchEvent(event);
+                        }}
+                        className={`max-md:text-2xl max-md:font-semibold hover:text-indigo-400 transition-all max-md:duration-300 max-md:delay-200 max-md:hover:scale-105 ${scrolled ? 'text-black hover:text-indigo-600' : 'text-black hover:text-white'}`}
+                      >
+                        Portfolio
+                      </button>
         
         {/* Close button (mobile) */}
-        <button
-          onClick={() => setMenuOpen(false)}
-          className="md:hidden absolute top-4 right-4 bg-slate-800 hover:bg-black text-white p-2 rounded-md aspect-square font-medium transition"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 6 6 18" />
-            <path d="m6 6 12 12" />
-          </svg>
-        </button>
-
+                 <button
+           onClick={() => setMenuOpen(false)}
+           className="md:hidden absolute top-4 right-4 bg-slate-800 hover:bg-black text-white p-2 rounded-md aspect-square font-medium transition"
+         >
+           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+             <path d="M18 6 6 18" />
+             <path d="m6 6 12 12" />
+           </svg>
+         </button>
+         
         {/* Auth controls inside mobile drawer */}
         {user ? (
-          <div className="md:hidden mt-28 w-full flex flex-col items-center">
+          <div className="md:hidden w-screen absolute left-0 right-0 bottom-[70px] flex flex-col items-center">
             <button
               onClick={() => {
                 const event = new CustomEvent('navigate', { detail: 'dashboard' });
                 window.dispatchEvent(event);
                 setMenuOpen(false);
               }}
-              className="w-[220px] bg-slate-800 hover:bg-black text-white px-6 py-3 rounded-md font-medium transition ml-[-10px]"
+              className="w-[220px] bg-slate-800 hover:bg-black text-white px-6 py-3 rounded-md font-medium transition"
             >
               Mon dashboard
             </button>
             <button
               onClick={() => { onLogout && onLogout(); setMenuOpen(false); }}
-              className="w-[220px] mt-3 border border-slate-300 text-slate-800 hover:bg-slate-100 px-6 py-3 rounded-md font-medium transition ml-[-10px]"
+              className="w-[220px] mt-3 border border-slate-300 text-slate-800 hover:bg-slate-100 px-6 py-3 rounded-md font-medium transition"
             >
               Déconnexion
             </button>
           </div>
         ) : (
-          <button 
-            className="md:hidden mt-28 mb-6 w-[220px] bg-slate-800 hover:bg-black text-white px-6 py-3 rounded-md font-medium transition ml-[-10px]"
-            onClick={() => {
-              const event = new CustomEvent('navigate', { detail: 'auth' });
-              window.dispatchEvent(event);
-              setMenuOpen(false);
-            }}
-          >
-            Connexion
-          </button>
+          <div className="md:hidden w-screen absolute left-0 right-0 bottom-[70px] flex justify-center">
+            <button 
+              className="mb-6 w-[220px] bg-slate-800 hover:bg-black text-white px-6 py-3 rounded-md font-medium transition"
+              onClick={() => {
+                const event = new CustomEvent('navigate', { detail: 'auth' });
+                window.dispatchEvent(event);
+                setMenuOpen(false);
+              }}
+            >
+             Connexion
+           </button>
+          </div>
         )}
       </div>
 
@@ -155,8 +157,8 @@ export default function Navbar({ onNavigate, user, onLogout }) {
               window.dispatchEvent(event);
             }}
           >
-            Connexion
-          </button>
+        Connexion
+      </button>
         )}
       </div>
 
