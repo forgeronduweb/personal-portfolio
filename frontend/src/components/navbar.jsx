@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "@fontsource/poppins";
+import { authService } from "../services/api";
 
 export default function Navbar({ onNavigate, user, onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -106,7 +107,11 @@ export default function Navbar({ onNavigate, user, onLogout }) {
               Mon dashboard
             </button>
             <button
-              onClick={() => { onLogout && onLogout(); setMenuOpen(false); }}
+              onClick={() => { 
+                authService.logout();
+                onLogout && onLogout(); 
+                setMenuOpen(false); 
+              }}
               className="w-[220px] mt-3 border border-slate-300 text-slate-800 hover:bg-slate-100 px-6 py-3 rounded-md font-medium transition"
             >
               Déconnexion
@@ -143,7 +148,10 @@ export default function Navbar({ onNavigate, user, onLogout }) {
               👋 {user.name}
             </button>
             <button
-              onClick={onLogout}
+              onClick={() => {
+                authService.logout();
+                onLogout && onLogout();
+              }}
               className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
             >
               Déconnexion

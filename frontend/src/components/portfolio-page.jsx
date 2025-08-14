@@ -145,6 +145,11 @@ export default function PortfolioPage() {
     if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
+
+    // Écouter l'événement de déconnexion
+    const handleLogout = () => setUser(null);
+    window.addEventListener('logout', handleLogout);
+    return () => window.removeEventListener('logout', handleLogout);
   }, []);
 
   const filteredItems = portfolioItems.filter(item => item.type === activeTab);

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "@fontsource/poppins";
+import { authService } from "../services/api";
 
 export default function Auth({ onLogin }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -9,50 +10,35 @@ export default function Auth({ onLogin }) {
     password: ""
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
     try {
+      let response;
       if (isLogin) {
-        // Simulation de connexion
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Créer un utilisateur simulé (en vrai, ce serait une API)
-        const user = {
-          name: formData.email.split('@')[0], // Nom basé sur l'email pour la démo
+        // Connexion via l'API
+        response = await authService.login({
           email: formData.email,
-          isPremium: true,
-          joinDate: new Date().toISOString()
-        };
-        
-        // Sauvegarder en localStorage
-        localStorage.setItem('user', JSON.stringify(user));
-        
-        // Rediriger vers le dashboard
-        onLogin(user);
-        
+          password: formData.password
+        });
       } else {
-        // Simulation d'inscription
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Créer un utilisateur simulé
-        const user = {
+        // Inscription via l'API
+        response = await authService.register({
           name: formData.name,
           email: formData.email,
-          isPremium: true,
-          joinDate: new Date().toISOString()
-        };
-        
-        // Sauvegarder en localStorage
-        localStorage.setItem('user', JSON.stringify(user));
-        
-        // Rediriger vers le dashboard
-        onLogin(user);
+          password: formData.password
+        });
       }
+
+      // Rediriger vers le dashboard avec les données utilisateur
+      onLogin(response.user);
     } catch (error) {
       console.error('Erreur:', error);
+      setError(error.message || "Une erreur inattendue s'est produite");
     } finally {
       setIsLoading(false);
     }
@@ -79,6 +65,11 @@ export default function Auth({ onLogin }) {
               : "Créez votre compte gratuitement"
             }
           </p>
+          {error && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
         </div>
 
         {/* Formulaire */}
