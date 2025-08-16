@@ -22,7 +22,13 @@ export default function Banner() {
       </p>
 
       <div className="mx-auto w-full flex items-center justify-center gap-3 mt-20">
-        <button className="bg-slate-800 hover:bg-black text-white px-6 py-3 rounded-full font-medium transition">
+        <button 
+          onClick={() => {
+            const event = new CustomEvent('navigate', { detail: 'custom-site-form' });
+            window.dispatchEvent(event);
+          }}
+          className="bg-slate-800 hover:bg-black text-white px-6 py-3 rounded-full font-medium transition"
+        >
           Commencer
         </button>
         <button 

@@ -207,6 +207,10 @@ export default function Pricecard() {
 
                                 <div className="mt-auto flex flex-col items-center">
                                     <button 
+                                        onClick={() => {
+                                            const event = new CustomEvent('navigate', { detail: 'custom-site-form' });
+                                            window.dispatchEvent(event);
+                                        }}
                                         className={`w-full md:w-auto px-8 py-4 rounded-xl font-semibold text-white transition-all duration-300 ${
                                             plan.popular 
                                                 ? 'bg-black hover:bg-gray-800 shadow-lg hover:shadow-xl' 

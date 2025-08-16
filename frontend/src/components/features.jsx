@@ -17,37 +17,46 @@ export default function Features() {
 
                 {/* Features Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-                    {/* Création de sites sur mesure */}
-                    <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-100">
-                        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 mx-auto">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                <path d="M2 17L12 22L22 17" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                <path d="M2 12L12 17L22 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                        </div>
-                        <h3 className="text-2xl font-semibold text-slate-800 text-center mb-4">
-                            Sites sur Mesure
-                        </h3>
-                        <p className="text-slate-600 text-center leading-relaxed">
-                            Développement de sites web personnalisés selon vos besoins spécifiques, 
-                            avec une interface moderne et des fonctionnalités avancées.
-                        </p>
-                        <ul className="mt-6 space-y-2">
-                            <li className="flex items-center text-sm text-slate-600">
-                                <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                                Design personnalisé
-                            </li>
-                            <li className="flex items-center text-sm text-slate-600">
-                                <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                                Fonctionnalités sur mesure
-                            </li>
-                            <li className="flex items-center text-sm text-slate-600">
-                                <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
-                                Optimisation SEO
-                            </li>
-                        </ul>
-                    </div>
+                                         {/* Création de sites sur mesure */}
+                     <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-100">
+                         <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 mx-auto">
+                             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                 <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                 <path d="M2 17L12 22L22 17" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                 <path d="M2 12L12 17L22 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                             </svg>
+                         </div>
+                         <h3 className="text-2xl font-semibold text-slate-800 text-center mb-4">
+                             Sites sur Mesure
+                         </h3>
+                         <p className="text-slate-600 text-center leading-relaxed">
+                             Développement de sites web personnalisés selon vos besoins spécifiques, 
+                             avec une interface moderne et des fonctionnalités avancées.
+                         </p>
+                         <ul className="mt-6 space-y-2 mb-6">
+                             <li className="flex items-center text-sm text-slate-600">
+                                 <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                                 Design personnalisé
+                             </li>
+                             <li className="flex items-center text-sm text-slate-600">
+                                 <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                                 Fonctionnalités sur mesure
+                             </li>
+                             <li className="flex items-center text-sm text-slate-600">
+                                 <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                                 Optimisation SEO
+                             </li>
+                         </ul>
+                         <button
+                             onClick={() => {
+                                 const event = new CustomEvent('navigate', { detail: 'custom-site-form' });
+                                 window.dispatchEvent(event);
+                             }}
+                             className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+                         >
+                             Demander un devis
+                         </button>
+                     </div>
 
                     {/* Location de sites web */}
                     <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-slate-100">
@@ -115,12 +124,18 @@ export default function Features() {
                     </div>
                 </div>
 
-                {/* CTA Section */}
-                <div className="text-center mt-16">
-                    <button className="bg-slate-800 hover:bg-black text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl">
-                        Démarrer Votre Projet
-                    </button>
-                </div>
+                                 {/* CTA Section */}
+                 <div className="text-center mt-16">
+                     <button 
+                         onClick={() => {
+                             const event = new CustomEvent('navigate', { detail: 'custom-site-form' });
+                             window.dispatchEvent(event);
+                         }}
+                         className="bg-slate-800 hover:bg-black text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+                     >
+                         Démarrer Votre Projet
+                     </button>
+                 </div>
             </div>
         </section>
     );

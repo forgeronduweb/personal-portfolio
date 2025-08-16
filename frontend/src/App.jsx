@@ -10,6 +10,8 @@ import PortfolioPage from "./components/portfolio-page";
 import Features from "./components/features";
 import Auth from "./components/auth";
 import Dashboard from "./components/dashboard";
+import CustomSiteForm from "./components/custom-site-form";
+import CustomSiteSuccess from "./components/custom-site-success";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -48,6 +50,10 @@ function App() {
       setCurrentPage("portfolio");
     } else if (path === "/auth") {
       setCurrentPage("auth");
+    } else if (path === "/custom-site-form") {
+      setCurrentPage("custom-site-form");
+    } else if (path === "/custom-site-success") {
+      setCurrentPage("custom-site-success");
     } else if (path === "/dashboard") {
       if (user) {
         setCurrentPage("dashboard");
@@ -65,6 +71,10 @@ function App() {
       window.history.pushState({}, "", "/portfolio");
     } else if (currentPage === "auth") {
       window.history.pushState({}, "", "/auth");
+    } else if (currentPage === "custom-site-form") {
+      window.history.pushState({}, "", "/custom-site-form");
+    } else if (currentPage === "custom-site-success") {
+      window.history.pushState({}, "", "/custom-site-success");
     } else if (currentPage === "dashboard") {
       window.history.pushState({}, "", "/dashboard");
     } else {
@@ -80,6 +90,10 @@ function App() {
         setCurrentPage("portfolio");
       } else if (path === "/auth") {
         setCurrentPage("auth");
+      } else if (path === "/custom-site-form") {
+        setCurrentPage("custom-site-form");
+      } else if (path === "/custom-site-success") {
+        setCurrentPage("custom-site-success");
       } else if (path === "/dashboard") {
         if (user) {
           setCurrentPage("dashboard");
@@ -107,7 +121,7 @@ function App() {
 
   return (
     <div className="App">
-      {currentPage !== "dashboard" && (
+      {currentPage !== "dashboard" && currentPage !== "custom-site-form" && currentPage !== "custom-site-success" && (
         <Navbar onNavigate={navigateTo} user={user} onLogout={handleLogout} />
       )}
       
@@ -125,6 +139,10 @@ function App() {
         <PortfolioPage />
       ) : currentPage === "auth" ? (
         <Auth onLogin={handleLogin} />
+      ) : currentPage === "custom-site-form" ? (
+        <CustomSiteForm onClose={() => navigateTo("home")} />
+      ) : currentPage === "custom-site-success" ? (
+        <CustomSiteSuccess />
       ) : currentPage === "dashboard" ? (
         <Dashboard user={user} onLogout={handleLogout} />
       ) : null}
