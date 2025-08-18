@@ -1,83 +1,92 @@
-import { useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import {
-  HomeIcon,
-  UsersIcon,
-  CogIcon,
-  ClipboardDocumentListIcon,
-  ArrowLeftOnRectangleIcon,
-} from '@heroicons/react/24/outline';
-
-const Sidebar = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const currentUser = JSON.parse(localStorage.getItem('adminUser'));
-
-  useEffect(() => {
-    // Vérification du token au chargement
-    const token = localStorage.getItem('adminToken');
-    if (!token) {
-      navigate('/');
-    }
-  }, [navigate]);
-
+const Sidebar = ({ activeSection, onSectionChange, onLogout, currentUser }) => {
   const navigation = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: HomeIcon },
-    { name: 'Utilisateurs', href: '/admin/users', icon: UsersIcon },
-    { name: 'Paramètres', href: '/admin/settings', icon: CogIcon },
-    { name: 'Logs', href: '/admin/logs', icon: ClipboardDocumentListIcon },
+    { name: 'Dashboard', section: 'dashboard' },
+    { name: 'Utilisateurs', section: 'users' },
+    { name: 'Demandes de sites', section: 'site-requests' },
+    { name: 'Projets', section: 'projects' },
+    { name: 'Paiements', section: 'payments' },
+    { name: 'Statistiques', section: 'stats' },
+    { name: 'Paramètres', section: 'settings' },
   ];
 
-  const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminUser');
-    navigate('/');
-  };
-
   return (
-    <div className="w-64 bg-gray-900 min-h-screen flex flex-col text-gray-400">
-      <div className="p-6 border-b border-gray-800">
-        <h2 className="text-lg font-mono text-white">Administration</h2>
-        <p className="text-xs mt-2 text-gray-500">Panneau de contrôle</p>
+    <div style={{ width: 256, backgroundColor: '#000000', minHeight: '100vh', display: 'flex', flexDirection: 'column', color: '#ffffff' }}>
+      <div style={{ padding: 24, borderBottom: '1px solid #333333' }}>
+        <h2 style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>Admin</h2>
         {currentUser && (
-          <div className="mt-4 px-2 py-1 bg-gray-800 rounded text-xs">
+          <div style={{ marginTop: 12, fontSize: 12, color: '#888888' }}>
             {currentUser.email}
           </div>
         )}
       </div>
 
-      <nav className="flex-1 p-4">
-        <ul className="space-y-2 font-mono text-sm">
+      <nav style={{ flex: 1, padding: 16 }}>
+        <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
           {navigation.map((item) => {
-            const isActive = location.pathname === item.href;
+            const isActive = activeSection === item.section;
             return (
-              <li key={item.name}>
-                <Link
-                  to={item.href}
-                  className={`flex items-center p-2 rounded transition-colors ${
-                    isActive
-                      ? 'bg-gray-800 text-white'
-                      : 'hover:bg-gray-800 hover:text-white'
-                  }`}
+              <li key={item.name} style={{ marginBottom: 8 }}>
+                <button
+                  onClick={() => onSectionChange(item.section)}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: 'none',
+                    backgroundColor: isActive ? '#333333' : 'transparent',
+                    color: isActive ? '#ffffff' : '#888888',
+                    cursor: 'pointer',
+                    fontSize: 14,
+                    textAlign: 'left',
+                    fontFamily: 'inherit'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.target.style.backgroundColor = '#222222';
+                      e.target.style.color = '#ffffff';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#888888';
+                    }
+                  }}
                 >
-                  <item.icon className="h-5 w-5 mr-3" />
                   {item.name}
-                </Link>
+                </button>
               </li>
             );
           })}
         </ul>
       </nav>
 
-      <div className="p-4 border-t border-gray-800">
+      <div style={{ padding: 16, borderTop: '1px solid #333333' }}>
         <button
-          onClick={handleLogout}
-          className="flex items-center w-full p-2 rounded text-sm text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
+          onClick={onLogout}
+          style={{
+            display: 'block',
+            width: '100%',
+            padding: '12px 16px',
+            border: 'none',
+            backgroundColor: 'transparent',
+            color: '#888888',
+            cursor: 'pointer',
+            fontSize: 14,
+            textAlign: 'left',
+            fontFamily: 'inherit'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = '#222222';
+            e.target.style.color = '#ffffff';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'transparent';
+            e.target.style.color = '#888888';
+          }}
         >
-          <ArrowLeftOnRectangleIcon className="h-5 w-5 mr-3" />
           Déconnexion
         </button>
-        <p className="text-xs text-gray-600 mt-4">© 2025 Admin System</p>
       </div>
     </div>
   );
