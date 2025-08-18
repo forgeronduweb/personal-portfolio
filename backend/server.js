@@ -54,6 +54,9 @@ app.use('/api/auth', authRoutes);
 // Routes admin
 app.use('/api/admin', require('./routes/admin'));
 
+// Routes demandes de sites
+app.use('/api/site-requests', require('./routes/siteRequests'));
+
 // Middleware de gestion des erreurs
 app.use((err, req, res, next) => {
     console.error('Erreur détaillée:', err);
