@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Sidebar from './components/Sidebar'
+import Projects from './components/Projects'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
@@ -370,14 +371,7 @@ export default function App() {
           </div>
         );
       case 'projects':
-        return (
-          <div>
-            <h1 style={{ margin: 0, marginBottom: 24, fontSize: 24, fontWeight: 600 }}>Projets</h1>
-            <div style={{ padding: 24, border: '1px solid #e5e7eb', borderRadius: 12, textAlign: 'center', color: '#64748b' }}>
-              Gestion des projets portfolio
-            </div>
-          </div>
-        );
+        return <Projects />;
       case 'payments':
         return (
           <div>
