@@ -159,6 +159,8 @@ export default function ProjectForm({ onClose }) {
 
   const currentStepData = steps[currentStep];
   const progress = ((currentStep + 1) / steps.length) * 100;
+  const isCurrentStepOptional = ["budget", "mockup"].includes(currentStepData.field);
+  const isCurrentStepFilled = isCurrentStepOptional || (formData[currentStepData.field] && formData[currentStepData.field].toString().trim() !== "");
 
   return (
     <div className="min-h-screen bg-white">
@@ -323,7 +325,8 @@ export default function ProjectForm({ onClose }) {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  disabled={!isCurrentStepFilled}
+                  className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Suivant →
                 </button>

@@ -88,7 +88,7 @@ export default function CustomSiteForm({ onClose }) {
         label: "Fonctionnalités spécifiques",
         type: "textarea",
         placeholder: "Ex: formulaire de contact, blog, espace membre, paiement en ligne, newsletter, etc.",
-        required: false,
+        required: true,
         help: "Fonctionnalités particulières dont vous avez besoin"
       }
     },
@@ -124,7 +124,7 @@ export default function CustomSiteForm({ onClose }) {
           { value: "10000+", label: "10 000€ et plus" },
           { value: "flexible", label: "Budget flexible selon les besoins" }
         ],
-        required: true
+        required: false
       }
     },
     {
@@ -181,14 +181,27 @@ export default function CustomSiteForm({ onClose }) {
     setError("");
 
     try {
-      console.log("Données du formulaire site sur mesure:", formData);
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const response = await fetch('http://localhost:5000/api/site-requests', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
 
-             // Succès - rediriger vers la page de validation
-       const event = new CustomEvent('navigate', { detail: 'custom-site-success' });
-       window.dispatchEvent(event);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Erreur lors de l\'envoi');
+      }
+
+      console.log("Demande de site enregistrée:", data);
+      
+      // Succès - rediriger vers la page de validation
+      const event = new CustomEvent('navigate', { detail: 'custom-site-success' });
+      window.dispatchEvent(event);
     } catch (error) {
-      setError("Une erreur s'est produite lors de l'envoi. Veuillez réessayer.");
+      setError(error.message || "Une erreur s'est produite lors de l'envoi. Veuillez réessayer.");
     } finally {
       setIsLoading(false);
     }
@@ -197,6 +210,28 @@ export default function CustomSiteForm({ onClose }) {
   const currentStepData = steps[currentStep];
   const currentField = currentStepData.field;
   const progress = ((currentStep + 1) / steps.length) * 100;
+
+  // Vérifier si le champ actuel est valide pour activer le bouton "Suivant"
+  const isCurrentFieldValid = () => {
+    const fieldValue = formData[currentField.name];
+    
+    // Pour le dernier champ (additionalInfo), on attend au moins quelque chose même si optionnel
+    if (currentField.name === "additionalInfo") {
+      return fieldValue && fieldValue.trim() !== "";
+    }
+    
+    // Si le champ n'est pas requis (budget), il est toujours valide
+    if (!currentField.required) {
+      return true;
+    }
+    
+    // Pour les champs requis, vérifier qu'ils ne sont pas vides
+    if (currentField.type === "select") {
+      return fieldValue && fieldValue !== "";
+    }
+    
+    return fieldValue && fieldValue.trim() !== "";
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -319,14 +354,15 @@ export default function CustomSiteForm({ onClose }) {
                    <button
                      type="button"
                      onClick={handleNext}
-                     className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                     disabled={!isCurrentFieldValid()}
+                     className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600"
                    >
                      Suivant
                    </button>
                  ) : (
                    <button
                      type="submit"
-                     disabled={isLoading}
+                     disabled={isLoading || !isCurrentFieldValid()}
                      className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                    >
                      {isLoading ? "Envoi en cours..." : "Envoyer ma demande"}
