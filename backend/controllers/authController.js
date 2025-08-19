@@ -56,6 +56,59 @@ exports.register = async (req, res, next) => {
     }
 };
 
+// @desc    Créer un administrateur
+// @route   POST /api/auth/create-admin
+// @access  Public (temporaire pour setup initial)
+exports.createAdmin = async (req, res, next) => {
+    try {
+        const { name, email, password, adminKey } = req.body;
+
+        // Clé secrète pour créer un admin (sécurité basique)
+        if (adminKey !== 'admin-setup-key-2024') {
+            return res.status(403).json({
+                success: false,
+                message: 'Clé administrateur invalide'
+            });
+        }
+
+        // Vérifier si l'utilisateur existe déjà
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.status(400).json({
+                success: false,
+                message: 'Un utilisateur avec cet email existe déjà'
+            });
+        }
+
+        // Créer l'administrateur
+        const admin = await User.create({
+            name,
+            email,
+            password,
+            role: 'admin',
+            isPremium: true
+        });
+
+        // Générer le token
+        const token = generateToken(admin._id);
+
+        res.status(201).json({
+            success: true,
+            message: 'Administrateur créé avec succès',
+            token,
+            user: {
+                id: admin._id,
+                name: admin.name,
+                email: admin.email,
+                isPremium: admin.isPremium,
+                role: admin.role
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // @desc    Connexion utilisateur
 // @route   POST /api/auth/login
 // @access  Public

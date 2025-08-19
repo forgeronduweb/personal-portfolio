@@ -12,25 +12,8 @@ const app = express();
 // Middleware
 app.use(express.json());
 // Configuration CORS
-// CORS: autoriser frontend client + frontend admin
 app.use(cors({
-    origin: function (origin, callback) {
-        const allowed = [config.CORS_ORIGIN, config.ADMIN_CORS_ORIGIN].filter(Boolean);
-        // Autoriser localhost et 127.0.0.1 pour les ports Vite (5173/5174)
-        const isDevHostAllowed = (o) => {
-            try {
-                const u = new URL(o);
-                const hostOk = ['localhost', '127.0.0.1'].includes(u.hostname);
-                const portOk = ['5173', '5174'].includes(u.port);
-                return hostOk && portOk;
-            } catch (_) { return false; }
-        };
-
-        if (!origin || allowed.includes(origin) || isDevHostAllowed(origin)) {
-            return callback(null, true);
-        }
-        return callback(new Error('Not allowed by CORS'));
-    },
+    origin: true, // Autoriser toutes les origines en développement
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
@@ -56,6 +39,12 @@ app.use('/api/admin', require('./routes/admin'));
 
 // Routes demandes de sites
 app.use('/api/site-requests', require('./routes/siteRequests'));
+
+// Routes projets publiques
+app.use('/api/projects', require('./routes/projects'));
+
+// Servir les fichiers statiques uploadés
+app.use('/uploads', express.static('uploads'));
 
 // Middleware de gestion des erreurs
 app.use((err, req, res, next) => {

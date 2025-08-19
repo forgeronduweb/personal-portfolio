@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { protect, requireAdmin } = require('../middleware/auth');
+const upload = require('../middleware/upload');
 const User = require('../models/User');
 const SiteRequest = require('../models/SiteRequest');
+const Project = require('../models/Project');
 const { sendQuoteEmail } = require('../services/emailService');
 
 // Exemple d'endpoint admin: stats rapides
@@ -122,6 +124,137 @@ router.get('/site-requests/:id', protect, requireAdmin, async (req, res, next) =
     }
 
     res.json({ success: true, data: siteRequest });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ===== ROUTES PROJETS =====
+
+// Upload d'image pour les projets
+router.post('/projects/upload', protect, requireAdmin, upload.single('image'), (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'Aucun fichier uploadé'
+      });
+    }
+
+    // Retourner l'URL de l'image uploadée
+    const imageUrl = `/uploads/${req.file.filename}`;
+    
+    res.json({
+      success: true,
+      message: 'Image uploadée avec succès',
+      data: {
+        filename: req.file.filename,
+        url: imageUrl,
+        originalName: req.file.originalname,
+        size: req.file.size
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Récupérer tous les projets
+router.get('/projects', protect, requireAdmin, async (req, res, next) => {
+  try {
+    const projects = await Project.find().sort({ order: 1, createdAt: -1 });
+    res.json({ success: true, data: projects });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Créer un nouveau projet
+router.post('/projects', protect, requireAdmin, async (req, res, next) => {
+  try {
+    const { image, title, category, alt, technologies, order } = req.body;
+    
+    const project = await Project.create({
+      image,
+      title,
+      category,
+      alt,
+      technologies,
+      order: order || 0
+    });
+
+    res.status(201).json({ 
+      success: true, 
+      message: 'Projet créé avec succès',
+      data: project 
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Mettre à jour un projet
+router.put('/projects/:id', protect, requireAdmin, async (req, res, next) => {
+  try {
+    const { image, title, category, alt, technologies, order, isActive } = req.body;
+    
+    const project = await Project.findByIdAndUpdate(
+      req.params.id,
+      { image, title, category, alt, technologies, order, isActive },
+      { new: true, runValidators: true }
+    );
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: 'Projet non trouvé'
+      });
+    }
+
+    res.json({ 
+      success: true, 
+      message: 'Projet mis à jour avec succès',
+      data: project 
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Supprimer un projet
+router.delete('/projects/:id', protect, requireAdmin, async (req, res, next) => {
+  try {
+    const project = await Project.findByIdAndDelete(req.params.id);
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: 'Projet non trouvé'
+      });
+    }
+
+    res.json({ 
+      success: true, 
+      message: 'Projet supprimé avec succès' 
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Récupérer un projet spécifique
+router.get('/projects/:id', protect, requireAdmin, async (req, res, next) => {
+  try {
+    const project = await Project.findById(req.params.id);
+    
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: 'Projet non trouvé'
+      });
+    }
+
+    res.json({ success: true, data: project });
   } catch (err) {
     next(err);
   }
