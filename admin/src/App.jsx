@@ -125,21 +125,204 @@ export default function App() {
       case 'dashboard':
         return (
           <div>
-            <h1 style={{ margin: 0, marginBottom: 24, fontSize: 24, fontWeight: 600 }}>Dashboard</h1>
-            {error && <div style={{ color: '#b91c1c', marginBottom: 12 }}>{error}</div>}
-            {isLoading && <div style={{ marginBottom: 12, color: '#64748b' }}>Chargement…</div>}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 16, marginBottom: 24 }}>
-              <div style={{ border: '1px solid #e5e7eb', borderRadius: 12, padding: 16 }}>
-                <div>Total utilisateurs</div>
-                <div style={{ fontSize: 28, fontWeight: 700 }}>{stats?.usersCount ?? '-'}</div>
+            {/* Stats Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 24, marginBottom: 32 }}>
+              <div style={{ padding: 24, backgroundColor: 'white', borderRadius: 12, border: '1px solid #e5e7eb' }}>
+                <h3 style={{ margin: '0 0 8px 0', color: '#3b82f6', fontSize: 32, fontWeight: 700 }}>{users.length}</h3>
+                <p style={{ margin: 0, color: '#64748b', fontSize: 14 }}>Utilisateurs inscrits</p>
               </div>
-              <div style={{ border: '1px solid #e5e7eb', borderRadius: 12, padding: 16 }}>
-                <div>Premium</div>
-                <div style={{ fontSize: 28, fontWeight: 700 }}>{stats?.premiumCount ?? '-'}</div>
+              <div style={{ padding: 24, backgroundColor: 'white', borderRadius: 12, border: '1px solid #e5e7eb' }}>
+                <h3 style={{ margin: '0 0 8px 0', color: '#10b981', fontSize: 32, fontWeight: 700 }}>{users.filter(u => u.isPremium).length}</h3>
+                <p style={{ margin: 0, color: '#64748b', fontSize: 14 }}>Utilisateurs premium</p>
               </div>
-              <div style={{ border: '1px solid #e5e7eb', borderRadius: 12, padding: 16 }}>
-                <div>Admins</div>
-                <div style={{ fontSize: 28, fontWeight: 700 }}>{stats?.adminsCount ?? '-'}</div>
+              <div style={{ padding: 24, backgroundColor: 'white', borderRadius: 12, border: '1px solid #e5e7eb' }}>
+                <h3 style={{ margin: '0 0 8px 0', color: '#f59e0b', fontSize: 32, fontWeight: 700 }}>{siteRequests.length}</h3>
+                <p style={{ margin: 0, color: '#64748b', fontSize: 14 }}>Demandes de sites</p>
+              </div>
+              <div style={{ padding: 24, backgroundColor: 'white', borderRadius: 12, border: '1px solid #e5e7eb' }}>
+                <h3 style={{ margin: '0 0 8px 0', color: '#ef4444', fontSize: 32, fontWeight: 700 }}>{siteRequests.filter(r => r.status === 'pending').length}</h3>
+                <p style={{ margin: 0, color: '#64748b', fontSize: 14 }}>En attente</p>
+              </div>
+            </div>
+
+            {/* Activités récentes */}
+            <div style={{ marginBottom: 32 }}>
+              <h2 style={{ margin: '0 0 16px 0', fontSize: 20, fontWeight: 600 }}>Activités récentes</h2>
+              <div style={{ backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: 12, padding: 20 }}>
+                <div style={{ maxHeight: 300, overflow: 'auto' }}>
+                  {/* Nouvelles inscriptions */}
+                  {users.slice(0, 3).map(user => (
+                    <div key={`user-${user._id}`} style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      padding: '12px 0', 
+                      borderBottom: '1px solid #f1f5f9' 
+                    }}>
+                      <div style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: '50%',
+                        backgroundColor: '#3b82f6',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontSize: 12,
+                        fontWeight: 600,
+                        marginRight: 12
+                      }}>
+                        👤
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 500, color: '#0f172a' }}>
+                          Nouvel utilisateur inscrit
+                        </div>
+                        <div style={{ fontSize: 12, color: '#64748b' }}>
+                          {user.email} • {new Date(user.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                      {user.isPremium && (
+                        <span style={{
+                          padding: '2px 8px',
+                          borderRadius: 12,
+                          fontSize: 10,
+                          fontWeight: 500,
+                          backgroundColor: '#dcfce7',
+                          color: '#166534'
+                        }}>
+                          Premium
+                        </span>
+                      )}
+                    </div>
+                  ))}
+
+                  {/* Nouvelles demandes de sites */}
+                  {siteRequests.slice(0, 3).map(request => (
+                    <div key={`request-${request._id}`} style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      padding: '12px 0', 
+                      borderBottom: '1px solid #f1f5f9' 
+                    }}>
+                      <div style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: '50%',
+                        backgroundColor: '#f59e0b',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontSize: 12,
+                        fontWeight: 600,
+                        marginRight: 12
+                      }}>
+                        📋
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 500, color: '#0f172a' }}>
+                          Nouvelle demande de site
+                        </div>
+                        <div style={{ fontSize: 12, color: '#64748b' }}>
+                          {request.email} • {request.projectType} • {new Date(request.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                      <span style={{
+                        padding: '2px 8px',
+                        borderRadius: 12,
+                        fontSize: 10,
+                        fontWeight: 500,
+                        backgroundColor: request.status === 'pending' ? '#fef3c7' : 
+                                        request.status === 'in_progress' ? '#dbeafe' : 
+                                        request.status === 'completed' ? '#dcfce7' : '#fecaca',
+                        color: request.status === 'pending' ? '#92400e' : 
+                               request.status === 'in_progress' ? '#1e40af' : 
+                               request.status === 'completed' ? '#166534' : '#991b1b'
+                      }}>
+                        {request.status === 'pending' ? 'En attente' :
+                         request.status === 'in_progress' ? 'En cours' :
+                         request.status === 'completed' ? 'Terminé' : 'Annulé'}
+                      </span>
+                    </div>
+                  ))}
+
+                  {/* Activités système */}
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    padding: '12px 0', 
+                    borderBottom: '1px solid #f1f5f9' 
+                  }}>
+                    <div style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: '50%',
+                      backgroundColor: '#10b981',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'white',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      marginRight: 12
+                    }}>
+                      📊
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 500, color: '#0f172a' }}>
+                        Statistiques mises à jour
+                      </div>
+                      <div style={{ fontSize: 12, color: '#64748b' }}>
+                        {users.length} utilisateurs • {siteRequests.length} demandes • {new Date().toLocaleDateString()}
+                      </div>
+                    </div>
+                  </div>
+
+                  {(users.length === 0 && siteRequests.length === 0) && (
+                    <div style={{ textAlign: 'center', color: '#64748b', padding: 20 }}>
+                      Aucune activité récente
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            
+            {/* Recent Data */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+              <div style={{ padding: 24, backgroundColor: 'white', borderRadius: 12, border: '1px solid #e5e7eb' }}>
+                <h3 style={{ margin: '0 0 16px 0', fontSize: 18, fontWeight: 600 }}>Utilisateurs récents</h3>
+                <div style={{ maxHeight: 200, overflow: 'auto' }}>
+                  {users.slice(0, 5).map(user => (
+                    <div key={user._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #f1f5f9' }}>
+                      <div>
+                        <div style={{ fontWeight: 500, color: '#0f172a' }}>{user.email}</div>
+                        <div style={{ fontSize: 12, color: '#64748b' }}>{new Date(user.createdAt).toLocaleDateString()}</div>
+                      </div>
+                      <span style={{ 
+                        padding: '2px 8px', 
+                        borderRadius: 12, 
+                        fontSize: 11, 
+                        fontWeight: 500,
+                        backgroundColor: user.isPremium ? '#dcfce7' : '#f1f5f9',
+                        color: user.isPremium ? '#166534' : '#64748b'
+                      }}>
+                        {user.isPremium ? 'Premium' : 'Gratuit'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div style={{ padding: 24, backgroundColor: 'white', borderRadius: 12, border: '1px solid #e5e7eb' }}>
+                <h3 style={{ margin: '0 0 16px 0', fontSize: 18, fontWeight: 600 }}>Demandes récentes</h3>
+                <div style={{ maxHeight: 200, overflow: 'auto' }}>
+                  {siteRequests.slice(0, 5).map(request => (
+                    <div key={request._id} style={{ padding: '8px 0', borderBottom: '1px solid #f1f5f9' }}>
+                      <div style={{ fontWeight: 500, color: '#0f172a' }}>{request.email}</div>
+                      <div style={{ fontSize: 12, color: '#64748b' }}>{request.projectType} • {new Date(request.createdAt).toLocaleDateString()}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
