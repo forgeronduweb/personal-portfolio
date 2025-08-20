@@ -24,7 +24,35 @@ import {
   SiSass
 } from "react-icons/si";
 
-const portfolioItems = [
+// Icon mapping for technology badges
+const iconMapping = {
+  'React': { icon: SiReact, color: '#3B82F6' },
+  'Vue.js': { icon: SiVuedotjs, color: '#10B981' },
+  'Angular': { icon: SiAngular, color: '#DD0031' },
+  'Next.js': { icon: SiNextdotjs, color: '#000000' },
+  'Node.js': { icon: SiNodedotjs, color: '#059669' },
+  'Express': { icon: SiNodedotjs, color: '#000000' },
+  'MongoDB': { icon: SiMongodb, color: '#10B981' },
+  'MySQL': { icon: SiMysql, color: '#2563EB' },
+  'PostgreSQL': { icon: SiMysql, color: '#336791' },
+  'Tailwind': { icon: SiTailwindcss, color: '#06B6D4' },
+  'SCSS': { icon: SiSass, color: '#EC4899' },
+  'TypeScript': { icon: SiTypescript, color: '#2563EB' },
+  'JavaScript': { icon: SiJavascript, color: '#EAB308' },
+  'HTML': { icon: SiHtml5, color: '#F97316' },
+  'CSS': { icon: SiCss3, color: '#3B82F6' },
+  'PHP': { icon: SiPhp, color: '#777BB4' },
+  'Laravel': { icon: SiLaravel, color: '#FF2D20' },
+  'WordPress': { icon: SiWordpress, color: '#21759B' },
+  'Firebase': { icon: SiFirebase, color: '#F97316' },
+  'Docker': { icon: SiDocker, color: '#2496ED' },
+  'Git': { icon: SiGit, color: '#F05032' },
+  'Figma': { icon: SiFigma, color: '#F24E1E' },
+  'Adobe XD': { icon: SiAdobexd, color: '#FF61F6' }
+};
+
+// Fallback static data
+const fallbackPortfolioItems = [
   {
     image: "/img_1.jpg",
     title: "Site E-commerce Moderne",
@@ -138,6 +166,44 @@ const portfolioItems = [
 export default function PortfolioPage() {
   const [activeTab, setActiveTab] = useState("free");
   const [user, setUser] = useState(null);
+  const [portfolioItems, setPortfolioItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isMenuSticky, setIsMenuSticky] = useState(false);
+
+  // Fetch projects from API
+  const fetchProjects = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/projects`);
+      const data = await response.json();
+      if (data.success) {
+        // Transform API data to match component structure
+        const transformedProjects = data.data.map(project => ({
+          image: project.image,
+          title: project.title,
+          category: project.category,
+          type: project.category, // Use category as type for filtering
+          alt: project.alt || `Image du projet ${project.title}`,
+          technologies: project.technologies.map(tech => {
+            const mapping = iconMapping[tech.name] || { icon: SiGithub, color: '#6B7280' };
+            return {
+              name: tech.name,
+              shortName: tech.shortName || tech.name,
+              icon: mapping.icon,
+              color: `text-[${mapping.color}]`
+            };
+          })
+        }));
+        setPortfolioItems(transformedProjects);
+      } else {
+        setPortfolioItems(fallbackPortfolioItems);
+      }
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+      setPortfolioItems(fallbackPortfolioItems);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     // Vérifier si l'utilisateur est connecté
@@ -146,10 +212,32 @@ export default function PortfolioPage() {
       setUser(JSON.parse(savedUser));
     }
 
+    // Fetch projects initially
+    fetchProjects();
+
+    // Set up polling for real-time updates
+    const interval = setInterval(fetchProjects, 10000);
+
+    // Scroll handler for sticky menu
+    const handleScroll = () => {
+      const menuElement = document.getElementById('portfolio-menu');
+      if (menuElement) {
+        const rect = menuElement.getBoundingClientRect();
+        setIsMenuSticky(rect.top <= 20);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
     // Écouter l'événement de déconnexion
     const handleLogout = () => setUser(null);
     window.addEventListener('logout', handleLogout);
-    return () => window.removeEventListener('logout', handleLogout);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('logout', handleLogout);
+    };
   }, []);
 
   const filteredItems = portfolioItems.filter(item => item.type === activeTab);
@@ -178,7 +266,7 @@ export default function PortfolioPage() {
       </div>
 
       {/* Onglets Free et Premium */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 mb-8 relative z-20">
+      <div id="portfolio-menu" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 mb-8 relative z-20">
         <div className="flex justify-center">
           <div className="flex bg-gray-100 rounded-lg p-1 shadow-lg">
             <button
@@ -205,10 +293,42 @@ export default function PortfolioPage() {
         </div>
       </div>
 
+      {/* Menu vertical sticky */}
+      {isMenuSticky && (
+        <div className="fixed left-6 top-1/2 transform -translate-y-1/2 z-50">
+          <div className="flex flex-col bg-gray-100 rounded-lg p-1 shadow-lg">
+            <button
+              onClick={() => setActiveTab("free")}
+              className={`px-4 py-3 rounded-md text-sm font-medium transition-all duration-200 mb-1 ${
+                activeTab === "free"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Free
+            </button>
+            <button
+              onClick={() => setActiveTab("premium")}
+              className={`px-4 py-3 rounded-md text-sm font-medium transition-all duration-200 ${
+                activeTab === "premium"
+                  ? "bg-white text-gray-900 shadow-sm"
+                  : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Premium
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Grille des projets */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-0">
         <div className="max-w-6xl mx-auto min-h-[800px]">
-          {activeTab === "free" ? (
+          {loading ? (
+            <div className="flex items-center justify-center min-h-[400px]">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            </div>
+          ) : activeTab === "free" ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredItems.map((item, index) => (
                 <div key={index} className="w-full group cursor-pointer bg-white rounded-xl p-6 shadow-xl hover:shadow-2xl border border-gray-200 hover:border-gray-300 transition-all duration-300">
@@ -229,9 +349,21 @@ export default function PortfolioPage() {
                       <div className="flex items-center gap-1.5">
                         {item.technologies.slice(0, 3).map((tech, techIndex) => {
                           const IconComponent = tech.icon;
+                          const color = tech.color.includes('#') ? tech.color.replace('text-[', '').replace(']', '') : 
+                            tech.color.replace('text-', '') === 'blue-500' ? '#3B82F6' : 
+                            tech.color.replace('text-', '') === 'cyan-500' ? '#06B6D4' : 
+                            tech.color.replace('text-', '') === 'green-600' ? '#059669' : 
+                            tech.color.replace('text-', '') === 'emerald-500' ? '#10B981' : 
+                            tech.color.replace('text-', '') === 'purple-600' ? '#9333EA' : 
+                            tech.color.replace('text-', '') === 'pink-500' ? '#EC4899' : 
+                            tech.color.replace('text-', '') === 'gray-800' ? '#1F2937' : 
+                            tech.color.replace('text-', '') === 'blue-600' ? '#2563EB' : 
+                            tech.color.replace('text-', '') === 'green-500' ? '#10B981' : 
+                            tech.color.replace('text-', '') === 'orange-500' ? '#F97316' : 
+                            tech.color.replace('text-', '') === 'yellow-500' ? '#EAB308' : '#6B7280';
                           return (
                             <span key={techIndex} className="flex items-center gap-1.5 px-2 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-md font-medium hover:bg-slate-100 transition-colors duration-200 min-w-[60px] justify-center">
-                              <IconComponent className="w-4 h-4 flex-shrink-0" style={{ color: tech.color.replace('text-', '') === 'blue-500' ? '#3B82F6' : tech.color.replace('text-', '') === 'cyan-500' ? '#06B6D4' : tech.color.replace('text-', '') === 'green-600' ? '#059669' : tech.color.replace('text-', '') === 'emerald-500' ? '#10B981' : tech.color.replace('text-', '') === 'purple-600' ? '#9333EA' : tech.color.replace('text-', '') === 'pink-500' ? '#EC4899' : tech.color.replace('text-', '') === 'gray-800' ? '#1F2937' : tech.color.replace('text-', '') === 'blue-600' ? '#2563EB' : tech.color.replace('text-', '') === 'green-500' ? '#10B981' : tech.color.replace('text-', '') === 'orange-500' ? '#F97316' : tech.color.replace('text-', '') === 'yellow-500' ? '#EAB308' : '#6B7280' }} />
+                              <IconComponent className="w-4 h-4 flex-shrink-0" style={{ color }} />
                               <span className="text-slate-700 font-medium">{tech.shortName}</span>
                             </span>
                           );
@@ -299,9 +431,21 @@ export default function PortfolioPage() {
                           <div className="flex items-center gap-1.5">
                             {item.technologies.slice(0, 3).map((tech, techIndex) => {
                               const IconComponent = tech.icon;
+                              const color = tech.color.includes('#') ? tech.color.replace('text-[', '').replace(']', '') : 
+                                tech.color.replace('text-', '') === 'blue-500' ? '#3B82F6' : 
+                                tech.color.replace('text-', '') === 'cyan-500' ? '#06B6D4' : 
+                                tech.color.replace('text-', '') === 'green-600' ? '#059669' : 
+                                tech.color.replace('text-', '') === 'emerald-500' ? '#10B981' : 
+                                tech.color.replace('text-', '') === 'purple-600' ? '#9333EA' : 
+                                tech.color.replace('text-', '') === 'pink-500' ? '#EC4899' : 
+                                tech.color.replace('text-', '') === 'gray-800' ? '#1F2937' : 
+                                tech.color.replace('text-', '') === 'blue-600' ? '#2563EB' : 
+                                tech.color.replace('text-', '') === 'green-500' ? '#10B981' : 
+                                tech.color.replace('text-', '') === 'orange-500' ? '#F97316' : 
+                                tech.color.replace('text-', '') === 'yellow-500' ? '#EAB308' : '#6B7280';
                               return (
                                 <span key={techIndex} className="flex items-center gap-1.5 px-2 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-md font-medium hover:bg-slate-100 transition-colors duration-200 min-w-[60px] justify-center">
-                                  <IconComponent className="w-4 h-4 flex-shrink-0" style={{ color: tech.color.replace('text-', '') === 'blue-500' ? '#3B82F6' : tech.color.replace('text-', '') === 'cyan-500' ? '#06B6D4' : tech.color.replace('text-', '') === 'green-600' ? '#059669' : tech.color.replace('text-', '') === 'emerald-500' ? '#10B981' : tech.color.replace('text-', '') === 'purple-600' ? '#9333EA' : tech.color.replace('text-', '') === 'pink-500' ? '#EC4899' : tech.color.replace('text-', '') === 'gray-800' ? '#1F2937' : tech.color.replace('text-', '') === 'blue-600' ? '#2563EB' : tech.color.replace('text-', '') === 'green-500' ? '#10B981' : tech.color.replace('text-', '') === 'orange-500' ? '#F97316' : tech.color.replace('text-', '') === 'yellow-500' ? '#EAB308' : '#6B7280' }} />
+                                  <IconComponent className="w-4 h-4 flex-shrink-0" style={{ color }} />
                                   <span className="text-slate-700 font-medium">{tech.shortName}</span>
                                 </span>
                               );

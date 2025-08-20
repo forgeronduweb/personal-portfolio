@@ -47,15 +47,6 @@ export default function Features() {
                                  Optimisation SEO
                              </li>
                          </ul>
-                         <button
-                             onClick={() => {
-                                 const event = new CustomEvent('navigate', { detail: 'custom-site-form' });
-                                 window.dispatchEvent(event);
-                             }}
-                             className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
-                         >
-                             Demander un devis
-                         </button>
                      </div>
 
                     {/* Location de sites web */}
@@ -123,19 +114,6 @@ export default function Features() {
                         </ul>
                     </div>
                 </div>
-
-                                 {/* CTA Section */}
-                 <div className="text-center mt-16">
-                     <button 
-                         onClick={() => {
-                             const event = new CustomEvent('navigate', { detail: 'custom-site-form' });
-                             window.dispatchEvent(event);
-                         }}
-                         className="bg-slate-800 hover:bg-black text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
-                     >
-                         Démarrer Votre Projet
-                     </button>
-                 </div>
             </div>
         </section>
     );
