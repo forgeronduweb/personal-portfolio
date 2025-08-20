@@ -10,7 +10,7 @@ const Sidebar = ({ activeSection, onSectionChange, onLogout, currentUser }) => {
   ];
 
   return (
-    <div style={{ width: 256, backgroundColor: '#000000', minHeight: '100vh', display: 'flex', flexDirection: 'column', color: '#ffffff' }}>
+    <div style={{ width: 256, backgroundColor: '#000000', height: '100vh', display: 'flex', flexDirection: 'column', color: '#ffffff', position: 'fixed', left: 0, top: 0 }}>
       <div style={{ padding: 24, borderBottom: '1px solid #333333' }}>
         <h2 style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>Admin</h2>
         {currentUser && (

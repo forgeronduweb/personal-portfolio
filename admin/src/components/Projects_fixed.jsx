@@ -444,7 +444,6 @@ const Projects = () => {
                 </select>
               </div>
 
-
               <div>
                 <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>Technologies (cliquez pour ajouter)</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>

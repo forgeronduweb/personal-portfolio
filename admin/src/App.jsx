@@ -405,16 +405,92 @@ export default function App() {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <Sidebar 
         activeSection={activeSection} 
         onSectionChange={setActiveSection} 
         onLogout={logout}
         currentUser={{ email }}
       />
-      <main style={{ flex: 1, padding: 24, backgroundColor: '#f8fafc' }}>
-        {renderContent()}
-      </main>
+      <div style={{ flex: 1, marginLeft: 256, display: 'flex', flexDirection: 'column' }}>
+        {/* Header avec barre de recherche et contributeurs */}
+        <header style={{
+          backgroundColor: 'white',
+          borderBottom: '1px solid #e5e7eb',
+          padding: '4px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          position: 'fixed',
+          top: 0,
+          left: 256,
+          right: 0,
+          height: 40,
+          zIndex: 20
+        }}>
+          <div style={{ flex: 1 }}></div>
+          
+          {/* Barre de recherche au centre */}
+          <div style={{ flex: 2, maxWidth: 400, margin: '0 24px' }}>
+            <div style={{ position: 'relative' }}>
+              <input
+                type="text"
+                placeholder="Rechercher..."
+                style={{
+                  width: '100%',
+                  padding: '6px 16px 6px 36px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: 6,
+                  fontSize: 13,
+                  backgroundColor: '#f9fafb'
+                }}
+              />
+              <svg 
+                style={{ 
+                  position: 'absolute', 
+                  left: 10, 
+                  top: '50%', 
+                  transform: 'translateY(-50%)',
+                  width: 16,
+                  height: 16,
+                  color: '#6b7280'
+                }}
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Contributeur connecté à droite */}
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 12 }}>
+            <span style={{ fontSize: 12, color: '#64748b' }}>Connecté en tant que</span>
+            <div style={{
+              width: 28,
+              height: 28,
+              borderRadius: '50%',
+              backgroundColor: '#3b82f6',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontSize: 11,
+              fontWeight: 600,
+              border: '2px solid white',
+              cursor: 'pointer',
+              title: email
+            }}>
+              {email ? email.substring(0, 2).toUpperCase() : 'AD'}
+            </div>
+          </div>
+        </header>
+
+        <main style={{ flex: 1, paddingTop: 64, padding: 24, backgroundColor: '#f8fafc', overflow: 'auto' }}>
+          {renderContent()}
+        </main>
+      </div>
     </div>
   )
 }
