@@ -295,11 +295,11 @@ export default function PortfolioPage() {
 
       {/* Menu vertical sticky */}
       {isMenuSticky && (
-        <div className="fixed left-6 top-1/2 transform -translate-y-1/2 z-50">
+        <div className="fixed left-6 top-1/2 transform -translate-y-1/2 z-[9999] animate-in slide-in-from-left duration-300">
           <div className="flex flex-col bg-gray-100 rounded-lg p-1 shadow-lg">
             <button
               onClick={() => setActiveTab("free")}
-              className={`px-4 py-3 rounded-md text-sm font-medium transition-all duration-200 mb-1 ${
+              className={`px-3 py-8 rounded-md text-sm font-medium transition-all duration-200 mb-1 ${
                 activeTab === "free"
                   ? "bg-white text-gray-900 shadow-sm"
                   : "text-gray-600 hover:text-gray-900"
@@ -309,7 +309,7 @@ export default function PortfolioPage() {
             </button>
             <button
               onClick={() => setActiveTab("premium")}
-              className={`px-4 py-3 rounded-md text-sm font-medium transition-all duration-200 ${
+              className={`px-3 py-8 rounded-md text-sm font-medium transition-all duration-200 ${
                 activeTab === "premium"
                   ? "bg-white text-gray-900 shadow-sm"
                   : "text-gray-600 hover:text-gray-900"
