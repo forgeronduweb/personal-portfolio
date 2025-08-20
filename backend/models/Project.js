@@ -34,10 +34,18 @@ const projectSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    alt: {
+    type: {
         type: String,
         required: true,
         trim: true
+    },
+    alt: {
+        type: String,
+        required: false,
+        trim: true,
+        default: function() {
+            return `Image du projet ${this.title}`;
+        }
     },
     technologies: [technologySchema],
     isActive: {

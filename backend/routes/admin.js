@@ -162,7 +162,7 @@ router.post('/projects/upload', protect, requireAdmin, upload.single('image'), (
 // Récupérer tous les projets
 router.get('/projects', protect, requireAdmin, async (req, res, next) => {
   try {
-    const projects = await Project.find().sort({ order: 1, createdAt: -1 });
+    const projects = await Project.find().sort({ createdAt: -1 });
     res.json({ success: true, data: projects });
   } catch (err) {
     next(err);
@@ -172,15 +172,15 @@ router.get('/projects', protect, requireAdmin, async (req, res, next) => {
 // Créer un nouveau projet
 router.post('/projects', protect, requireAdmin, async (req, res, next) => {
   try {
-    const { image, title, category, alt, technologies, order } = req.body;
+    const { image, title, category, type, technologies } = req.body;
     
     const project = await Project.create({
       image,
       title,
       category,
-      alt,
-      technologies,
-      order: order || 0
+      type,
+      alt: `Image du projet ${title}`,
+      technologies
     });
 
     res.status(201).json({ 
@@ -196,11 +196,19 @@ router.post('/projects', protect, requireAdmin, async (req, res, next) => {
 // Mettre à jour un projet
 router.put('/projects/:id', protect, requireAdmin, async (req, res, next) => {
   try {
-    const { image, title, category, alt, technologies, order, isActive } = req.body;
+    const { image, title, category, type, technologies, isActive } = req.body;
     
     const project = await Project.findByIdAndUpdate(
       req.params.id,
-      { image, title, category, alt, technologies, order, isActive },
+      { 
+        image, 
+        title, 
+        category, 
+        type, 
+        alt: `Image du projet ${title}`,
+        technologies, 
+        isActive 
+      },
       { new: true, runValidators: true }
     );
 

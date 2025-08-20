@@ -8,7 +8,7 @@ const Project = require('../models/Project');
 router.get('/', async (req, res, next) => {
   try {
     const projects = await Project.find({ isActive: true })
-      .sort({ order: 1, createdAt: -1 })
+      .sort({ createdAt: -1 })
       .select('-__v');
     
     res.json({ 
