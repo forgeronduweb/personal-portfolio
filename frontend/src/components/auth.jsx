@@ -11,6 +11,7 @@ export default function Auth({ onLogin }) {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,9 +33,13 @@ export default function Auth({ onLogin }) {
           email: formData.email,
           password: formData.password
         });
+        
+        // Afficher le message de succès d'inscription
+        setRegistrationSuccess(true);
+        return;
       }
 
-      // Rediriger vers le dashboard avec les données utilisateur
+      // Rediriger vers le dashboard avec les données utilisateur (connexion uniquement)
       onLogin(response.user);
     } catch (error) {
       console.error('Erreur:', error);
@@ -50,6 +55,68 @@ export default function Auth({ onLogin }) {
       [e.target.name]: e.target.value
     });
   };
+
+  // Affichage du message de succès après inscription
+  if (registrationSuccess) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-lg w-full space-y-8">
+          {/* Message de succès */}
+          <div className="text-center bg-white rounded-xl shadow-lg p-8 border border-slate-200">
+            <div className="mb-6">
+              <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <span className="text-2xl">🎉</span>
+              </div>
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">
+                Merci pour ton inscription 🎉 !
+              </h2>
+            </div>
+            
+            <div className="space-y-4 text-slate-700 leading-relaxed">
+              <p>
+                Ton espace client (dashboard) est en cours de construction et sera bientôt disponible.
+              </p>
+              
+              <p>
+                En attendant, tu peux déjà profiter de la plateforme en faisant une demande de devis pour ton projet.
+              </p>
+              
+              <p>
+                De plus, tu recevras par email toutes nos nouveautés, offres et mises à jour importantes afin de rester informé.
+              </p>
+            </div>
+
+            {/* Bouton de demande de devis */}
+            <div className="mt-8">
+              <button
+                onClick={() => {
+                  const event = new CustomEvent('navigate', { detail: 'custom-site-form' });
+                  window.dispatchEvent(event);
+                }}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2"
+              >
+                <span>👉</span>
+                Faire une demande de devis
+              </button>
+            </div>
+
+            {/* Bouton retour */}
+            <div className="mt-4">
+              <button
+                onClick={() => {
+                  const event = new CustomEvent('navigate', { detail: 'home' });
+                  window.dispatchEvent(event);
+                }}
+                className="text-sm text-slate-600 hover:text-slate-800 font-medium transition-colors duration-200"
+              >
+                ← Retour à l'accueil
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">

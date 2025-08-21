@@ -293,9 +293,9 @@ export default function PortfolioPage() {
         </div>
       </div>
 
-      {/* Menu vertical sticky */}
+      {/* Menu vertical sticky - Hidden on mobile */}
       {isMenuSticky && (
-        <div className="fixed left-6 top-1/2 transform -translate-y-1/2 z-[9999] animate-in slide-in-from-left duration-300">
+        <div className="hidden lg:block fixed left-6 top-1/2 transform -translate-y-1/2 z-[9999] animate-in slide-in-from-left duration-300">
           <div className="flex flex-col bg-gray-100 rounded-lg p-1 shadow-lg">
             <button
               onClick={() => setActiveTab("free")}
@@ -335,7 +335,7 @@ export default function PortfolioPage() {
                   <div className="overflow-hidden rounded-xl aspect-video bg-gray-100 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                     <img 
                       className="w-full h-full object-cover transform transition duration-300 group-hover:scale-105" 
-                      src={item.image} 
+                      src={item.image.startsWith('/uploads') ? `http://localhost:5000${item.image}` : item.image} 
                       alt={item.alt}
                       loading="lazy"
                     />
@@ -411,7 +411,7 @@ export default function PortfolioPage() {
                         <div className="overflow-hidden rounded-xl aspect-video bg-gray-100 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                           <img 
                             className="w-full h-full object-cover transform transition duration-300 group-hover:scale-105" 
-                            src={item.image} 
+                            src={item.image.startsWith('/uploads') ? `http://localhost:5000${item.image}` : item.image} 
                             alt={item.alt}
                             loading="lazy"
                           />
