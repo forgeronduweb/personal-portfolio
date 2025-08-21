@@ -39,7 +39,7 @@ const siteRequestSchema = new mongoose.Schema({
     },
     budget: {
         type: String,
-        enum: ['1000-3000', '3000-5000', '5000-10000', '10000+', 'flexible', ''],
+        enum: ['150000-300000', '300000-600000', '600000-1000000', '1000000-2000000', '2000000+', 'flexible', ''],
         default: ''
     },
     timeline: {
@@ -52,6 +52,32 @@ const siteRequestSchema = new mongoose.Schema({
         trim: true,
         default: ''
     },
+    attachments: [{
+        filename: {
+            type: String,
+            required: true
+        },
+        originalName: {
+            type: String,
+            required: true
+        },
+        path: {
+            type: String,
+            required: true
+        },
+        size: {
+            type: Number,
+            required: true
+        },
+        mimetype: {
+            type: String,
+            required: true
+        },
+        uploadedAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
     status: {
         type: String,
         enum: ['pending', 'in_progress', 'completed', 'cancelled'],

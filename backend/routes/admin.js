@@ -29,6 +29,100 @@ router.get('/users', protect, requireAdmin, async (req, res, next) => {
   }
 });
 
+// Mettre à jour le rôle d'un utilisateur
+router.put('/users/:id/role', protect, requireAdmin, async (req, res, next) => {
+  try {
+    const { role } = req.body;
+    
+    if (!['user', 'moderator', 'admin'].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Rôle invalide'
+      });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { role },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utilisateur non trouvé'
+      });
+    }
+
+    res.json({ 
+      success: true, 
+      message: 'Rôle mis à jour avec succès',
+      data: user 
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Mettre à jour le statut premium d'un utilisateur
+router.put('/users/:id/premium', protect, requireAdmin, async (req, res, next) => {
+  try {
+    const { isPremium } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { isPremium },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utilisateur non trouvé'
+      });
+    }
+
+    res.json({ 
+      success: true, 
+      message: 'Statut premium mis à jour avec succès',
+      data: user 
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Supprimer un utilisateur
+router.delete('/users/:id', protect, requireAdmin, async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utilisateur non trouvé'
+      });
+    }
+
+    // Empêcher la suppression d'un admin
+    if (user.role === 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Impossible de supprimer un administrateur'
+      });
+    }
+
+    await User.findByIdAndDelete(req.params.id);
+
+    res.json({ 
+      success: true, 
+      message: 'Utilisateur supprimé avec succès' 
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Récupérer toutes les demandes de sites
 router.get('/site-requests', protect, requireAdmin, async (req, res, next) => {
   try {

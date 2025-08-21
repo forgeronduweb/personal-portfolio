@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const SiteRequest = require('../models/SiteRequest');
 const { protect, requireAdmin } = require('../middleware/auth');
+const upload = require('../middleware/upload');
 
 // @desc    Créer une nouvelle demande de site
 // @route   POST /api/site-requests
 // @access  Public
-router.post('/', async (req, res, next) => {
+router.post('/', upload.array('attachments', 5), async (req, res, next) => {
     try {
         const {
             email,
@@ -21,6 +22,15 @@ router.post('/', async (req, res, next) => {
             additionalInfo
         } = req.body;
 
+        // Traiter les fichiers uploadés
+        const attachments = req.files ? req.files.map(file => ({
+            filename: file.filename,
+            originalName: file.originalname,
+            path: file.path,
+            size: file.size,
+            mimetype: file.mimetype
+        })) : [];
+
         const siteRequest = await SiteRequest.create({
             email,
             companyName,
@@ -31,7 +41,8 @@ router.post('/', async (req, res, next) => {
             designStyle,
             budget,
             timeline,
-            additionalInfo
+            additionalInfo,
+            attachments
         });
 
         res.status(201).json({
