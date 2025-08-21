@@ -1,10 +1,23 @@
 import { useEffect, useState } from 'react'
 import Sidebar from './components/Sidebar'
 import Projects from './components/Projects'
+import RoleBasedDashboard from './components/RoleBasedDashboard'
+import { getDashboardConfig, getRoleNavigation, ROLES, ROLE_DASHBOARDS } from './utils/roleConfig'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 export default function App() {
+  // Ajouter le style CSS pour masquer la scrollbar
+  const style = document.createElement('style');
+  style.textContent = `
+    .admin-main::-webkit-scrollbar {
+      display: none;
+    }
+  `;
+  if (!document.head.querySelector('style[data-admin-scrollbar]')) {
+    style.setAttribute('data-admin-scrollbar', 'true');
+    document.head.appendChild(style);
+  }
   const [token, setToken] = useState(localStorage.getItem('admin_token') || '')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -16,6 +29,10 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [activeSection, setActiveSection] = useState('dashboard')
+  const [selectedUser, setSelectedUser] = useState(null)
+  const [showCreateCollaborator, setShowCreateCollaborator] = useState(false)
+  const [collaboratorForm, setCollaboratorForm] = useState({ name: '', email: '', password: '', role: 'admin' })
+  const [currentUser, setCurrentUser] = useState(null)
 
   async function login(e) {
     e?.preventDefault()
@@ -28,9 +45,12 @@ export default function App() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.message || 'Erreur de connexion')
-      if (data.user?.role !== 'admin') throw new Error("Ce compte n'est pas admin")
+      if (!['admin', 'moderator', 'developer_frontend', 'developer_backend', 'developer_fullstack', 'designer_ux', 'designer_ui', 'graphiste', 'commercial', 'chef_projet', 'community_manager', 'marketing', 'support', 'finance'].includes(data.user?.role)) {
+        throw new Error("Ce compte n'a pas accès à l'interface admin")
+      }
       localStorage.setItem('admin_token', data.token)
       setToken(data.token)
+      setCurrentUser(data.user)
     } catch (err) {
       setError(err.message)
     }
@@ -64,9 +84,114 @@ export default function App() {
     }
   }
 
+  async function updateUserRole(userId, newRole) {
+    try {
+      setIsLoading(true)
+      const res = await fetch(`${API_URL}/admin/users/${userId}/role`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ role: newRole })
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || 'Erreur mise à jour rôle')
+      
+      // Mettre à jour la liste des utilisateurs
+      setUsers(prev => prev.map(user => 
+        user._id === userId ? { ...user, role: newRole } : user
+      ))
+      alert('Rôle mis à jour avec succès!')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function toggleUserPremium(userId, isPremium) {
+    try {
+      setIsLoading(true)
+      const res = await fetch(`${API_URL}/admin/users/${userId}/premium`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ isPremium: !isPremium })
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || 'Erreur mise à jour premium')
+      
+      // Mettre à jour la liste des utilisateurs
+      setUsers(prev => prev.map(user => 
+        user._id === userId ? { ...user, isPremium: !isPremium } : user
+      ))
+      alert('Statut premium mis à jour!')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function deleteUser(userId) {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) return
+    
+    try {
+      setIsLoading(true)
+      const res = await fetch(`${API_URL}/admin/users/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || 'Erreur suppression utilisateur')
+      
+      // Retirer l'utilisateur de la liste
+      setUsers(prev => prev.filter(user => user._id !== userId))
+      alert('Utilisateur supprimé avec succès!')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function createCollaborator() {
+    try {
+      setIsLoading(true)
+      const res = await fetch(`${API_URL}/auth/create-admin`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...collaboratorForm,
+          adminKey: 'admin-setup-key-2024'
+        })
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || 'Erreur création collaborateur')
+      
+      // Ajouter le nouveau collaborateur à la liste
+      setUsers(prev => [...prev, data.user])
+      setCollaboratorForm({ name: '', email: '', password: '', role: 'admin' })
+      setShowCreateCollaborator(false)
+      alert('Collaborateur créé avec succès!')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   function logout() {
     localStorage.removeItem('admin_token')
     setToken('')
+    setCurrentUser(null)
     setStats(null)
     setUsers([])
     setSiteRequests([])
@@ -105,7 +230,7 @@ export default function App() {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <form onSubmit={login} style={{ border: '1px solid #e5e7eb', padding: 24, borderRadius: 12, width: 360 }}>
-          <h1 style={{ margin: 0, marginBottom: 12 }}>Connexion Admin</h1>
+          <h1 style={{ margin: 0, marginBottom: 12 }}>Connexion Interface</h1>
           {error && <div style={{ color: '#b91c1c', marginBottom: 8 }}>{error}</div>}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <label>Email</label>
@@ -119,8 +244,47 @@ export default function App() {
     )
   }
 
+  // Si l'utilisateur connecté n'est pas admin, utiliser le dashboard role-based avec permissions limitées
+  if (currentUser && currentUser.role !== 'admin') {
+    return (
+      <RoleBasedDashboard 
+        user={currentUser}
+        activeSection={activeSection}
+        setActiveSection={setActiveSection}
+        onLogout={logout}
+      />
+    )
+  }
+
   // Rendu du contenu selon la section active
   const renderContent = () => {
+    // Vérifier les permissions pour chaque section
+    const hasPermission = (section) => {
+      if (!currentUser) return true; // Fallback pour l'admin principal
+      
+      const userRole = currentUser.role;
+      
+      // Seuls les admins ont accès à tout
+      if (userRole === 'admin') return true;
+      
+      // Modérateurs ont accès limité
+      if (userRole === 'moderator') {
+        return ['dashboard', 'users', 'site-requests', 'projects'].includes(section);
+      }
+      
+      // Autres rôles ont accès très limité
+      return ['dashboard', 'my-projects', 'profile'].includes(section);
+    };
+
+    if (!hasPermission(activeSection)) {
+      return (
+        <div style={{ padding: 24, textAlign: 'center' }}>
+          <h2 style={{ color: '#ef4444', marginBottom: 16 }}>Accès refusé</h2>
+          <p style={{ color: '#64748b' }}>Vous n'avez pas les permissions nécessaires pour accéder à cette section.</p>
+        </div>
+      );
+    }
+
     switch(activeSection) {
       case 'dashboard':
         return (
@@ -147,7 +311,26 @@ export default function App() {
 
             {/* Activités récentes */}
             <div style={{ marginBottom: 32 }}>
-              <h2 style={{ margin: '0 0 16px 0', fontSize: 20, fontWeight: 600 }}>Activités récentes</h2>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <h2 style={{ margin: 0, fontSize: 20, fontWeight: 600 }}>Activités récentes</h2>
+                {(users.length > 3 || siteRequests.length > 3) && (
+                  <button
+                    onClick={() => setActiveSection('users')}
+                    style={{
+                      padding: '6px 12px',
+                      background: 'none',
+                      border: '1px solid #3b82f6',
+                      borderRadius: 6,
+                      color: '#3b82f6',
+                      cursor: 'pointer',
+                      fontSize: 12,
+                      fontWeight: 500
+                    }}
+                  >
+                    Voir plus →
+                  </button>
+                )}
+              </div>
               <div style={{ backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: 12, padding: 20 }}>
                 <div style={{ maxHeight: 300, overflow: 'auto' }}>
                   {/* Nouvelles inscriptions */}
@@ -290,7 +473,26 @@ export default function App() {
             {/* Recent Data */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
               <div style={{ padding: 24, backgroundColor: 'white', borderRadius: 12, border: '1px solid #e5e7eb' }}>
-                <h3 style={{ margin: '0 0 16px 0', fontSize: 18, fontWeight: 600 }}>Utilisateurs récents</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <h3 style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>Utilisateurs récents</h3>
+                  {users.length > 5 && (
+                    <button
+                      onClick={() => setActiveSection('users')}
+                      style={{
+                        padding: '4px 8px',
+                        background: 'none',
+                        border: '1px solid #3b82f6',
+                        borderRadius: 4,
+                        color: '#3b82f6',
+                        cursor: 'pointer',
+                        fontSize: 11,
+                        fontWeight: 500
+                      }}
+                    >
+                      Voir plus
+                    </button>
+                  )}
+                </div>
                 <div style={{ maxHeight: 200, overflow: 'auto' }}>
                   {users.slice(0, 5).map(user => (
                     <div key={user._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #f1f5f9' }}>
@@ -314,7 +516,26 @@ export default function App() {
               </div>
               
               <div style={{ padding: 24, backgroundColor: 'white', borderRadius: 12, border: '1px solid #e5e7eb' }}>
-                <h3 style={{ margin: '0 0 16px 0', fontSize: 18, fontWeight: 600 }}>Demandes récentes</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <h3 style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>Demandes récentes</h3>
+                  {siteRequests.length > 5 && (
+                    <button
+                      onClick={() => setActiveSection('site-requests')}
+                      style={{
+                        padding: '4px 8px',
+                        background: 'none',
+                        border: '1px solid #3b82f6',
+                        borderRadius: 4,
+                        color: '#3b82f6',
+                        cursor: 'pointer',
+                        fontSize: 11,
+                        fontWeight: 500
+                      }}
+                    >
+                      Voir plus
+                    </button>
+                  )}
+                </div>
                 <div style={{ maxHeight: 200, overflow: 'auto' }}>
                   {siteRequests.slice(0, 5).map(request => (
                     <div key={request._id} style={{ padding: '8px 0', borderBottom: '1px solid #f1f5f9' }}>
@@ -330,24 +551,238 @@ export default function App() {
       case 'users':
         return (
           <div>
-            <h1 style={{ margin: 0, marginBottom: 24, fontSize: 24, fontWeight: 600 }}>Gestion des utilisateurs</h1>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+              <h1 style={{ margin: 0, fontSize: 24, fontWeight: 600, position: 'fixed', top: 64, left: 280, right: 24, backgroundColor: '#f8fafc', paddingTop: 16, paddingBottom: 8, zIndex: 15, borderBottom: '1px solid #e5e7eb' }}>Gestion des utilisateurs</h1>
+              <button
+                onClick={() => setShowCreateCollaborator(true)}
+                style={{
+                  padding: '8px 16px',
+                  background: '#10b981',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: 6,
+                  cursor: 'pointer',
+                  fontSize: 14,
+                  fontWeight: 500,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  position: 'fixed',
+                  top: 72,
+                  right: 32,
+                  zIndex: 20
+                }}
+              >
+                ➕ Créer un collaborateur
+              </button>
+            </div>
+
+            {/* Modal de création de collaborateur */}
+            {showCreateCollaborator && (
+              <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 50
+              }}>
+                <div style={{
+                  backgroundColor: 'white',
+                  borderRadius: 12,
+                  padding: 24,
+                  width: 400,
+                  maxWidth: '90vw'
+                }}>
+                  <h2 style={{ margin: '0 0 16px 0', fontSize: 18, fontWeight: 600 }}>Créer un collaborateur</h2>
+                  
+                  <div style={{ marginBottom: 16 }}>
+                    <label style={{ display: 'block', marginBottom: 4, fontWeight: 500 }}>Nom complet</label>
+                    <input
+                      type="text"
+                      value={collaboratorForm.name}
+                      onChange={(e) => setCollaboratorForm(prev => ({ ...prev, name: e.target.value }))}
+                      style={{ width: '100%', padding: 8, border: '1px solid #d1d5db', borderRadius: 6 }}
+                      placeholder="Nom du collaborateur"
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: 16 }}>
+                    <label style={{ display: 'block', marginBottom: 4, fontWeight: 500 }}>Email</label>
+                    <input
+                      type="email"
+                      value={collaboratorForm.email}
+                      onChange={(e) => setCollaboratorForm(prev => ({ ...prev, email: e.target.value }))}
+                      style={{ width: '100%', padding: 8, border: '1px solid #d1d5db', borderRadius: 6 }}
+                      placeholder="email@exemple.com"
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: 16 }}>
+                    <label style={{ display: 'block', marginBottom: 4, fontWeight: 500 }}>Mot de passe</label>
+                    <input
+                      type="password"
+                      value={collaboratorForm.password}
+                      onChange={(e) => setCollaboratorForm(prev => ({ ...prev, password: e.target.value }))}
+                      style={{ width: '100%', padding: 8, border: '1px solid #d1d5db', borderRadius: 6 }}
+                      placeholder="Mot de passe sécurisé"
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: 20 }}>
+                    <label style={{ display: 'block', marginBottom: 4, fontWeight: 500 }}>Rôle</label>
+                    <select
+                      value={collaboratorForm.role}
+                      onChange={(e) => setCollaboratorForm(prev => ({ ...prev, role: e.target.value }))}
+                      style={{ width: '100%', padding: 8, border: '1px solid #d1d5db', borderRadius: 6 }}
+                    >
+                      <option value={ROLES.DEVELOPER_FULLSTACK}>Développeur</option>
+                      <option value={ROLES.DESIGNER_UX}>Designer</option>
+                      <option value={ROLES.COMMERCIAL}>Commercial</option>
+                      <option value={ROLES.MARKETING}>Marketing</option>
+                      <option value={ROLES.ADMIN}>Administrateur</option>
+                    </select>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+                    <button
+                      onClick={() => {
+                        setShowCreateCollaborator(false)
+                        setCollaboratorForm({ name: '', email: '', password: '', role: 'admin' })
+                      }}
+                      style={{
+                        padding: '8px 16px',
+                        background: 'white',
+                        color: '#374151',
+                        border: '1px solid #d1d5db',
+                        borderRadius: 6,
+                        cursor: 'pointer',
+                        fontSize: 14
+                      }}
+                    >
+                      Annuler
+                    </button>
+                    <button
+                      onClick={createCollaborator}
+                      disabled={!collaboratorForm.name || !collaboratorForm.email || !collaboratorForm.password || isLoading}
+                      style={{
+                        padding: '8px 16px',
+                        background: (!collaboratorForm.name || !collaboratorForm.email || !collaboratorForm.password || isLoading) ? '#d1d5db' : '#10b981',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: 6,
+                        cursor: (!collaboratorForm.name || !collaboratorForm.email || !collaboratorForm.password || isLoading) ? 'not-allowed' : 'pointer',
+                        fontSize: 14,
+                        fontWeight: 500
+                      }}
+                    >
+                      {isLoading ? 'Création...' : 'Créer'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div style={{ border: '1px solid #e5e7eb', borderRadius: 12, overflow: 'hidden' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr 2fr', background: '#f8fafc', padding: '10px 12px', fontWeight: 600, color: '#334155' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr 1fr 1fr 120px', background: '#f8fafc', padding: '10px 12px', fontWeight: 600, color: '#334155' }}>
                 <div>Nom</div>
                 <div>Email</div>
                 <div>Rôle</div>
+                <div>Premium</div>
                 <div>Inscription</div>
+                <div>Actions</div>
               </div>
               <div style={{ maxHeight: 420, overflow: 'auto' }}>
                 {users.length === 0 ? (
                   <div style={{ padding: 12, color: '#64748b' }}>Aucun utilisateur</div>
                 ) : (
                   users.map(u => (
-                    <div key={u.id || u._id} style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr 2fr', padding: '10px 12px', borderTop: '1px solid #e5e7eb' }}>
+                    <div key={u.id || u._id} style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr 1fr 1fr 120px', padding: '10px 12px', borderTop: '1px solid #e5e7eb', alignItems: 'center' }}>
                       <div style={{ color: '#0f172a' }}>{u.name || '-'}</div>
                       <div style={{ color: '#334155' }}>{u.email}</div>
-                      <div style={{ color: '#334155' }}>{u.role}</div>
-                      <div style={{ color: '#334155' }}>{u.createdAt ? new Date(u.createdAt).toLocaleString() : '-'}</div>
+                      <div>
+                        <span style={{
+                          padding: '2px 8px',
+                          borderRadius: 12,
+                          fontSize: 11,
+                          fontWeight: 500,
+                          backgroundColor: u.role === 'admin' ? '#dbeafe' : u.role === 'moderator' ? '#fef3c7' : '#f1f5f9',
+                          color: u.role === 'admin' ? '#1e40af' : u.role === 'moderator' ? '#92400e' : '#64748b'
+                        }}>
+                          {u.role}
+                        </span>
+                      </div>
+                      <div>
+                        <span style={{
+                          padding: '2px 8px',
+                          borderRadius: 12,
+                          fontSize: 11,
+                          fontWeight: 500,
+                          backgroundColor: u.isPremium ? '#dcfce7' : '#f1f5f9',
+                          color: u.isPremium ? '#166534' : '#64748b'
+                        }}>
+                          {u.isPremium ? 'Premium' : 'Gratuit'}
+                        </span>
+                      </div>
+                      <div style={{ color: '#334155', fontSize: 12 }}>{u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '-'}</div>
+                      <div style={{ display: 'flex', gap: 4 }}>
+                        <button
+                          onClick={() => toggleUserPremium(u._id, u.isPremium)}
+                          style={{
+                            padding: '4px 6px',
+                            background: u.isPremium ? '#f59e0b' : '#10b981',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: 4,
+                            cursor: 'pointer',
+                            fontSize: 10,
+                            fontWeight: 500
+                          }}
+                          title={u.isPremium ? 'Retirer Premium' : 'Rendre Premium'}
+                        >
+                          {u.isPremium ? '⭐' : '💎'}
+                        </button>
+                        {u.role !== 'admin' && (
+                          <button
+                            onClick={() => updateUserRole(u._id, u.role === 'user' ? 'moderator' : 'user')}
+                            style={{
+                              padding: '4px 6px',
+                              background: '#3b82f6',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: 4,
+                              cursor: 'pointer',
+                              fontSize: 10,
+                              fontWeight: 500
+                            }}
+                            title={u.role === 'user' ? 'Promouvoir Modérateur' : 'Rétrograder Utilisateur'}
+                          >
+                            {u.role === 'user' ? '⬆️' : '⬇️'}
+                          </button>
+                        )}
+                        {u.role !== 'admin' && (
+                          <button
+                            onClick={() => deleteUser(u._id)}
+                            style={{
+                              padding: '4px 6px',
+                              background: '#ef4444',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: 4,
+                              cursor: 'pointer',
+                              fontSize: 10,
+                              fontWeight: 500
+                            }}
+                            title="Supprimer utilisateur"
+                          >
+                            🗑️
+                          </button>
+                        )}
+                      </div>
                     </div>
                   ))
                 )}
@@ -366,7 +801,7 @@ export default function App() {
                 >
                   ← Retour
                 </button>
-                <h1 style={{ margin: 0, fontSize: 24, fontWeight: 600 }}>Détails de la demande</h1>
+                <h1 style={{ margin: 0, fontSize: 24, fontWeight: 600, position: 'fixed', top: 64, left: 280, right: 24, backgroundColor: '#f8fafc', paddingTop: 16, paddingBottom: 8, zIndex: 15, borderBottom: '1px solid #e5e7eb' }}>Détails de la demande</h1>
               </div>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
@@ -497,7 +932,7 @@ export default function App() {
 
         return (
           <div>
-            <h1 style={{ margin: 0, marginBottom: 24, fontSize: 24, fontWeight: 600 }}>Demandes de sites</h1>
+            <h1 style={{ margin: 0, marginBottom: 24, fontSize: 24, fontWeight: 600, position: 'fixed', top: 64, left: 280, right: 24, backgroundColor: '#f8fafc', paddingTop: 16, paddingBottom: 8, zIndex: 15, borderBottom: '1px solid #e5e7eb' }}>Demandes de sites</h1>
             <div style={{ border: '1px solid #e5e7eb', borderRadius: 12, overflow: 'hidden' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr 1fr 1fr 80px', background: '#f8fafc', padding: '10px 12px', fontWeight: 600, color: '#334155' }}>
                 <div>Email</div>
@@ -558,7 +993,7 @@ export default function App() {
       case 'payments':
         return (
           <div>
-            <h1 style={{ margin: 0, marginBottom: 24, fontSize: 24, fontWeight: 600 }}>Paiements</h1>
+            <h1 style={{ margin: 0, marginBottom: 24, fontSize: 24, fontWeight: 600, position: 'fixed', top: 64, left: 280, right: 24, backgroundColor: '#f8fafc', paddingTop: 16, paddingBottom: 8, zIndex: 15, borderBottom: '1px solid #e5e7eb' }}>Paiements</h1>
             <div style={{ padding: 24, border: '1px solid #e5e7eb', borderRadius: 12, textAlign: 'center', color: '#64748b' }}>
               Gestion des paiements et abonnements premium
             </div>
@@ -567,7 +1002,7 @@ export default function App() {
       case 'stats':
         return (
           <div>
-            <h1 style={{ margin: 0, marginBottom: 24, fontSize: 24, fontWeight: 600 }}>Statistiques détaillées</h1>
+            <h1 style={{ margin: 0, marginBottom: 24, fontSize: 24, fontWeight: 600, position: 'fixed', top: 64, left: 280, right: 24, backgroundColor: '#f8fafc', paddingTop: 16, paddingBottom: 8, zIndex: 15, borderBottom: '1px solid #e5e7eb' }}>Statistiques détaillées</h1>
             <div style={{ padding: 24, border: '1px solid #e5e7eb', borderRadius: 12, textAlign: 'center', color: '#64748b' }}>
               Analytics et métriques de la plateforme
             </div>
@@ -576,7 +1011,7 @@ export default function App() {
       case 'settings':
         return (
           <div>
-            <h1 style={{ margin: 0, marginBottom: 24, fontSize: 24, fontWeight: 600 }}>Paramètres</h1>
+            <h1 style={{ margin: 0, marginBottom: 24, fontSize: 24, fontWeight: 600, position: 'fixed', top: 64, left: 280, right: 24, backgroundColor: '#f8fafc', paddingTop: 16, paddingBottom: 8, zIndex: 15, borderBottom: '1px solid #e5e7eb' }}>Paramètres</h1>
             <div style={{ padding: 24, border: '1px solid #e5e7eb', borderRadius: 12, textAlign: 'center', color: '#64748b' }}>
               Configuration de la plateforme
             </div>
@@ -593,7 +1028,7 @@ export default function App() {
         activeSection={activeSection} 
         onSectionChange={setActiveSection} 
         onLogout={logout}
-        currentUser={{ email }}
+        currentUser={currentUser || { email, role: 'admin' }}
       />
       <div style={{ flex: 1, marginLeft: 256, display: 'flex', flexDirection: 'column' }}>
         {/* Header avec barre de recherche et contributeurs */}
@@ -647,30 +1082,122 @@ export default function App() {
             </div>
           </div>
 
-          {/* Contributeur connecté à droite */}
-          <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 12 }}>
-            <span style={{ fontSize: 12, color: '#64748b' }}>Connecté en tant que</span>
-            <div style={{
-              width: 28,
-              height: 28,
-              borderRadius: '50%',
-              backgroundColor: '#3b82f6',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontSize: 11,
-              fontWeight: 600,
-              border: '2px solid white',
-              cursor: 'pointer',
-              title: email
-            }}>
-              {email ? email.substring(0, 2).toUpperCase() : 'AD'}
+          {/* Collaborateurs et utilisateur connecté à droite */}
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 12, color: '#64748b', marginRight: 8 }}>Équipe</span>
+            
+            {/* Groupe d'avatars des collaborateurs */}
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {/* Avatars des collaborateurs */}
+              {users.filter(user => ['admin', 'moderator', 'developer_fullstack', 'designer_ux', 'commercial', 'marketing'].includes(user.role)).slice(0, 4).map((collaborator, index) => (
+                <div 
+                  key={collaborator._id} 
+                  style={{ 
+                    position: 'relative',
+                    marginLeft: index > 0 ? -8 : 0,
+                    transition: 'all 0.2s ease',
+                    zIndex: 10 - index
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px) scale(1.1)';
+                    e.currentTarget.style.zIndex = '20';
+                    e.currentTarget.style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                    e.currentTarget.style.zIndex = 10 - index;
+                    e.currentTarget.style.filter = 'none';
+                  }}
+                >
+                  <div style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: '50%',
+                    backgroundColor: '#6b7280',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: 11,
+                    fontWeight: 600,
+                    border: '2px solid white',
+                    cursor: 'pointer',
+                    title: `${collaborator.name} (${collaborator.email})`
+                  }}>
+                    {collaborator.name 
+                      ? collaborator.name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase()
+                      : collaborator.email.substring(0, 2).toUpperCase()
+                    }
+                  </div>
+                  {/* Indicateur de statut en ligne */}
+                  <div style={{
+                    position: 'absolute',
+                    bottom: -2,
+                    right: -2,
+                    width: 10,
+                    height: 10,
+                    borderRadius: '50%',
+                    backgroundColor: '#10b981',
+                    border: '2px solid white',
+                    zIndex: 1
+                  }}></div>
+                </div>
+              ))}
+              
+              {/* Utilisateur connecté avec bordure spéciale */}
+              <div 
+                style={{ 
+                  position: 'relative', 
+                  marginLeft: 8,
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px) scale(1.1)';
+                  e.currentTarget.style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                  e.currentTarget.style.filter = 'none';
+                }}
+              >
+                <div style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: '50%',
+                  backgroundColor: '#3b82f6',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  border: '3px solid #fbbf24',
+                  cursor: 'pointer',
+                  title: currentUser ? `${currentUser.name} (${currentUser.email}) - Vous` : `${email} - Vous`
+                }}>
+                  {currentUser && currentUser.name 
+                    ? currentUser.name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase()
+                    : email ? email.substring(0, 2).toUpperCase() : 'AD'
+                  }
+                </div>
+                {/* Indicateur de statut en ligne pour l'utilisateur connecté */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: -2,
+                  right: -2,
+                  width: 12,
+                  height: 12,
+                  borderRadius: '50%',
+                  backgroundColor: '#10b981',
+                  border: '2px solid white',
+                  zIndex: 1
+                }}></div>
+              </div>
             </div>
           </div>
         </header>
 
-        <main style={{ flex: 1, paddingTop: 64, padding: 24, backgroundColor: '#f8fafc', overflow: 'auto' }}>
+        <main className="admin-main" style={{ flex: 1, padding: '120px 24px 24px 24px', backgroundColor: '#f8fafc', overflow: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           {renderContent()}
         </main>
       </div>

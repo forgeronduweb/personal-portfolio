@@ -188,11 +188,15 @@ const Projects = () => {
         justifyContent: 'space-between', 
         alignItems: 'center', 
         marginBottom: 24,
-        position: 'sticky',
-        top: 0,
+        position: 'fixed',
+        top: 64,
+        left: 280,
+        right: 24,
         backgroundColor: '#f8fafc',
-        zIndex: 10,
-        paddingBottom: 16
+        zIndex: 15,
+        paddingTop: 16,
+        paddingBottom: 8,
+        borderBottom: '1px solid #e5e7eb'
       }}>
         <h1 style={{ margin: 0, fontSize: 24, fontWeight: 600 }}>Gestion des Projets</h1>
         <button
@@ -211,7 +215,7 @@ const Projects = () => {
         </button>
       </div>
         
-      <div style={{ flex: 1, overflow: 'auto' }}>
+      <div style={{ flex: 1, overflow: 'auto', paddingTop: 40 }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 16 }}>
           {projects.map((project) => (
             <div key={project._id} style={{ 
@@ -232,42 +236,6 @@ const Projects = () => {
                   src={project.image.startsWith('/uploads') ? `http://localhost:5000${project.image}` : project.image} 
                   alt={project.alt}
                 />
-                <div style={{ 
-                  position: 'absolute', 
-                  top: 8, 
-                  right: 8, 
-                  display: 'flex', 
-                  gap: 4 
-                }}>
-                  <button
-                    onClick={() => handleEdit(project)}
-                    style={{
-                      padding: 4,
-                      backgroundColor: '#3b82f6',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: 4,
-                      cursor: 'pointer',
-                      fontSize: 12
-                    }}
-                  >
-                    ✏️
-                  </button>
-                  <button
-                    onClick={() => handleDelete(project._id)}
-                    style={{
-                      padding: 4,
-                      backgroundColor: '#ef4444',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: 4,
-                      cursor: 'pointer',
-                      fontSize: 12
-                    }}
-                  >
-                    🗑️
-                  </button>
-                </div>
               </div>
               
               <h3 style={{ margin: '0 0 8px 0', fontSize: 18, fontWeight: 600 }}>

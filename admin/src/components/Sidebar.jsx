@@ -1,13 +1,42 @@
 const Sidebar = ({ activeSection, onSectionChange, onLogout, currentUser }) => {
-  const navigation = [
-    { name: 'Dashboard', section: 'dashboard' },
-    { name: 'Utilisateurs', section: 'users' },
-    { name: 'Demandes de sites', section: 'site-requests' },
-    { name: 'Projets', section: 'projects' },
-    { name: 'Paiements', section: 'payments' },
-    { name: 'Statistiques', section: 'stats' },
-    { name: 'Paramètres', section: 'settings' },
-  ];
+  // Navigation basée sur les permissions de rôle
+  const getNavigationForRole = (userRole) => {
+    const baseNavigation = [
+      { name: 'Dashboard', section: 'dashboard' }
+    ];
+
+    // Seuls les admins ont accès à toutes les sections
+    if (userRole === 'admin') {
+      return [
+        ...baseNavigation,
+        { name: 'Utilisateurs', section: 'users' },
+        { name: 'Demandes de sites', section: 'site-requests' },
+        { name: 'Projets', section: 'projects' },
+        { name: 'Paiements', section: 'payments' },
+        { name: 'Statistiques', section: 'stats' },
+        { name: 'Paramètres', section: 'settings' }
+      ];
+    }
+
+    // Modérateurs ont accès limité
+    if (userRole === 'moderator') {
+      return [
+        ...baseNavigation,
+        { name: 'Utilisateurs', section: 'users' },
+        { name: 'Demandes de sites', section: 'site-requests' },
+        { name: 'Projets', section: 'projects' }
+      ];
+    }
+
+    // Autres rôles ont accès très limité
+    return [
+      ...baseNavigation,
+      { name: 'Mes Projets', section: 'my-projects' },
+      { name: 'Mon Profil', section: 'profile' }
+    ];
+  };
+
+  const navigation = getNavigationForRole(currentUser?.role || 'user');
 
   return (
     <div style={{ width: 256, backgroundColor: '#000000', height: '100vh', display: 'flex', flexDirection: 'column', color: '#ffffff', position: 'fixed', left: 0, top: 0 }}>

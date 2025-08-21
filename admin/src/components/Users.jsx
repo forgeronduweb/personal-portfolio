@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { adminService } from '../services/api';
+import { ROLES, ROLE_DASHBOARDS } from '../utils/roleConfig';
 import { 
   PencilIcon, 
   TrashIcon,
@@ -7,6 +8,32 @@ import {
   CheckIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline';
+
+// Fonction pour obtenir le badge de rôle avec les bonnes couleurs
+const getRoleBadge = (role) => {
+  const roleConfig = ROLE_DASHBOARDS[role];
+  if (!roleConfig) return null;
+
+  // Mapping des couleurs pour les badges
+  const colorClasses = {
+    '#3b82f6': 'bg-blue-100 text-blue-800',
+    '#10b981': 'bg-green-100 text-green-800', 
+    '#8b5cf6': 'bg-purple-100 text-purple-800',
+    '#f59e0b': 'bg-amber-100 text-amber-800',
+    '#059669': 'bg-emerald-100 text-emerald-800',
+    '#dc2626': 'bg-red-100 text-red-800',
+    '#7c3aed': 'bg-violet-100 text-violet-800'
+  };
+
+  const colorClass = colorClasses[roleConfig.color] || 'bg-gray-100 text-gray-800';
+
+  return (
+    <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colorClass}`}>
+      <span className="mr-1">{roleConfig.icon}</span>
+      {roleConfig.name.replace('Dashboard ', '')}
+    </span>
+  );
+};
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -116,11 +143,7 @@ const Users = () => {
                     <div className="ml-4">
                       <div className="flex items-center">
                         <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                        {user.role === 'admin' && (
-                          <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            Admin
-                          </span>
-                        )}
+                        {getRoleBadge(user.role)}
                         {user.isPremium && (
                           <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                             Premium
@@ -235,8 +258,11 @@ const EditUserModal = ({ user, onSave, onClose }) => {
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               >
-                <option value="user">Utilisateur</option>
-                <option value="admin">Administrateur</option>
+                <option value={ROLES.DEVELOPER_FULLSTACK}>Développeur</option>
+                <option value={ROLES.DESIGNER_UX}>Designer</option>
+                <option value={ROLES.COMMERCIAL}>Commercial</option>
+                <option value={ROLES.MARKETING}>Marketing</option>
+                <option value={ROLES.ADMIN}>Administrateur</option>
               </select>
             </div>
             <div className="mb-6">
