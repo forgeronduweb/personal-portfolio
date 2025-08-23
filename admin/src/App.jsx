@@ -106,6 +106,12 @@ export default function App() {
         setNeedsAdminSetup(true)
         return
       }
+      // Si erreur serveur générique, afficher le setup aussi
+      if (err.message.includes('Une erreur est survenue sur le serveur') || err.message.includes('Failed to fetch')) {
+        console.log('🔧 Erreur serveur, affichage du setup pour création admin')
+        setNeedsAdminSetup(true)
+        return
+      }
       setError(err.message)
     } finally {
       setIsLoading(false)
@@ -321,7 +327,10 @@ export default function App() {
             </button>
           </div>
           <div style={{ marginTop: 16, padding: 12, backgroundColor: '#f3f4f6', borderRadius: 6, fontSize: 12, color: '#6b7280', textAlign: 'center' }}>
-            Première connexion ? Utilisez le code de validation pour créer votre compte admin.
+            Première connexion ? Le système va automatiquement vous proposer de créer votre compte admin.
+          </div>
+          <div style={{ marginTop: 8, padding: 8, backgroundColor: '#fef3c7', borderRadius: 4, fontSize: 11, color: '#92400e', textAlign: 'center' }}>
+            ⚠️ Si erreur serveur : Démarrez d'abord le backend local avec "npm run dev"
           </div>
         </form>
       </div>
