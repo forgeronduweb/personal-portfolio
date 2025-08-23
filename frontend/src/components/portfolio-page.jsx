@@ -51,117 +51,6 @@ const iconMapping = {
   'Adobe XD': { icon: SiAdobexd, color: '#FF61F6' }
 };
 
-// Fallback static data
-const fallbackPortfolioItems = [
-  {
-    image: "/img_1.jpg",
-    title: "Site E-commerce Moderne",
-    category: "Boutique en ligne",
-    type: "premium",
-    alt: "Site e-commerce avec design moderne",
-    technologies: [
-      { name: "React", shortName: "React", icon: SiReact, color: "text-blue-500" },
-      { name: "Tailwind", shortName: "CSS", icon: SiTailwindcss, color: "text-cyan-500" },
-      { name: "Node.js", shortName: "Node", icon: SiNodedotjs, color: "text-green-600" }
-    ]
-  },
-  {
-    image: "/img_2.jpg",
-    title: "Portfolio Créatif",
-    category: "Site vitrine",
-    type: "free",
-    alt: "Portfolio avec animations créatives",
-    technologies: [
-      { name: "Vue.js", shortName: "Vue", icon: SiVuedotjs, color: "text-emerald-500" },
-      { name: "GSAP", shortName: "GSAP", icon: SiGithub, color: "text-purple-600" },
-      { name: "SCSS", shortName: "SCSS", icon: SiSass, color: "text-pink-500" }
-    ]
-  },
-  {
-    image: "/img_3.jpg",
-    title: "Application Web Responsive",
-    category: "Application métier",
-    type: "premium",
-    alt: "Application web responsive moderne",
-    technologies: [
-      { name: "Next.js", shortName: "Next", icon: SiNextdotjs, color: "text-gray-800" },
-      { name: "TypeScript", shortName: "TS", icon: SiTypescript, color: "text-blue-600" },
-      { name: "MongoDB", shortName: "Mongo", icon: SiMongodb, color: "text-green-500" }
-    ]
-  },
-  {
-    image: "/img_1.jpg",
-    title: "Blog Technologique",
-    category: "Blog",
-    type: "free",
-    alt: "Blog avec système de gestion de contenu",
-    technologies: [
-      { name: "React", shortName: "React", icon: SiReact, color: "text-blue-500" },
-      { name: "Node.js", shortName: "Node", icon: SiNodedotjs, color: "text-green-600" },
-      { name: "MySQL", shortName: "MySQL", icon: SiMysql, color: "text-blue-600" }
-    ]
-  },
-  {
-    image: "/img_2.jpg",
-    title: "Dashboard Analytics",
-    category: "Dashboard",
-    type: "premium",
-    alt: "Tableau de bord interactif",
-    technologies: [
-      { name: "Vue.js", shortName: "Vue", icon: SiVuedotjs, color: "text-green-500" },
-      { name: "Firebase", shortName: "Fire", icon: SiFirebase, color: "text-orange-500" },
-      { name: "Chart.js", shortName: "Chart", icon: SiJavascript, color: "text-yellow-500" }
-    ]
-  },
-  {
-    image: "/img_3.jpg",
-    title: "Application Mobile Web",
-    category: "Mobile",
-    type: "free",
-    alt: "Application web progressive",
-    technologies: [
-      { name: "React", shortName: "React", icon: SiReact, color: "text-blue-500" },
-      { name: "PWA", shortName: "PWA", icon: SiJavascript, color: "text-yellow-500" },
-      { name: "Firebase", shortName: "Fire", icon: SiFirebase, color: "text-orange-500" }
-    ]
-  },
-  {
-    image: "/img_1.jpg",
-    title: "Site Vitrine Entreprise",
-    category: "Site vitrine",
-    type: "free",
-    alt: "Site vitrine professionnel pour entreprise",
-    technologies: [
-      { name: "HTML5", shortName: "HTML", icon: SiHtml5, color: "text-orange-500" },
-      { name: "CSS3", shortName: "CSS", icon: SiCss3, color: "text-blue-500" },
-      { name: "JavaScript", shortName: "JS", icon: SiJavascript, color: "text-yellow-500" }
-    ]
-  },
-  {
-    image: "/img_2.jpg",
-    title: "Landing Page Marketing",
-    category: "Marketing",
-    type: "free",
-    alt: "Page d'atterrissage optimisée conversion",
-    technologies: [
-      { name: "React", shortName: "React", icon: SiReact, color: "text-blue-500" },
-      { name: "Tailwind", shortName: "CSS", icon: SiTailwindcss, color: "text-cyan-500" },
-      { name: "Framer Motion", shortName: "Motion", icon: SiGithub, color: "text-purple-600" }
-    ]
-  },
-  {
-    image: "/img_3.jpg",
-    title: "Site Portfolio Artiste",
-    category: "Portfolio",
-    type: "free",
-    alt: "Portfolio artistique avec galerie",
-    technologies: [
-      { name: "Vue.js", shortName: "Vue", icon: SiVuedotjs, color: "text-emerald-500" },
-      { name: "SCSS", shortName: "SCSS", icon: SiSass, color: "text-pink-500" },
-      { name: "GSAP", shortName: "GSAP", icon: SiGithub, color: "text-purple-600" }
-    ]
-  }
-];
 
 export default function PortfolioPage() {
   const [activeTab, setActiveTab] = useState("free");
@@ -173,15 +62,19 @@ export default function PortfolioPage() {
   // Fetch projects from API
   const fetchProjects = async () => {
     try {
+      console.log('Fetching from URL:', `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/projects`);
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/projects`);
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
       const data = await response.json();
-      if (data.success) {
+      console.log('API Response:', data); // Debug log
+      if (data.success && data.data) {
         // Transform API data to match component structure
         const transformedProjects = data.data.map(project => ({
           image: project.image,
           title: project.title,
           category: project.category,
-          type: project.category, // Use category as type for filtering
+          type: project.category, // Use category field which contains free/premium
           alt: project.alt || `Image du projet ${project.title}`,
           technologies: project.technologies.map(tech => {
             const mapping = iconMapping[tech.name] || { icon: SiGithub, color: '#6B7280' };
@@ -193,13 +86,18 @@ export default function PortfolioPage() {
             };
           })
         }));
+        console.log('Transformed projects:', transformedProjects); // Debug log
+        console.log('Project types:', transformedProjects.map(p => p.type));
+        console.log('Raw project types from DB:', data.data.map(p => p.type));
+        console.log('Setting portfolioItems to:', transformedProjects);
         setPortfolioItems(transformedProjects);
       } else {
-        setPortfolioItems(fallbackPortfolioItems);
+        console.log('No data or unsuccessful response'); // Debug log
+        setPortfolioItems([]);
       }
     } catch (error) {
       console.error('Error fetching projects:', error);
-      setPortfolioItems(fallbackPortfolioItems);
+      setPortfolioItems([]);
     } finally {
       setLoading(false);
     }
@@ -215,8 +113,15 @@ export default function PortfolioPage() {
     // Fetch projects initially
     fetchProjects();
 
-    // Set up polling for real-time updates
-    const interval = setInterval(fetchProjects, 10000);
+    // Écouter les mises à jour depuis l'admin
+    const handleProjectsUpdate = () => {
+      fetchProjects();
+    };
+    
+    window.addEventListener('projectsUpdated', handleProjectsUpdate);
+
+    // Set up polling for real-time updates (réduit à 30s)
+    const interval = setInterval(fetchProjects, 30000);
 
     // Scroll handler for sticky menu
     const handleScroll = () => {
@@ -235,12 +140,19 @@ export default function PortfolioPage() {
     
     return () => {
       clearInterval(interval);
+      window.removeEventListener('projectsUpdated', handleProjectsUpdate);
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('logout', handleLogout);
     };
   }, []);
 
+  // Filter projects based on their type
   const filteredItems = portfolioItems.filter(item => item.type === activeTab);
+  console.log('portfolioItems:', portfolioItems);
+  console.log('activeTab:', activeTab);
+  console.log('filteredItems:', filteredItems);
+  console.log('Premium projects count:', portfolioItems.filter(p => p.type === "premium").length);
+  console.log('Free projects count:', portfolioItems.filter(p => p.type === "free").length);
 
   return (
     <div className="min-h-screen bg-white">
@@ -329,8 +241,16 @@ export default function PortfolioPage() {
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
             </div>
           ) : activeTab === "free" ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredItems.map((item, index) => (
+            filteredItems.length === 0 ? (
+              <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                  <p className="text-gray-500 text-lg">Aucun projet trouvé</p>
+                  <p className="text-gray-400 text-sm mt-2">Projets chargés: {portfolioItems.length}</p>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredItems.map((item, index) => (
                 <div key={index} className="w-full group cursor-pointer bg-white rounded-xl p-6 shadow-xl hover:shadow-2xl border border-gray-200 hover:border-gray-300 transition-all duration-300">
                   <div className="overflow-hidden rounded-xl aspect-video bg-gray-100 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                     <img 
@@ -372,8 +292,9 @@ export default function PortfolioPage() {
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )
           ) : (
             <div className="relative min-h-[800px]">
               {!user ? (

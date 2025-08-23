@@ -42,41 +42,6 @@ const colorMap = {
     'text-black': '#000000'
 };
 
-const fallbackPortfolioItems = [
-    {
-        image: "/img_1.jpg",
-        title: "Site E-commerce Moderne",
-        category: "Boutique en ligne",
-        alt: "Site e-commerce avec design moderne",
-        technologies: [
-            { name: "React", shortName: "React", icon: SiReact, color: "text-blue-500" },
-            { name: "Tailwind", shortName: "CSS", icon: SiTailwindcss, color: "text-cyan-500" },
-            { name: "Node.js", shortName: "Node", icon: SiNodedotjs, color: "text-green-600" }
-        ]
-    },
-    {
-        image: "/img_2.jpg",
-        title: "Portfolio Créatif",
-        category: "Site vitrine",
-        alt: "Portfolio avec animations créatives",
-        technologies: [
-            { name: "Vue.js", shortName: "Vue", icon: SiVuedotjs, color: "text-emerald-500" },
-            { name: "GSAP", shortName: "GSAP", icon: SiGithub, color: "text-purple-600" },
-            { name: "SCSS", shortName: "SCSS", icon: SiSass, color: "text-pink-500" }
-        ]
-    },
-    {
-        image: "/img_3.jpg",
-        title: "Application Web Responsive",
-        category: "Application métier",
-        alt: "Application web responsive moderne",
-        technologies: [
-            { name: "Next.js", shortName: "Next", icon: SiNextdotjs, color: "text-gray-800" },
-            { name: "TypeScript", shortName: "TS", icon: SiTypescript, color: "text-blue-600" },
-            { name: "MongoDB", shortName: "Mongo", icon: SiMongodb, color: "text-green-500" }
-        ]
-    }
-];
 
 export default function Portfolio() {
     const [portfolioItems, setPortfolioItems] = useState([]);
@@ -85,12 +50,22 @@ export default function Portfolio() {
     useEffect(() => {
         fetchProjects();
         
-        // Polling pour vérifier les nouveaux projets toutes les 10 secondes
+        // Écouter les mises à jour depuis l'admin
+        const handleProjectsUpdate = () => {
+            fetchProjects();
+        };
+        
+        window.addEventListener('projectsUpdated', handleProjectsUpdate);
+        
+        // Polling de sauvegarde toutes les 30 secondes
         const interval = setInterval(() => {
             fetchProjects();
-        }, 10000);
+        }, 30000);
 
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval);
+            window.removeEventListener('projectsUpdated', handleProjectsUpdate);
+        };
     }, []);
 
     const fetchProjects = async () => {
@@ -99,13 +74,12 @@ export default function Portfolio() {
             const data = await response.json();
             if (data.success) {
                 setPortfolioItems(data.data);
+            } else {
+                setPortfolioItems([]);
             }
         } catch (error) {
             console.error('Erreur lors du chargement des projets:', error);
-            // Fallback vers les données statiques en cas d'erreur
-            if (portfolioItems.length === 0) {
-                setPortfolioItems(fallbackPortfolioItems);
-            }
+            setPortfolioItems([]);
         } finally {
             setLoading(false);
         }
