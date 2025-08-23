@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
+// Configuration API - utilise localhost en développement, production en ligne
+const getApiUrl = () => {
+  // En développement (localhost), utilise le serveur local
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:5000/api';
+  }
+  // En production, utilise l'URL de production
+  return import.meta.env.VITE_API_URL || 'https://personal-portfolio-back.onrender.com/api';
+};
+
+const API_URL = getApiUrl();
+
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +46,7 @@ const Projects = () => {
   const fetchProjects = async () => {
     try {
       const token = localStorage.getItem('admin_token');
-      const response = await fetch('http://localhost:5000/api/admin/projects', {
+      const response = await fetch(`${API_URL}/admin/projects`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -55,8 +67,8 @@ const Projects = () => {
     try {
       const token = localStorage.getItem('admin_token');
       const url = editingProject 
-        ? `https://personal-portfolio-back.onrender.com/api/admin/projects/${editingProject._id}`
-        : 'https://personal-portfolio-back.onrender.com/api/admin/projects';
+        ? `${API_URL}/admin/projects/${editingProject._id}`
+        : `${API_URL}/admin/projects`;
       
       const method = editingProject ? 'PUT' : 'POST';
       
@@ -90,7 +102,7 @@ const Projects = () => {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce projet?')) {
       try {
         const token = localStorage.getItem('admin_token');
-        const response = await fetch(`https://personal-portfolio-back.onrender.com/api/admin/projects/${id}`, {
+        const response = await fetch(`${API_URL}/admin/projects/${id}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -162,7 +174,7 @@ const Projects = () => {
 
     try {
       const token = localStorage.getItem('admin_token');
-      const response = await fetch('https://personal-portfolio-back.onrender.com/api/admin/projects/upload', {
+      const response = await fetch(`${API_URL}/admin/projects/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -239,7 +251,7 @@ const Projects = () => {
                     height: 160, 
                     objectFit: 'cover' 
                   }} 
-                  src={project.image.startsWith('/uploads') ? `http://localhost:5000${project.image}` : project.image} 
+                  src={project.image.startsWith('/uploads') ? `${API_URL.replace('/api', '')}${project.image}` : project.image} 
                   alt={project.alt}
                 />
               </div>
@@ -369,7 +381,7 @@ const Projects = () => {
                   {formData.image && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <img 
-                        src={formData.image.startsWith('/uploads') ? `http://localhost:5000${formData.image}` : formData.image}
+                        src={formData.image.startsWith('/uploads') ? `${API_URL.replace('/api', '')}${formData.image}` : formData.image}
                         alt="Aperçu" 
                         style={{ width: 64, height: 40, objectFit: 'cover', borderRadius: 4, border: '1px solid #d1d5db' }}
                       />
