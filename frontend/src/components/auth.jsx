@@ -59,7 +59,7 @@ export default function Auth({ onLogin }) {
   // Affichage du message de succès après inscription
   if (registrationSuccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-lg w-full space-y-8">
           {/* Message de succès */}
           <div className="text-center bg-white rounded-xl shadow-lg p-8 border border-slate-200">
@@ -93,7 +93,7 @@ export default function Auth({ onLogin }) {
                   const event = new CustomEvent('navigate', { detail: 'custom-site-form' });
                   window.dispatchEvent(event);
                 }}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2"
+                className="w-full bg-slate-800 hover:bg-black text-white py-3 px-6 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 flex items-center justify-center gap-2"
               >
                 <span>👉</span>
                 Faire une demande de devis
@@ -119,7 +119,7 @@ export default function Auth({ onLogin }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">

@@ -275,22 +275,7 @@ export default function CustomSiteForm({ onClose }) {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header avec nom du site */}
-      <div className="fixed top-0 left-0 right-0 bg-white border-b border-slate-200 z-40">
-        <div className="px-4 sm:px-6 lg:px-8 py-4">
-          <button
-            onClick={() => {
-              const event = new CustomEvent('navigate', { detail: 'home' });
-              window.dispatchEvent(event);
-            }}
-            className="text-2xl font-bold text-slate-900 hover:text-slate-700 transition-colors"
-          >
-            forgeron du web
-          </button>
-        </div>
-      </div>
-
-      <div className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+      <div className="pt-32 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           {/* Header du formulaire */}
           <div className="text-center mb-8">
@@ -310,7 +295,7 @@ export default function CustomSiteForm({ onClose }) {
              </div>
              <div className="w-full bg-slate-200 rounded-full h-2">
                <div 
-                 className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                 className="bg-slate-800 h-2 rounded-full transition-all duration-300"
                  style={{ width: `${progress}%` }}
                ></div>
              </div>
@@ -362,7 +347,7 @@ export default function CustomSiteForm({ onClose }) {
                         onChange={handleInputChange}
                         accept={currentField.accept}
                         multiple={currentField.multiple}
-                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-slate-50 file:text-slate-700 hover:file:bg-slate-100"
                       />
                       {formData[currentField.name] && formData[currentField.name].length > 0 && (
                         <div className="mt-3">
@@ -419,7 +404,7 @@ export default function CustomSiteForm({ onClose }) {
                      type="button"
                      onClick={handleNext}
                      disabled={!isCurrentFieldValid()}
-                     className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600"
+                     className="px-6 py-3 bg-slate-800 text-white rounded-lg hover:bg-black transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate-800"
                    >
                      Suivant
                    </button>
@@ -427,7 +412,7 @@ export default function CustomSiteForm({ onClose }) {
                    <button
                      type="submit"
                      disabled={isLoading || !isCurrentFieldValid()}
-                     className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                     className="px-8 py-3 bg-slate-800 text-white rounded-lg hover:bg-black transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                    >
                      {isLoading ? "Envoi en cours..." : "Envoyer ma demande"}
                    </button>

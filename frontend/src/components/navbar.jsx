@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "@fontsource/poppins";
 import { authService } from "../services/api";
 
-export default function Navbar({ onNavigate, user, onLogout }) {
+export default function Navbar({ onNavigate, user, onLogout, isAuthPage, isCustomSiteForm }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -35,6 +35,24 @@ export default function Navbar({ onNavigate, user, onLogout }) {
       document.body.style.overflow = 'unset';
     };
   }, [menuOpen]);
+
+  // Version simplifiée pour la page auth et custom-site-form
+  if (isAuthPage || isCustomSiteForm) {
+    return (
+      <nav className="fixed top-0 left-0 right-0 flex items-center justify-between p-4 md:px-16 lg:px-24 xl:px-32 md:py-8 w-full bg-white z-50">
+        <button 
+          onClick={() => {
+            const event = new CustomEvent('navigate', { detail: 'home' });
+            window.dispatchEvent(event);
+          }}
+          className="text-2xl font-bold text-black transition-colors"
+        >
+          forgeron du web
+        </button>
+        <div></div>
+      </nav>
+    );
+  }
 
   return (
     <nav className={`fixed top-0 left-0 right-0 flex items-center justify-between p-4 md:px-16 lg:px-24 xl:px-32 md:py-6 w-full transition-all duration-300 z-50 ${scrolled ? 'bg-white/90 backdrop-blur-md shadow-lg' : 'bg-transparent'}`}>

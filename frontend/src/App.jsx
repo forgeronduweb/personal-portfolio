@@ -121,8 +121,8 @@ function App() {
 
   return (
     <div className="App">
-      {currentPage !== "dashboard" && currentPage !== "custom-site-form" && currentPage !== "custom-site-success" && (
-        <Navbar onNavigate={navigateTo} user={user} onLogout={handleLogout} />
+      {currentPage !== "dashboard" && currentPage !== "custom-site-success" && (
+        <Navbar onNavigate={navigateTo} user={user} onLogout={handleLogout} isAuthPage={currentPage === "auth"} isCustomSiteForm={currentPage === "custom-site-form"} />
       )}
       
       {currentPage === "home" ? (
