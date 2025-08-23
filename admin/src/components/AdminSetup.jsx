@@ -95,7 +95,12 @@ const AdminSetup = ({ onSetupComplete }) => {
       }
     } catch (error) {
       console.error('Erreur setup admin:', error);
-      setError('Erreur de connexion au serveur');
+      // Si c'est une erreur de parsing JSON (backend non accessible), message spécifique
+      if (error.message.includes('Unexpected token') || error.message.includes('not valid JSON')) {
+        setError('Backend non accessible. Vérifiez que le serveur est déployé et fonctionne.');
+      } else {
+        setError(error.message || 'Erreur de connexion au serveur');
+      }
     } finally {
       setLoading(false);
     }

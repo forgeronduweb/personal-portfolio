@@ -77,8 +77,14 @@ export default function App() {
       console.log('Response data:', data)
       
       if (!res.ok) {
-        // Si erreur 404 ou aucun admin trouvé, proposer la création
-        if (res.status === 404 || data.message?.includes('Aucun utilisateur') || data.message?.includes('Utilisateur non trouvé')) {
+        // Si erreur 404, le backend n'est pas accessible ou la route n'existe pas
+        if (res.status === 404) {
+          console.log('🔧 Backend non accessible ou route inexistante, affichage du setup')
+          setNeedsAdminSetup(true)
+          return
+        }
+        // Si erreur d'authentification, proposer la création
+        if (data.message?.includes('Aucun utilisateur') || data.message?.includes('Utilisateur non trouvé')) {
           console.log('🔧 Aucun admin trouvé, affichage du setup')
           setNeedsAdminSetup(true)
           return
@@ -94,6 +100,12 @@ export default function App() {
       console.log('✅ Connexion réussie')
     } catch (err) {
       console.error('❌ Erreur de connexion:', err)
+      // Si c'est une erreur de parsing JSON (backend non accessible), afficher le setup
+      if (err.message.includes('Unexpected token') || err.message.includes('not valid JSON')) {
+        console.log('🔧 Backend non accessible, affichage du setup')
+        setNeedsAdminSetup(true)
+        return
+      }
       setError(err.message)
     } finally {
       setIsLoading(false)
