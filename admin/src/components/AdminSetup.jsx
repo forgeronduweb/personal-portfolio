@@ -5,7 +5,8 @@ const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:5000/api';
   }
-  return import.meta.env.VITE_API_URL || 'https://personal-portfolio-back.onrender.com/api';
+  const baseUrl = import.meta.env.VITE_API_URL || 'https://personal-portfolio-back.onrender.com';
+  return baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
 };
 
 const API_URL = getApiUrl();
@@ -48,6 +49,13 @@ const AdminSetup = ({ onSetupComplete }) => {
     }
 
     try {
+      console.log('🔧 Setup admin - API URL:', API_URL);
+      console.log('🔧 Setup admin - Data:', {
+        name: formData.name,
+        email: formData.email,
+        validationCode: formData.validationCode
+      });
+
       const response = await fetch(`${API_URL}/auth/setup-admin`, {
         method: 'POST',
         headers: {
@@ -61,7 +69,20 @@ const AdminSetup = ({ onSetupComplete }) => {
         })
       });
 
+      console.log('🔧 Setup response status:', response.status);
+      console.log('🔧 Setup response ok:', response.ok);
+      console.log('🔧 Setup response headers:', response.headers.get('content-type'));
+
+      // Vérifier si la réponse est du JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const textResponse = await response.text();
+        console.log('🔧 Setup response is not JSON:', textResponse.substring(0, 200));
+        throw new Error('Le serveur backend ne répond pas correctement. Vérifiez que l\'URL est correcte.');
+      }
+
       const data = await response.json();
+      console.log('🔧 Setup response data:', data);
 
       if (data.success) {
         // Sauvegarder le token

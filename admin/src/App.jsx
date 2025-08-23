@@ -10,7 +10,8 @@ const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:5000/api';
   }
-  return import.meta.env.VITE_API_URL || 'https://personal-portfolio-back.onrender.com/api';
+  const baseUrl = import.meta.env.VITE_API_URL || 'https://personal-portfolio-back.onrender.com';
+  return baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
 };
 
 const API_URL = getApiUrl();
@@ -62,6 +63,15 @@ export default function App() {
       
       console.log('Response status:', res.status)
       console.log('Response ok:', res.ok)
+      console.log('Response headers:', res.headers.get('content-type'))
+      
+      // Vérifier si la réponse est du JSON
+      const contentType = res.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        const textResponse = await res.text()
+        console.log('Response is not JSON:', textResponse.substring(0, 200))
+        throw new Error('Le serveur backend ne répond pas correctement. Vérifiez que l\'URL est correcte.')
+      }
       
       const data = await res.json()
       console.log('Response data:', data)
