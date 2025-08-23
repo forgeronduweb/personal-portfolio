@@ -2,9 +2,18 @@ import { useEffect, useState } from 'react'
 import Sidebar from './components/Sidebar'
 import Projects from './components/Projects'
 import RoleBasedDashboard from './components/RoleBasedDashboard'
+import AdminSetup from './components/AdminSetup'
 import { getDashboardConfig, getRoleNavigation, ROLES, ROLE_DASHBOARDS } from './utils/roleConfig'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+// Configuration API - utilise localhost en développement, production en ligne
+const getApiUrl = () => {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:5000/api';
+  }
+  return import.meta.env.VITE_API_URL || 'https://personal-portfolio-back.onrender.com/api';
+};
+
+const API_URL = getApiUrl();
 
 export default function App() {
   // Ajouter le style CSS pour masquer la scrollbar
@@ -33,26 +42,51 @@ export default function App() {
   const [showCreateCollaborator, setShowCreateCollaborator] = useState(false)
   const [collaboratorForm, setCollaboratorForm] = useState({ name: '', email: '', password: '', role: 'admin' })
   const [currentUser, setCurrentUser] = useState(null)
+  const [needsAdminSetup, setNeedsAdminSetup] = useState(false)
 
   async function login(e) {
     e?.preventDefault()
     setError('')
+    setIsLoading(true)
+    
+    console.log('🔐 Tentative de connexion...')
+    console.log('API URL:', API_URL)
+    console.log('Email:', email)
+    
     try {
       const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       })
+      
+      console.log('Response status:', res.status)
+      console.log('Response ok:', res.ok)
+      
       const data = await res.json()
-      if (!res.ok) throw new Error(data.message || 'Erreur de connexion')
+      console.log('Response data:', data)
+      
+      if (!res.ok) {
+        // Si erreur 404 ou aucun admin trouvé, proposer la création
+        if (res.status === 404 || data.message?.includes('Aucun utilisateur') || data.message?.includes('Utilisateur non trouvé')) {
+          console.log('🔧 Aucun admin trouvé, affichage du setup')
+          setNeedsAdminSetup(true)
+          return
+        }
+        throw new Error(data.message || 'Erreur de connexion')
+      }
       if (!['admin', 'moderator', 'developer_frontend', 'developer_backend', 'developer_fullstack', 'designer_ux', 'designer_ui', 'graphiste', 'commercial', 'chef_projet', 'community_manager', 'marketing', 'support', 'finance'].includes(data.user?.role)) {
         throw new Error("Ce compte n'a pas accès à l'interface admin")
       }
       localStorage.setItem('admin_token', data.token)
       setToken(data.token)
       setCurrentUser(data.user)
+      console.log('✅ Connexion réussie')
     } catch (err) {
+      console.error('❌ Erreur de connexion:', err)
       setError(err.message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -197,6 +231,13 @@ export default function App() {
     setSiteRequests([])
     setSelectedRequest(null)
     setActiveSection('dashboard')
+    setNeedsAdminSetup(false)
+  }
+
+  function handleAdminSetupComplete(user) {
+    setCurrentUser(user)
+    setNeedsAdminSetup(false)
+    setActiveSection('dashboard')
   }
 
   useEffect(() => {
@@ -226,6 +267,11 @@ export default function App() {
     })()
   }, [token])
 
+  // Afficher l'interface de setup si aucun admin n'existe
+  if (needsAdminSetup) {
+    return <AdminSetup onSetupComplete={handleAdminSetupComplete} />
+  }
+
   if (!token) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -237,7 +283,23 @@ export default function App() {
             <input value={email} onChange={e => setEmail(e.target.value)} type="email" required style={{ padding: 8, borderRadius: 8, border: '1px solid #cbd5e1' }} />
             <label>Mot de passe</label>
             <input value={password} onChange={e => setPassword(e.target.value)} type="password" required style={{ padding: 8, borderRadius: 8, border: '1px solid #cbd5e1' }} />
-            <button type="submit" style={{ marginTop: 12, padding: 10, borderRadius: 8, background: '#0f172a', color: 'white' }}>Se connecter</button>
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              style={{ 
+                marginTop: 12, 
+                padding: 10, 
+                borderRadius: 8, 
+                background: isLoading ? '#9ca3af' : '#0f172a', 
+                color: 'white',
+                cursor: isLoading ? 'not-allowed' : 'pointer'
+              }}
+            >
+              {isLoading ? 'Connexion...' : 'Se connecter'}
+            </button>
+          </div>
+          <div style={{ marginTop: 16, padding: 12, backgroundColor: '#f3f4f6', borderRadius: 6, fontSize: 12, color: '#6b7280', textAlign: 'center' }}>
+            Première connexion ? Utilisez le code de validation pour créer votre compte admin.
           </div>
         </form>
       </div>

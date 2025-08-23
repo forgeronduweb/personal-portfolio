@@ -46,17 +46,27 @@ const Projects = () => {
   const fetchProjects = async () => {
     try {
       const token = localStorage.getItem('admin_token');
+      console.log('API URL utilisée:', API_URL);
+      console.log('Token admin:', token ? 'Présent' : 'Absent');
+      
       const response = await fetch(`${API_URL}/admin/projects`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+      
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+      
       const data = await response.json();
+      console.log('Response data:', data);
+      
       if (data.success) {
         setProjects(data.data);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des projets:', error);
+      console.error('Détails de l\'erreur:', error.message);
     } finally {
       setLoading(false);
     }
