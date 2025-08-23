@@ -226,12 +226,61 @@ router.get('/site-requests/:id', protect, requireAdmin, async (req, res, next) =
 // ===== ROUTES PROJETS =====
 
 // Upload d'image pour les projets
-router.post('/projects/upload', protect, requireAdmin, upload.single('image'), (req, res, next) => {
+router.post('/projects/upload', protect, requireAdmin, (req, res, next) => {
+  console.log('Upload request received:', {
+    body: req.body,
+    files: req.files,
+    file: req.file,
+    headers: req.headers['content-type'],
+    contentLength: req.headers['content-length']
+  });
+  
+  // Vérifier si le content-type est correct
+  if (!req.headers['content-type'] || !req.headers['content-type'].includes('multipart/form-data')) {
+    return res.status(400).json({
+      success: false,
+      message: 'Content-Type doit être multipart/form-data',
+      debug: {
+        contentType: req.headers['content-type']
+      }
+    });
+  }
+  
+  next();
+}, (req, res, next) => {
+  // Middleware d'erreur multer personnalisé
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      console.error('Multer error:', err);
+      return res.status(400).json({
+        success: false,
+        message: 'Erreur lors du traitement du fichier: ' + err.message,
+        debug: {
+          error: err.message,
+          code: err.code
+        }
+      });
+    }
+    next();
+  });
+}, (req, res, next) => {
   try {
+    console.log('After multer:', {
+      body: req.body,
+      file: req.file,
+      files: req.files
+    });
+    
     if (!req.file) {
       return res.status(400).json({
         success: false,
-        message: 'Aucun fichier uploadé'
+        message: 'Aucun fichier uploadé',
+        debug: {
+          body: req.body,
+          contentType: req.headers['content-type'],
+          hasFile: !!req.file,
+          bodyKeys: Object.keys(req.body || {})
+        }
       });
     }
 
@@ -249,6 +298,7 @@ router.post('/projects/upload', protect, requireAdmin, upload.single('image'), (
       }
     });
   } catch (err) {
+    console.error('Route error:', err);
     next(err);
   }
 });
