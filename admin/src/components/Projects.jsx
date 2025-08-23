@@ -25,6 +25,16 @@ const Projects = () => {
     technologies: []
   });
 
+  // Handler pour les champs de texte
+  const handleInputChange = (field, value) => {
+    console.log(`Changing ${field} to:`, value);
+    setFormData(prev => {
+      const newData = { ...prev, [field]: value };
+      console.log('New formData:', newData);
+      return newData;
+    });
+  };
+
   // Technologies prédéfinies avec leurs icônes
   const predefinedTechs = [
     { name: "React", shortName: "React", icon: "SiReact", color: "text-blue-500" },
@@ -198,12 +208,34 @@ const Projects = () => {
           ...prev,
           image: data.data.url
         }));
+        alert('Image uploadée avec succès!');
       } else {
-        alert('Erreur lors de l\'upload: ' + data.message);
+        console.error('Erreur upload:', data);
+        // Fallback vers base64 si l'upload échoue
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const base64String = event.target.result;
+          setFormData(prev => ({
+            ...prev,
+            image: base64String
+          }));
+          alert('Image chargée en base64 (fallback)');
+        };
+        reader.readAsDataURL(file);
       }
     } catch (error) {
       console.error('Erreur upload:', error);
-      alert('Erreur lors de l\'upload de l\'image');
+      // Fallback vers base64 si l'upload échoue
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target.result;
+        setFormData(prev => ({
+          ...prev,
+          image: base64String
+        }));
+        alert('Image chargée en base64 (fallback)');
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -406,7 +438,7 @@ const Projects = () => {
                 <input
                   type="text"
                   value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                  onChange={(e) => handleInputChange('title', e.target.value)}
                   style={{ width: '100%', padding: 8, border: '1px solid #d1d5db', borderRadius: 6 }}
                   required
                 />
@@ -416,7 +448,7 @@ const Projects = () => {
                 <label style={{ display: 'block', marginBottom: 4, fontWeight: 500 }}>Catégorie</label>
                 <select
                   value={formData.category}
-                  onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                  onChange={(e) => handleInputChange('category', e.target.value)}
                   style={{ width: '100%', padding: 8, border: '1px solid #d1d5db', borderRadius: 6 }}
                   required
                 >
@@ -430,7 +462,7 @@ const Projects = () => {
                 <label style={{ display: 'block', marginBottom: 4, fontWeight: 500 }}>Type</label>
                 <select
                   value={formData.type}
-                  onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value }))}
+                  onChange={(e) => handleInputChange('type', e.target.value)}
                   style={{ width: '100%', padding: 8, border: '1px solid #d1d5db', borderRadius: 6 }}
                   required
                 >
