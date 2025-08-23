@@ -71,9 +71,12 @@ const Projects = () => {
 
       const data = await response.json();
       if (data.success) {
-        fetchProjects();
+        await fetchProjects(); // Recharger la liste
         resetForm();
         alert(editingProject ? 'Projet mis à jour!' : 'Projet créé!');
+        
+        // Déclencher un événement pour notifier le frontend
+        window.dispatchEvent(new CustomEvent('projectsUpdated'));
       } else {
         alert('Erreur: ' + data.message);
       }
@@ -96,8 +99,11 @@ const Projects = () => {
 
         const data = await response.json();
         if (data.success) {
-          fetchProjects();
+          await fetchProjects(); // Recharger la liste
           alert('Projet supprimé!');
+          
+          // Déclencher un événement pour notifier le frontend
+          window.dispatchEvent(new CustomEvent('projectsUpdated'));
         }
       } catch (error) {
         console.error('Erreur:', error);
