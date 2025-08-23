@@ -55,8 +55,8 @@ const Projects = () => {
     try {
       const token = localStorage.getItem('admin_token');
       const url = editingProject 
-        ? `http://localhost:5000/api/admin/projects/${editingProject._id}`
-        : 'http://localhost:5000/api/admin/projects';
+        ? `https://personal-portfolio-admin-1qat.onrender.com/api/admin/projects/${editingProject._id}`
+        : 'https://personal-portfolio-admin-1qat.onrender.com/api/admin/projects';
       
       const method = editingProject ? 'PUT' : 'POST';
       
