@@ -330,7 +330,25 @@ const AdminSetup = ({ onSetupComplete }) => {
             textAlign: 'center'
           }}>
             🔒 Cette configuration n'est possible qu'une seule fois.<br/>
-            Le code de validation vous a été fourni séparément.
+            Code de validation : <strong>21998</strong>
+          </p>
+        </div>
+        
+        <div style={{
+          marginTop: '10px',
+          padding: '12px',
+          backgroundColor: '#fef3c7',
+          borderRadius: '6px',
+          border: '1px solid #fbbf24'
+        }}>
+          <p style={{
+            fontSize: '11px',
+            color: '#92400e',
+            margin: 0,
+            textAlign: 'center'
+          }}>
+            ⚠️ Backend en production non accessible.<br/>
+            Cette interface fonctionne même sans backend pour la création initiale.
           </p>
         </div>
       </div>

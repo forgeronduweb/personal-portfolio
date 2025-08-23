@@ -106,9 +106,12 @@ export default function App() {
         setNeedsAdminSetup(true)
         return
       }
-      // Si erreur serveur générique, afficher le setup aussi
-      if (err.message.includes('Une erreur est survenue sur le serveur') || err.message.includes('Failed to fetch')) {
-        console.log('🔧 Erreur serveur, affichage du setup pour création admin')
+      // Si erreur serveur générique ou backend non accessible, afficher le setup
+      if (err.message.includes('Une erreur est survenue sur le serveur') || 
+          err.message.includes('Failed to fetch') ||
+          err.message.includes('NetworkError') ||
+          err.message.includes('fetch')) {
+        console.log('🔧 Backend non accessible en production, affichage du setup')
         setNeedsAdminSetup(true)
         return
       }
