@@ -43,19 +43,48 @@ const CRM = () => {
 
   useEffect(() => {
     loadProspects();
+    
+    // Écouter les mises à jour de prospects
+    const handleProspectsUpdate = () => {
+      console.log('🔄 Rechargement des prospects suite à synchronisation');
+      loadProspects();
+    };
+    
+    window.addEventListener('prospectsUpdated', handleProspectsUpdate);
+    
+    return () => {
+      window.removeEventListener('prospectsUpdated', handleProspectsUpdate);
+    };
   }, []);
 
   const loadProspects = async () => {
     setIsLoading(true);
+    setError('');
     try {
+      console.log('🔄 Chargement prospects depuis:', `${API_URL}/admin/marketing/prospects`);
       const res = await fetch(`${API_URL}/admin/marketing/prospects`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
       });
+      
+      console.log('📡 Réponse statut:', res.status);
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Erreur chargement prospects');
-      setProspects(Array.isArray(data.data) ? data.data : []);
+      console.log('📊 Données reçues:', data);
+      
+      if (!res.ok) {
+        throw new Error(data.message || `Erreur HTTP ${res.status}`);
+      }
+      
+      const prospectsData = data.data || data || [];
+      console.log('👥 Prospects à afficher:', prospectsData.length);
+      setProspects(Array.isArray(prospectsData) ? prospectsData : []);
+      
     } catch (err) {
-      setError(err.message);
+      console.error('❌ Erreur chargement prospects:', err);
+      setError(`Erreur: ${err.message}`);
+      setProspects([]);
     } finally {
       setIsLoading(false);
     }

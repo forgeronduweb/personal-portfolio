@@ -5,6 +5,8 @@ import CRM from './marketing/CRM';
 import Promotions from './marketing/Promotions';
 import MarketingStats from './marketing/MarketingStats';
 import SocialMedia from './marketing/SocialMedia';
+import DataSync from './marketing/DataSync';
+import TestSync from './marketing/TestSync';
 
 const MarketingHub = () => {
   const [activeSubSection, setActiveSubSection] = useState('newsletter');
@@ -14,7 +16,9 @@ const MarketingHub = () => {
     crm: true,
     promotions: true,
     stats: true,
-    social: false // Désactivé par défaut
+    social: false, // Désactivé par défaut
+    dataSync: true,
+    testSync: true
   });
 
   const subSections = [
@@ -53,6 +57,18 @@ const MarketingHub = () => {
       name: 'Réseaux Sociaux', 
       icon: '📱',
       enabled: moduleConfig.social 
+    },
+    { 
+      id: 'dataSync', 
+      name: 'Sync Données', 
+      icon: '🔄',
+      enabled: moduleConfig.dataSync 
+    },
+    { 
+      id: 'testSync', 
+      name: 'Test Debug', 
+      icon: '🧪',
+      enabled: moduleConfig.testSync 
     }
   ].filter(section => section.enabled);
 
@@ -70,6 +86,10 @@ const MarketingHub = () => {
         return <MarketingStats />;
       case 'social':
         return <SocialMedia />;
+      case 'dataSync':
+        return <DataSync />;
+      case 'testSync':
+        return <TestSync />;
       default:
         return <Newsletter />;
     }
