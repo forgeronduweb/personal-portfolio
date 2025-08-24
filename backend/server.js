@@ -9,11 +9,31 @@ const authRoutes = require('./routes/auth');
 // Initialisation de l'application Express
 const app = express();
 
-// Middleware
-app.use(express.json());
+// Middleware - Augmenter la limite pour les images base64
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 // Configuration CORS
+const allowedOrigins = [
+    'http://localhost:5173', // Frontend local
+    'http://localhost:5174', // Admin local
+    'https://personal-portfolio-front.onrender.com', // Frontend production
+    'https://personal-portfolio-admin.onrender.com', // Admin production
+    process.env.CORS_ORIGIN,
+    process.env.ADMIN_CORS_ORIGIN
+].filter(Boolean);
+
 app.use(cors({
-    origin: true, // Autoriser toutes les origines en développement
+    origin: function (origin, callback) {
+        // Autoriser les requêtes sans origin (comme Postman)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            console.log('CORS blocked origin:', origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
