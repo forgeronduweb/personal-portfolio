@@ -90,13 +90,11 @@ export default function Navbar({ onNavigate, user, onLogout, isAuthPage, isCusto
                         À propos
                       </button>
                       <button 
-                        onClick={() => {
-                          const event = new CustomEvent('navigate', { detail: 'portfolio' });
-                          window.dispatchEvent(event);
-                        }}
-                        className={`max-md:text-2xl max-md:font-semibold hover:text-indigo-400 transition-all max-md:duration-300 max-md:delay-200 max-md:hover:scale-105 ${scrolled ? 'text-black hover:text-indigo-600' : 'text-black hover:text-white'}`}
+                        disabled
+                        className={`max-md:text-2xl max-md:font-semibold transition-all max-md:duration-300 max-md:delay-200 cursor-not-allowed opacity-50 ${scrolled ? 'text-gray-400' : 'text-gray-400'}`}
+                        title="Portfolio temporairement indisponible"
                       >
-                        Portfolio
+                        Portfolio (indisponible)
                       </button>
         
         {/* Close button (mobile) */}
@@ -138,14 +136,11 @@ export default function Navbar({ onNavigate, user, onLogout, isAuthPage, isCusto
         ) : (
           <div className="md:hidden w-screen absolute left-0 right-0 bottom-[70px] flex justify-center">
             <button 
-              className="mb-6 w-[220px] bg-slate-800 hover:bg-black text-white px-6 py-3 rounded-md font-medium transition"
-              onClick={() => {
-                const event = new CustomEvent('navigate', { detail: 'auth' });
-                window.dispatchEvent(event);
-                setMenuOpen(false);
-              }}
+              disabled
+              className="mb-6 w-[220px] bg-gray-400 text-gray-200 px-6 py-3 rounded-md font-medium cursor-not-allowed opacity-50"
+              title="Connexion temporairement indisponible - Portfolio en maintenance"
             >
-             Connexion
+             Connexion (indisponible)
            </button>
           </div>
         )}
@@ -177,13 +172,11 @@ export default function Navbar({ onNavigate, user, onLogout, isAuthPage, isCusto
           </>
         ) : (
           <button 
-            className="bg-slate-800 hover:bg-black text-white px-6 py-3 rounded-full font-medium transition" 
-            onClick={() => {
-              const event = new CustomEvent('navigate', { detail: 'auth' });
-              window.dispatchEvent(event);
-            }}
+            disabled
+            className="bg-gray-400 text-gray-200 px-6 py-3 rounded-full font-medium cursor-not-allowed opacity-50" 
+            title="Connexion temporairement indisponible - Portfolio en maintenance"
           >
-        Connexion
+        Connexion (indisponible)
       </button>
         )}
       </div>

@@ -44,117 +44,42 @@ const colorMap = {
 
 
 export default function Portfolio() {
-    const [portfolioItems, setPortfolioItems] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        fetchProjects();
-        
-        // Écouter les mises à jour depuis l'admin
-        const handleProjectsUpdate = () => {
-            fetchProjects();
-        };
-        
-        window.addEventListener('projectsUpdated', handleProjectsUpdate);
-        
-        // Polling de sauvegarde toutes les 30 secondes
-        const interval = setInterval(() => {
-            fetchProjects();
-        }, 30000);
-
-        return () => {
-            clearInterval(interval);
-            window.removeEventListener('projectsUpdated', handleProjectsUpdate);
-        };
-    }, []);
-
-    const fetchProjects = async () => {
-        try {
-            const response = await fetch('http://localhost:5000/api/projects');
-            const data = await response.json();
-            if (data.success) {
-                setPortfolioItems(data.data);
-            } else {
-                setPortfolioItems([]);
-            }
-        } catch (error) {
-            console.error('Erreur lors du chargement des projets:', error);
-            setPortfolioItems([]);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="py-20 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto text-center">
-                    <div className="text-lg text-gray-500">Chargement des projets...</div>
-                </div>
-            </div>
-        );
-    }
-
+    // Portfolio temporairement désactivé
     return (
         <div className="py-20 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-8 md:mb-12">
                     <h1 className="text-3xl md:text-4xl font-semibold text-center mx-auto">
-                        Mes dernières créations web
+                        Portfolio temporairement indisponible
                     </h1>
                     <p className="text-sm text-slate-500 text-center mt-2 max-w-3xl mx-auto">
-                        Découvrez mes derniers sites sur mesure et templates prêts à l'emploi,
-                        conçus pour offrir performance, style et impact à vos projets en ligne.
+                        Cette section est actuellement en cours de mise à jour. 
+                        De nouveaux projets seront bientôt disponibles.
                     </p>
-                    <div className="text-right mt-4">
-                        <button 
-                          onClick={() => {
-                            const event = new CustomEvent('navigate', { detail: 'portfolio' });
-                            window.dispatchEvent(event);
-                          }}
-                          className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                        >
-                            Voir plus →
-                        </button>
-                    </div>
                 </div>
                 
-                {/* Content */}
-                <div className="max-w-6xl mx-auto">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-12 md:gap-8">
-                        {portfolioItems.slice(0, 3).map((item, index) => (
-                            <div key={item._id || index} className="w-full md:max-w-96 group cursor-pointer">
-                                <div className="overflow-hidden rounded-xl aspect-video bg-gray-100 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                                    <img 
-                                        className="w-full h-full object-cover transform transition duration-300 group-hover:scale-105" 
-                                        src={item.image.startsWith('/uploads') ? `http://localhost:5000${item.image}` : item.image} 
-                                        alt={item.alt}
-                                        loading="lazy"
-                                    />
-                                </div>
-                                <div className="mt-6">
-                                    <h3 className="text-lg text-slate-900 font-medium group-hover:text-indigo-600 transition">
-                                        {item.title}
-                                    </h3>
-                                    <div className="flex items-center justify-between mt-3">
-                                        <p className="text-sm text-indigo-600 font-medium">{item.category} {item.type && `• ${item.type}`}</p>
-                                        <div className="flex items-center gap-1.5">
-                                            {item.technologies && item.technologies.slice(0, 3).map((tech, techIndex) => {
-                                                const IconComponent = iconMap[tech.icon] || SiGithub;
-                                                const color = colorMap[tech.color] || '#6B7280';
-                                                return (
-                                                    <span key={techIndex} className="flex items-center gap-1.5 px-2 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-md font-medium hover:bg-slate-100 transition-colors duration-200 min-w-[60px] justify-center">
-                                                        <IconComponent className="w-4 h-4 flex-shrink-0" style={{ color }} />
-                                                        <span className="text-slate-700 font-medium">{tech.shortName}</span>
-                                                    </span>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                {/* Message d'indisponibilité */}
+                <div className="max-w-2xl mx-auto text-center">
+                    <div className="bg-black border border-gray-800 rounded-xl p-8">
+                        <div className="text-6xl mb-4">🚧</div>
+                        <h3 className="text-xl font-medium text-white mb-2">
+                            Section en maintenance
+                        </h3>
+                        <p className="text-gray-300 mb-6">
+                            Le portfolio est temporairement fermé pour ajout de nouveaux projets. 
+                            Revenez bientôt pour découvrir mes dernières créations ! 
+                            Nous vous enverrons un email dès que ce sera disponible.
+                        </p>
+                        <button 
+                          onClick={() => {
+                            const event = new CustomEvent('navigate', { detail: 'quote' });
+                            window.dispatchEvent(event);
+                          }}
+                          className="bg-white hover:bg-gray-100 text-black px-6 py-3 rounded-lg font-medium transition-colors"
+                        >
+                            Demander un devis en attendant
+                        </button>
                     </div>
                 </div>
             </div>
