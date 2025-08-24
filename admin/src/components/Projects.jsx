@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-// Configuration API - utilise localhost en développement, production en ligne
+// Configuration API - utilise localhost en développement
 const getApiUrl = () => {
-  // En développement (localhost), utilise le serveur local
+  // En développement local, utiliser localhost
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:5000/api';
   }
-  // En production, utilise l'URL de production
+  // En production, utiliser l'URL de production
   return import.meta.env.VITE_API_URL || 'https://personal-portfolio-back.onrender.com/api';
 };
 
@@ -33,6 +33,50 @@ const Projects = () => {
       console.log('New formData:', newData);
       return newData;
     });
+  };
+
+  // Handler spécifique pour l'image qui ne bloque pas les autres champs
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    console.log('Début upload image:', file.name);
+
+    // Validation du fichier
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      alert('Type de fichier non supporté. Utilisez JPG, PNG, GIF ou WebP.');
+      e.target.value = ''; // Reset input
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) { // 5MB max
+      alert('Fichier trop volumineux. Maximum 5MB.');
+      e.target.value = ''; // Reset input
+      return;
+    }
+
+    // Conversion en base64 de manière non-bloquante
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64String = event.target.result;
+      console.log('Image convertie en base64, taille:', base64String.length);
+      
+      setFormData(prev => ({
+        ...prev,
+        image: base64String
+      }));
+      
+      console.log('Image mise à jour dans formData');
+    };
+    
+    reader.onerror = (error) => {
+      console.error('Erreur lecture fichier:', error);
+      alert('Erreur lors du chargement de l\'image');
+      e.target.value = ''; // Reset input
+    };
+    
+    reader.readAsDataURL(file);
   };
 
   // Technologies prédéfinies avec leurs icônes
@@ -84,14 +128,41 @@ const Projects = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    console.log('Début soumission formulaire:', formData);
+    
+    // Validation des champs requis
+    if (!formData.title || !formData.category || !formData.type) {
+      alert('Veuillez remplir tous les champs obligatoires');
+      return;
+    }
+
     try {
       const token = localStorage.getItem('admin_token');
+      if (!token) {
+        alert('Token d\'authentification manquant');
+        return;
+      }
+
       const url = editingProject 
         ? `${API_URL}/admin/projects/${editingProject._id}`
         : `${API_URL}/admin/projects`;
       
       const method = editingProject ? 'PUT' : 'POST';
       
+      console.log('Envoi vers:', url, 'méthode:', method);
+      console.log('Données envoyées:', JSON.stringify(formData, null, 2));
+
+      // Vérifier la taille des données
+      const dataSize = JSON.stringify(formData).length;
+      console.log('Taille des données:', dataSize, 'caractères');
+      
+      if (dataSize > 16 * 1024 * 1024) { // 16MB
+        alert('Image trop volumineuse pour la base de données');
+        return;
+      }
+
+      console.log('Début de l\'appel fetch...');
       const response = await fetch(url, {
         method,
         headers: {
@@ -101,7 +172,18 @@ const Projects = () => {
         body: JSON.stringify(formData)
       });
 
+      console.log('Status response:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Erreur HTTP:', response.status, errorText);
+        alert(`Erreur HTTP ${response.status}: ${errorText}`);
+        return;
+      }
+
       const data = await response.json();
+      console.log('Réponse serveur:', data);
+      
       if (data.success) {
         await fetchProjects(); // Recharger la liste
         resetForm();
@@ -110,11 +192,13 @@ const Projects = () => {
         // Déclencher un événement pour notifier le frontend
         window.dispatchEvent(new CustomEvent('projectsUpdated'));
       } else {
-        alert('Erreur: ' + data.message);
+        console.error('Erreur métier:', data.message);
+        alert('Erreur: ' + (data.message || 'Erreur inconnue'));
       }
     } catch (error) {
-      console.error('Erreur:', error);
-      alert('Erreur lors de la sauvegarde');
+      console.error('Erreur complète:', error);
+      console.error('Stack trace:', error.stack);
+      alert('Erreur lors de la sauvegarde: ' + error.message);
     }
   };
 
@@ -185,59 +269,6 @@ const Projects = () => {
     }));
   };
 
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const formDataUpload = new FormData();
-    formDataUpload.append('image', file);
-
-    try {
-      const token = localStorage.getItem('admin_token');
-      const response = await fetch(`${API_URL}/admin/projects/upload`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formDataUpload
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setFormData(prev => ({
-          ...prev,
-          image: data.data.url
-        }));
-        alert('Image uploadée avec succès!');
-      } else {
-        console.error('Erreur upload:', data);
-        // Fallback vers base64 si l'upload échoue
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const base64String = event.target.result;
-          setFormData(prev => ({
-            ...prev,
-            image: base64String
-          }));
-          alert('Image chargée en base64 (fallback)');
-        };
-        reader.readAsDataURL(file);
-      }
-    } catch (error) {
-      console.error('Erreur upload:', error);
-      // Fallback vers base64 si l'upload échoue
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const base64String = event.target.result;
-        setFormData(prev => ({
-          ...prev,
-          image: base64String
-        }));
-        alert('Image chargée en base64 (fallback)');
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   if (loading) return <div>Chargement...</div>;
 
@@ -417,7 +448,7 @@ const Projects = () => {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={handleImageUpload}
+                    onChange={handleImageChange}
                     style={{ width: '100%', padding: 8, border: '1px solid #d1d5db', borderRadius: 6 }}
                   />
                   {formData.image && (
