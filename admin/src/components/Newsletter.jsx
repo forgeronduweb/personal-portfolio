@@ -112,7 +112,7 @@ const Newsletter = () => {
   }, []);
 
   return (
-    <div>
+    <div style={{ paddingTop: '20px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <h1 style={{ margin: 0, fontSize: 24, fontWeight: 600, position: 'fixed', top: 64, left: 280, right: 24, backgroundColor: '#f8fafc', paddingTop: 16, paddingBottom: 8, zIndex: 15, borderBottom: '1px solid #e5e7eb' }}>
           Gestion Newsletter

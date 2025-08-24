@@ -146,79 +146,105 @@ const CRM = () => {
   };
 
   return (
-    <div>
-      {/* Actions */}
+    <div style={{ paddingTop: '0px' }}>
+      {/* Header et statistiques fixes */}
       <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 24
+        position: 'sticky',
+        top: 0,
+        backgroundColor: '#f8fafc',
+        zIndex: 10,
+        paddingBottom: 8,
+        marginBottom: 16,
+        borderBottom: '1px solid #e5e7eb'
       }}>
-        <div>
-          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 600, color: '#0f172a' }}>
-            👥 CRM & Prospects
-          </h2>
-          <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: 14 }}>
-            Gérez vos prospects et suivez l'historique des interactions
-          </p>
-        </div>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <button
-            onClick={() => window.open('/admin#site-requests', '_blank')}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#f3f4f6',
-              color: '#374151',
-              border: '1px solid #d1d5db',
-              borderRadius: 8,
-              cursor: 'pointer',
-              fontSize: 14,
-              fontWeight: 500
-            }}
-          >
-            📋 Voir demandes de sites
-          </button>
-        </div>
-      </div>
-
-      {error && (
+        {/* Actions */}
         <div style={{
-          padding: 12,
-          backgroundColor: '#fef2f2',
-          border: '1px solid #fecaca',
-          borderRadius: 8,
-          color: '#dc2626',
-          marginBottom: 16
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 12
         }}>
-          {error}
+          <div>
+            <h2 style={{ margin: 0, fontSize: 20, fontWeight: 600, color: '#0f172a' }}>
+              👥 CRM & Prospects
+            </h2>
+            <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: 14 }}>
+              Gérez vos prospects et suivez l'historique des interactions
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button
+              onClick={() => window.open('/admin#site-requests', '_blank')}
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#f3f4f6',
+                color: '#374151',
+                border: '1px solid #d1d5db',
+                borderRadius: 8,
+                cursor: 'pointer',
+                fontSize: 14,
+                fontWeight: 500
+              }}
+            >
+              📋 Voir demandes de sites
+            </button>
+          </div>
         </div>
-      )}
 
-      {/* Statistiques rapides */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: 16,
-        marginBottom: 24
-      }}>
-        {prospectStatuses.map(status => {
-          const count = prospects.filter(p => p.status === status.value).length;
-          return (
-            <div key={status.value} style={{
-              padding: 16,
-              backgroundColor: status.bg,
-              borderRadius: 8,
-              border: `1px solid ${status.color}20`
-            }}>
-              <div style={{ fontSize: 24, fontWeight: 600, color: status.color }}>
-                {count}
+        {error && (
+          <div style={{
+            padding: 12,
+            backgroundColor: '#fef2f2',
+            border: '1px solid #fecaca',
+            borderRadius: 8,
+            color: '#dc2626',
+            marginBottom: 16
+          }}>
+            {error}
+          </div>
+        )}
+
+        {/* Statistiques */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(5, 1fr)',
+          gap: 12,
+          minHeight: '60px'
+        }}>
+          {prospectStatuses.map(status => {
+            const count = prospects.filter(p => p.status === status.value).length;
+            return (
+              <div key={status.value} style={{
+                padding: '12px 10px',
+                backgroundColor: status.bg,
+                borderRadius: 6,
+                border: `1px solid ${status.color}20`,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '60px'
+              }}>
+                <div style={{
+                  fontSize: 20,
+                  fontWeight: 700,
+                  color: status.color,
+                  marginBottom: 2
+                }}>
+                  {count}
+                </div>
+                <div style={{
+                  fontSize: 11,
+                  color: status.color,
+                  textAlign: 'center',
+                  fontWeight: 500
+                }}>
+                  {status.label}
+                </div>
               </div>
-              <div style={{ fontSize: 14, color: status.color, fontWeight: 500 }}>
-                {status.label}
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
       {/* Liste des prospects */}

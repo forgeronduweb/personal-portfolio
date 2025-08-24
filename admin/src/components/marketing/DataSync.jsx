@@ -85,7 +85,7 @@ const DataSync = () => {
   }, []);
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '20px', paddingTop: '40px' }}>
       <div style={{ marginBottom: '24px' }}>
         <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600, color: '#0f172a' }}>
           🔄 Synchronisation des Données Existantes

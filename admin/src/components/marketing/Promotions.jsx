@@ -137,7 +137,7 @@ const Promotions = () => {
   };
 
   return (
-    <div>
+    <div style={{ paddingTop: '20px' }}>
       {/* Actions */}
       <div style={{
         display: 'flex',

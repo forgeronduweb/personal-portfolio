@@ -78,7 +78,7 @@ const MarketingStats = () => {
   };
 
   return (
-    <div>
+    <div style={{ paddingTop: '20px' }}>
       {/* Header avec sélecteur de période */}
       <div style={{
         display: 'flex',

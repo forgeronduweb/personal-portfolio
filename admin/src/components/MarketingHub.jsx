@@ -115,28 +115,33 @@ const MarketingHub = () => {
         {/* Navigation sous-sections */}
         <div style={{
           display: 'flex',
-          gap: 8,
+          gap: 6,
           marginTop: 16,
-          flexWrap: 'wrap'
+          flexWrap: 'nowrap',
+          overflowX: 'auto',
+          paddingBottom: '4px'
         }}>
           {subSections.map(section => (
             <button
               key={section.id}
               onClick={() => setActiveSubSection(section.id)}
               style={{
-                padding: '8px 16px',
+                padding: '6px 12px',
                 border: 'none',
-                borderRadius: 8,
+                borderRadius: 6,
                 backgroundColor: activeSubSection === section.id ? '#000000' : '#ffffff',
                 color: activeSubSection === section.id ? '#ffffff' : '#374151',
                 cursor: 'pointer',
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: 500,
                 display: 'flex',
                 alignItems: 'center',
-                gap: 8,
+                gap: 6,
                 border: '1px solid #e5e7eb',
-                transition: 'all 0.2s'
+                transition: 'all 0.2s',
+                whiteSpace: 'nowrap',
+                minWidth: 'fit-content',
+                flexShrink: 0
               }}
               onMouseEnter={(e) => {
                 if (activeSubSection !== section.id) {
@@ -159,7 +164,7 @@ const MarketingHub = () => {
       {/* Contenu avec padding pour le header fixe */}
       <div style={{
         flex: 1,
-        marginTop: 120,
+        marginTop: 80,
         padding: '0 24px 24px 24px',
         overflow: 'auto'
       }}>
