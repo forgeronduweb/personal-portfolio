@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Sidebar from './components/Sidebar'
 import Projects from './components/Projects'
+import Newsletter from './components/Newsletter'
 import RoleBasedDashboard from './components/RoleBasedDashboard'
 import AdminSetup from './components/AdminSetup'
 import { getDashboardConfig, getRoleNavigation, ROLES, ROLE_DASHBOARDS } from './utils/roleConfig'
@@ -1086,6 +1087,8 @@ export default function App() {
         );
       case 'projects':
         return <Projects />;
+      case 'marketing':
+        return <Newsletter />;
       case 'payments':
         return (
           <div>

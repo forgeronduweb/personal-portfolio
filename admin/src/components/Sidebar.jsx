@@ -12,6 +12,7 @@ const Sidebar = ({ activeSection, onSectionChange, onLogout, currentUser }) => {
         { name: 'Utilisateurs', section: 'users' },
         { name: 'Demandes de sites', section: 'site-requests' },
         { name: 'Projets', section: 'projects' },
+        { name: 'Marketing', section: 'marketing' },
         { name: 'Paiements', section: 'payments' },
         { name: 'Statistiques', section: 'stats' },
         { name: 'Paramètres', section: 'settings' }
