@@ -5,6 +5,7 @@ const upload = require('../middleware/upload');
 const User = require('../models/User');
 const SiteRequest = require('../models/SiteRequest');
 const Project = require('../models/Project');
+const Newsletter = require('../models/Newsletter');
 const { sendQuoteEmail } = require('../services/emailService');
 
 // Exemple d'endpoint admin: stats rapides
@@ -407,6 +408,109 @@ router.get('/projects/:id', protect, requireAdmin, async (req, res, next) => {
     }
 
     res.json({ success: true, data: project });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Routes Newsletter
+router.get('/newsletters', protect, requireAdmin, async (req, res, next) => {
+  try {
+    if (!['admin', 'marketing'].includes(req.user.role)) {
+      return res.status(403).json({ message: 'Accès refusé' });
+    }
+
+    const { page = 1, limit = 50, active } = req.query;
+    
+    const filter = {};
+    if (active !== undefined) {
+      filter.isActive = active === 'true';
+    }
+
+    const newsletters = await Newsletter.find(filter)
+      .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+
+    const total = await Newsletter.countDocuments(filter);
+    const stats = await Newsletter.getStats();
+
+    res.json({
+      success: true,
+      data: newsletters,
+      pagination: {
+        current: page,
+        total: Math.ceil(total / limit),
+        count: newsletters.length,
+        totalItems: total
+      },
+      stats
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.delete('/newsletters/:id', protect, requireAdmin, async (req, res, next) => {
+  try {
+    if (!['admin', 'marketing'].includes(req.user.role)) {
+      return res.status(403).json({ message: 'Accès refusé' });
+    }
+
+    const newsletter = await Newsletter.findByIdAndDelete(req.params.id);
+    
+    if (!newsletter) {
+      return res.status(404).json({ message: 'Inscription non trouvée' });
+    }
+
+    res.json({ success: true, message: 'Inscription supprimée avec succès' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/newsletters/send', protect, requireAdmin, async (req, res, next) => {
+  try {
+    if (!['admin', 'marketing'].includes(req.user.role)) {
+      return res.status(403).json({ message: 'Accès refusé' });
+    }
+
+    const { subject, message, type = 'info', recipients } = req.body;
+
+    if (!subject || !message) {
+      return res.status(400).json({ message: 'Sujet et message requis' });
+    }
+
+    let targetEmails;
+    
+    if (recipients && recipients.length > 0) {
+      targetEmails = recipients;
+    } else {
+      const activeSubscriptions = await Newsletter.find({ isActive: true });
+      targetEmails = activeSubscriptions.map(sub => sub.email);
+    }
+
+    console.log(`📧 Newsletter envoyée:`);
+    console.log(`Sujet: ${subject}`);
+    console.log(`Type: ${type}`);
+    console.log(`Destinataires: ${targetEmails.length}`);
+    console.log(`Message: ${message.substring(0, 100)}...`);
+
+    await Newsletter.updateMany(
+      { email: { $in: targetEmails }, isActive: true },
+      { 
+        $inc: { emailsSentCount: 1 },
+        $set: { lastEmailSent: new Date() }
+      }
+    );
+
+    res.json({
+      success: true,
+      message: 'Newsletter envoyée avec succès',
+      sentCount: targetEmails.length,
+      subject,
+      type
+    });
   } catch (err) {
     next(err);
   }

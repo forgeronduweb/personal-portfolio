@@ -63,6 +63,49 @@ app.use('/api/site-requests', require('./routes/siteRequests'));
 // Routes projets publiques
 app.use('/api/projects', require('./routes/projects'));
 
+// Routes newsletter publiques
+const newsletterRouter = express.Router();
+newsletterRouter.post('/subscribe', async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: 'Email requis' });
+    }
+
+    const Newsletter = require('./models/Newsletter');
+    const existingSubscription = await Newsletter.findOne({ email });
+    
+    if (existingSubscription) {
+      if (existingSubscription.isActive) {
+        return res.status(400).json({ message: 'Cet email est déjà inscrit à la newsletter' });
+      } else {
+        await existingSubscription.resubscribe();
+        return res.status(200).json({ 
+          message: 'Abonnement réactivé avec succès',
+          data: existingSubscription 
+        });
+      }
+    }
+
+    const newsletter = new Newsletter({
+      email,
+      source: 'website'
+    });
+
+    await newsletter.save();
+
+    res.status(201).json({
+      message: 'Inscription à la newsletter réussie',
+      data: newsletter
+    });
+
+  } catch (error) {
+    console.error('Erreur inscription newsletter:', error);
+    res.status(500).json({ message: 'Erreur serveur lors de l\'inscription' });
+  }
+});
+app.use('/api/newsletter', newsletterRouter);
+
 // Servir les fichiers statiques uploadés
 app.use('/uploads', express.static('uploads'));
 
