@@ -1,0 +1,6 @@
+# Netlify redirects file
+# SPA fallback - toutes les routes non trouvées redirigent vers index.html
+/*    /index.html   200
+
+# API redirections vers le backend (remplacez par votre URL backend)
+/api/*  https://your-backend-url.herokuapp.com/api/:splat  200
