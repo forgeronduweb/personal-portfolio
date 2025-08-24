@@ -3,16 +3,29 @@ const mongoose = require('mongoose');
 const interactionSchema = new mongoose.Schema({
   type: {
     type: String,
-    enum: ['email', 'call', 'meeting', 'quote', 'follow_up'],
+    enum: ['email', 'call', 'meeting', 'quote', 'follow_up', 'quote_request', 'quote_sent', 'registration', 'newsletter_subscription'],
     required: true
   },
   subject: {
     type: String,
-    required: true
+    required: false
   },
   content: {
     type: String,
-    required: true
+    required: false
+  },
+  description: {
+    type: String,
+    required: false
+  },
+  outcome: {
+    type: String,
+    enum: ['positive', 'negative', 'neutral'],
+    default: 'neutral'
+  },
+  date: {
+    type: Date,
+    default: Date.now
   },
   nextAction: String,
   nextActionDate: Date,
@@ -23,7 +36,7 @@ const interactionSchema = new mongoose.Schema({
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: false
   }
 });
 
@@ -48,12 +61,12 @@ const prospectSchema = new mongoose.Schema({
   // Statut et suivi
   status: {
     type: String,
-    enum: ['new', 'interested', 'negotiating', 'confirmed', 'lost'],
+    enum: ['new', 'interested', 'negotiating', 'negotiation', 'confirmed', 'qualified', 'client', 'lost'],
     default: 'new'
   },
   source: {
     type: String,
-    enum: ['website', 'newsletter', 'social', 'referral', 'direct'],
+    enum: ['website', 'newsletter', 'social', 'referral', 'direct', 'website_registration', 'website_quote'],
     default: 'website'
   },
   

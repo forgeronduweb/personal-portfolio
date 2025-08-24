@@ -439,54 +439,233 @@ const triggerAutomations = async (trigger, context) => {
   }
 };
 
-// Middleware pour créer automatiquement des prospects depuis les demandes de sites
-router.post('/sync-prospects', protect, requireAdmin, async (req, res, next) => {
+// Route pour synchroniser toutes les données existantes
+router.post('/sync-all-data', protect, requireAdmin, async (req, res, next) => {
   try {
-    // Récupérer toutes les demandes de sites sans prospect associé
-    const siteRequests = await SiteRequest.find({
-      prospectId: { $exists: false }
-    });
-
-    let createdCount = 0;
-
+    const User = require('../models/User');
+    const Newsletter = require('../models/Newsletter');
+    
+    // Récupérer toutes les données existantes
+    const [users, siteRequests, newsletters] = await Promise.all([
+      User.find({}),
+      SiteRequest.find({}),
+      Newsletter.find({ isActive: true })
+    ]);
+    
+    const prospectEmails = new Set();
+    const prospectsToCreate = [];
+    let stats = {
+      fromSiteRequests: 0,
+      fromPremiumUsers: 0,
+      fromNewsletters: 0,
+      total: 0,
+      errors: 0
+    };
+    
+    // Fonction pour déterminer le statut
+    const determineStatus = (siteRequest, user) => {
+      if (user && user.isPremium) return 'client';
+      if (siteRequest?.quote?.sentAt) {
+        if (siteRequest.status === 'completed') return 'client';
+        if (siteRequest.status === 'in_progress') return 'negotiation';
+        return 'qualified';
+      }
+      if (siteRequest?.status === 'in_progress') return 'interested';
+      return 'new';
+    };
+    
+    // Traiter les demandes de sites
     for (const request of siteRequests) {
-      // Vérifier si un prospect existe déjà avec cet email
-      let prospect = await Prospect.findOne({ email: request.email });
+      if (prospectEmails.has(request.email)) continue;
       
-      if (!prospect) {
-        // Créer un nouveau prospect
-        prospect = new Prospect({
-          email: request.email,
-          companyName: request.companyName,
-          projectType: request.projectType,
-          budget: request.budget,
-          timeline: request.timeline,
-          description: request.additionalInfo,
-          source: 'website',
-          siteRequestId: request._id,
-          estimatedValue: extractBudgetValue(request.budget)
-        });
-        
-        await prospect.save();
-        createdCount++;
-
-        // Déclencher les automatisations pour nouveau prospect
-        await triggerAutomations('prospect_created', {
-          email: prospect.email,
-          companyName: prospect.companyName,
-          projectType: prospect.projectType,
-          prospectId: prospect._id
+      const user = users.find(u => u.email === request.email);
+      const interactions = [{
+        type: 'quote_request',
+        description: `Demande de devis pour ${request.projectType} - Budget: ${request.budget}`,
+        subject: `Demande ${request.projectType}`,
+        content: `Budget: ${request.budget}, Timeline: ${request.timeline}`,
+        date: request.createdAt,
+        outcome: request.status === 'completed' ? 'positive' : 
+                request.status === 'cancelled' ? 'negative' : 'neutral'
+      }];
+      
+      if (request.quote?.sentAt) {
+        interactions.push({
+          type: 'quote_sent',
+          description: `Devis envoyé: ${request.quote.amount} ${request.quote.currency}`,
+          subject: 'Devis envoyé',
+          content: `Montant: ${request.quote.amount} ${request.quote.currency}`,
+          date: request.quote.sentAt,
+          outcome: request.status === 'completed' ? 'positive' : 'neutral'
         });
       }
-
-      // Lier la demande au prospect
-      request.prospectId = prospect._id;
-      await request.save();
+      
+      prospectsToCreate.push({
+        email: request.email,
+        companyName: request.companyName,
+        projectType: request.projectType,
+        budget: request.budget,
+        timeline: request.timeline,
+        description: request.additionalInfo || '',
+        source: user ? 'website_registration' : 'website_quote',
+        status: determineStatus(request, user),
+        siteRequestId: request._id,
+        estimatedValue: extractBudgetValue(request.budget),
+        interactions,
+        createdAt: request.createdAt
+      });
+      
+      prospectEmails.add(request.email);
+      stats.fromSiteRequests++;
     }
-
+    
+    // Traiter les utilisateurs premium sans demande
+    for (const user of users.filter(u => u.isPremium)) {
+      if (prospectEmails.has(user.email)) continue;
+      
+      prospectsToCreate.push({
+        email: user.email,
+        companyName: user.name,
+        source: 'website_registration',
+        status: 'client',
+        estimatedValue: 500000,
+        interactions: [{
+          type: 'registration',
+          description: 'Inscription sur le site et passage premium',
+          subject: 'Inscription premium',
+          content: 'Utilisateur inscrit et passé premium',
+          date: user.createdAt,
+          outcome: 'positive'
+        }],
+        createdAt: user.createdAt
+      });
+      
+      prospectEmails.add(user.email);
+      stats.fromPremiumUsers++;
+    }
+    
+    // Traiter les abonnés newsletter
+    for (const newsletter of newsletters) {
+      if (prospectEmails.has(newsletter.email)) continue;
+      
+      prospectsToCreate.push({
+        email: newsletter.email,
+        source: 'newsletter',
+        status: 'new',
+        estimatedValue: 0,
+        interactions: [{
+          type: 'newsletter_subscription',
+          description: 'Inscription à la newsletter',
+          subject: 'Newsletter',
+          content: 'Abonnement à la newsletter',
+          date: newsletter.createdAt,
+          outcome: 'neutral'
+        }],
+        createdAt: newsletter.createdAt
+      });
+      
+      prospectEmails.add(newsletter.email);
+      stats.fromNewsletters++;
+    }
+    
+    // Sauvegarder tous les prospects
+    for (const prospectData of prospectsToCreate) {
+      try {
+        // Vérifier si le prospect existe déjà
+        const existingProspect = await Prospect.findOne({ email: prospectData.email });
+        if (!existingProspect) {
+          const prospect = new Prospect(prospectData);
+          await prospect.save();
+          stats.total++;
+          
+          // Déclencher automatisations
+          await triggerAutomations('prospect_created', {
+            email: prospect.email,
+            companyName: prospect.companyName,
+            prospectId: prospect._id
+          });
+        }
+      } catch (error) {
+        stats.errors++;
+        console.error(`Erreur prospect ${prospectData.email}:`, error.message);
+      }
+    }
+    
     res.json({
       success: true,
-      message: `${createdCount} prospects créés et ${siteRequests.length} demandes synchronisées`
+      message: `Synchronisation terminée: ${stats.total} prospects créés`,
+      stats
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Route pour analyser les données existantes sans les synchroniser
+router.get('/analyze-existing-data', protect, requireMarketing, async (req, res, next) => {
+  try {
+    const User = require('../models/User');
+    const Newsletter = require('../models/Newsletter');
+    
+    const [users, siteRequests, newsletters, existingProspects] = await Promise.all([
+      User.find({}),
+      SiteRequest.find({}),
+      Newsletter.find({ isActive: true }),
+      Prospect.find({})
+    ]);
+    
+    // Analyser les utilisateurs premium
+    const premiumUsers = users.filter(u => u.isPremium);
+    const regularUsers = users.filter(u => !u.isPremium);
+    
+    // Analyser les demandes par statut
+    const requestsByStatus = siteRequests.reduce((acc, req) => {
+      acc[req.status] = (acc[req.status] || 0) + 1;
+      return acc;
+    }, {});
+    
+    // Analyser les demandes avec devis
+    const requestsWithQuotes = siteRequests.filter(req => req.quote && req.quote.sentAt);
+    const completedRequests = siteRequests.filter(req => req.status === 'completed');
+    
+    // Calculer les revenus potentiels
+    const totalQuoteValue = requestsWithQuotes.reduce((sum, req) => {
+      return sum + (req.quote.amount || 0);
+    }, 0);
+    
+    // Identifier les prospects potentiels non synchronisés
+    const existingEmails = new Set(existingProspects.map(p => p.email));
+    const newProspectEmails = new Set([
+      ...siteRequests.map(r => r.email),
+      ...premiumUsers.map(u => u.email),
+      ...newsletters.map(n => n.email)
+    ].filter(email => !existingEmails.has(email)));
+    
+    res.json({
+      success: true,
+      data: {
+        summary: {
+          totalUsers: users.length,
+          premiumUsers: premiumUsers.length,
+          regularUsers: regularUsers.length,
+          siteRequests: siteRequests.length,
+          newsletterSubscribers: newsletters.length,
+          existingProspects: existingProspects.length,
+          potentialNewProspects: newProspectEmails.size
+        },
+        siteRequests: {
+          byStatus: requestsByStatus,
+          withQuotes: requestsWithQuotes.length,
+          completed: completedRequests.length,
+          totalQuoteValue,
+          conversionRate: siteRequests.length > 0 ? (completedRequests.length / siteRequests.length * 100).toFixed(2) + '%' : '0%'
+        },
+        prospects: {
+          existing: existingProspects.length,
+          potentialNew: newProspectEmails.size,
+          readyToSync: newProspectEmails.size > 0
+        }
+      }
     });
   } catch (err) {
     next(err);
