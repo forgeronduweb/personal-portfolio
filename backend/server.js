@@ -57,6 +57,9 @@ app.use('/api/auth', authRoutes);
 // Routes admin
 app.use('/api/admin', require('./routes/admin'));
 
+// Routes marketing
+app.use('/api/admin/marketing', require('./routes/marketing'));
+
 // Routes demandes de sites
 app.use('/api/site-requests', require('./routes/siteRequests'));
 
