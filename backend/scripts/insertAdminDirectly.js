@@ -2,7 +2,14 @@ const { MongoClient } = require('mongodb');
 const bcrypt = require('bcryptjs');
 
 async function insertAdminDirectly() {
-  const uri = 'mongodb+srv://forgeronduweb:rPEPuW6J6I2tqrgU@cluster0.drfeiye.mongodb.net/portfolio?retryWrites=true&w=majority&appName=Cluster0';
+  require('dotenv').config();
+  const uri = process.env.MONGODB_URI;
+  
+  if (!uri) {
+    console.error('❌ MONGODB_URI non trouvé dans les variables d\'environnement');
+    return;
+  }
+  
   const client = new MongoClient(uri);
 
   try {

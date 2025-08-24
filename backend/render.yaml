@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: personal-portfolio-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        fromDatabase:
+          name: mongodb-atlas
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_SETUP_KEY
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: https://your-frontend-url.onrender.com
+      - key: ADMIN_CORS_ORIGIN
+        value: https://your-admin-url.onrender.com

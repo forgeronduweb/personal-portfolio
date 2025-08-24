@@ -5,7 +5,12 @@ const User = require('../models/User');
 
 async function updateAdmin() {
   try {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb+srv://forgeronduweb:rPEPuW6J6I2tqrgU@cluster0.drfeiye.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+    const mongoUri = process.env.MONGODB_URI;
+    
+    if (!mongoUri) {
+      console.error('❌ MONGODB_URI non trouvé dans les variables d\'environnement');
+      process.exit(1);
+    }
     await mongoose.connect(mongoUri);
     console.log('Connexion à MongoDB réussie');
 
