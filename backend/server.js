@@ -16,8 +16,8 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 const allowedOrigins = [
     'http://localhost:5173', // Frontend local
     'http://localhost:5174', // Admin local
-    'https://personal-portfolio-front.onrender.com', // Frontend production
-    'https://personal-portfolio-admin.onrender.com', // Admin production
+    'https://personal-portfolio-353x.onrender.com', // Frontend production (vraie URL)
+    'https://personal-portfolio-admin-1qat.onrender.com', // Admin production (vraie URL)
     process.env.CORS_ORIGIN,
     process.env.ADMIN_CORS_ORIGIN
 ].filter(Boolean);
