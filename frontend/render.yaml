@@ -1,10 +1,22 @@
 services:
   - type: web
-    name: personal-portfolio-frontend
-    env: static
-    buildCommand: npm run build
-    staticPublishPath: ./dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    name: personal-portfolio-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        value: mongodb+srv://forgeronduweb:NOUVEAU_MOT_DE_PASSE@cluster0.drfeiye.mongodb.net/portfolio?retryWrites=true&w=majority&appName=Cluster0
+      - key: JWT_SECRET
+        value: 31d2e13bec02b420581d6305049c8c220136cdbb8a90a3cd422811b06e08f882226b03d0a6886c09827845ad56ec17ae96979a9322fdb3e98a627fde26c760c4
+      - key: ADMIN_SETUP_KEY
+        value: a7f9c2e8d4b6f1a3e9c7d5b2f8a4c6e1d3b9f7a5c2e8d6b4f1a9c7e5d3b8f6a2
+      - key: CORS_ORIGIN
+        value: https://personal-portfolio-353x.onrender.com
+      - key: ADMIN_CORS_ORIGIN
+        value: https://personal-portfolio-admin-1qat.onrender.com
