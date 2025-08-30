@@ -163,7 +163,7 @@ export default function LandingPortfolio() {
                             const event = new CustomEvent('navigate', { detail: 'portfolio' });
                             window.dispatchEvent(event);
                         }}
-                        className="bg-slate-800 hover:bg-black text-white px-8 py-3 rounded-full font-medium transition"
+                        className="bg-slate-800 hover:bg-slate-800 text-white px-8 py-3 rounded-full font-medium transition"
                     >
                         Voir tous nos projets
                     </button>

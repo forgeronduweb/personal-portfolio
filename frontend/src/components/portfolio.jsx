@@ -61,7 +61,7 @@ export default function Portfolio() {
                 
                 {/* Message d'indisponibilité */}
                 <div className="max-w-2xl mx-auto text-center">
-                    <div className="bg-black border border-gray-800 rounded-xl p-8">
+                    <div className="bg-slate-800 border border-gray-800 rounded-xl p-8">
                         <div className="text-6xl mb-4">🚧</div>
                         <h3 className="text-xl font-medium text-white mb-2">
                             Section en maintenance
@@ -76,7 +76,7 @@ export default function Portfolio() {
                             const event = new CustomEvent('navigate', { detail: 'custom-site-form' });
                             window.dispatchEvent(event);
                           }}
-                          className="bg-white hover:bg-gray-100 text-black px-6 py-3 rounded-lg font-medium transition-colors"
+                          className="bg-white hover:bg-gray-100 text-slate-800 px-6 py-3 rounded-lg font-medium transition-colors"
                         >
                             Demander un devis en attendant
                         </button>

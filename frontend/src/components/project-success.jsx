@@ -72,7 +72,7 @@ export default function ProjectSuccess() {
                   const event = new CustomEvent('navigate', { detail: 'portfolio' });
                   window.dispatchEvent(event);
                 }}
-                className="w-full bg-slate-800 hover:bg-black text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="w-full bg-slate-800 hover:bg-slate-800 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 Voir le portfolio
               </button>

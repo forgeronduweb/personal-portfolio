@@ -92,14 +92,14 @@ export default function Pricecard() {
                     </p>
                     
                     {/* Toggle Billing */}
-                    <div className="flex items-center justify-center space-x-4 mb-8 ml-5">
-                        <span className={`text-lg ${!isYearly ? 'font-semibold text-gray-900' : 'text-gray-500'}`}>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 px-4">
+                        <span className={`text-base sm:text-lg ${!isYearly ? 'font-semibold text-gray-900' : 'text-gray-500'}`}>
                             Sans engagement
                         </span>
                         <button 
                             type="button"
                             className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all duration-300 ${
-                                isYearly ? 'bg-black' : 'bg-gray-300'
+                                isYearly ? 'bg-slate-800' : 'bg-gray-300'
                             }`}
                             onClick={toggleBilling}
                         >
@@ -109,7 +109,7 @@ export default function Pricecard() {
                                 }`}
                             ></span>
                         </button>
-                        <span className={`text-lg ${isYearly ? 'font-semibold text-gray-900' : 'text-gray-500'}`}>
+                        <span className={`text-base sm:text-lg ${isYearly ? 'font-semibold text-gray-900' : 'text-gray-500'}`}>
                             Engagement 12 mois
                         </span>
                         <div className="w-48 h-8 hidden md:flex items-center justify-start ml-2">
@@ -146,7 +146,7 @@ export default function Pricecard() {
                         >
                             {plan.popular && (
                                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                                    <span className="bg-black text-white px-4 py-2 rounded-full text-sm font-semibold">
+                                    <span className="bg-slate-800 text-white px-4 py-2 rounded-full text-sm font-semibold">
                                         Plus populaire
                                     </span>
                                 </div>
@@ -214,8 +214,8 @@ export default function Pricecard() {
                                         }}
                                         className={`w-full md:w-auto px-8 py-4 rounded-xl font-semibold text-white transition-all duration-300 ${
                                             plan.popular 
-                                                ? 'bg-black hover:bg-gray-800 shadow-lg hover:shadow-xl' 
-                                                : 'bg-gray-900 hover:bg-black'
+                                                ? 'bg-slate-800 hover:bg-gray-800 shadow-lg hover:shadow-xl' 
+                                                : 'bg-gray-900 hover:bg-slate-800'
                                         }`}
                                     >
                                         Commencer maintenant

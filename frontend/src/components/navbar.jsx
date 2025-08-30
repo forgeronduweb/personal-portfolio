@@ -73,34 +73,27 @@ export default function Navbar({ onNavigate, user, onLogout, isAuthPage, isCusto
       >
                               <button 
                         onClick={() => {
-                          const event = new CustomEvent('navigate', { detail: 'home' });
-                          window.dispatchEvent(event);
+                          // Navigation vers articles
+                          console.log('Navigation vers Articles');
                         }}
                         className={`max-md:text-2xl max-md:font-semibold hover:text-indigo-400 transition-all max-md:duration-300 max-md:hover:scale-105 ${scrolled ? 'text-black hover:text-indigo-600' : 'text-black hover:text-white'}`}
                       >
-                        Services
+                        Articles
                       </button>
                       <button 
                         onClick={() => {
-                          const event = new CustomEvent('navigate', { detail: 'home' });
-                          window.dispatchEvent(event);
+                          // Navigation vers forum
+                          console.log('Navigation vers Forum');
                         }}
                         className={`max-md:text-2xl max-md:font-semibold hover:text-indigo-400 transition-all max-md:duration-300 max-md:delay-100 max-md:hover:scale-105 ${scrolled ? 'text-black hover:text-indigo-600' : 'text-black hover:text-white'}`}
                       >
-                        À propos
-                      </button>
-                      <button 
-                        disabled
-                        className={`max-md:text-2xl max-md:font-semibold transition-all max-md:duration-300 max-md:delay-200 cursor-not-allowed opacity-50 ${scrolled ? 'text-gray-400' : 'text-gray-400'}`}
-                        title="Portfolio temporairement indisponible"
-                      >
-                        Portfolio (indisponible)
+                        Forum
                       </button>
         
         {/* Close button (mobile) */}
                  <button
            onClick={() => setMenuOpen(false)}
-           className="md:hidden absolute top-4 right-4 bg-slate-800 hover:bg-black text-white p-2 rounded-md aspect-square font-medium transition"
+           className="md:hidden absolute top-4 right-4 bg-slate-800 hover:bg-slate-800 text-white p-2 rounded-md aspect-square font-medium transition"
          >
            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -118,7 +111,7 @@ export default function Navbar({ onNavigate, user, onLogout, isAuthPage, isCusto
                 window.dispatchEvent(event);
                 setMenuOpen(false);
               }}
-              className="w-[220px] bg-slate-800 hover:bg-black text-white px-6 py-3 rounded-md font-medium transition"
+              className="w-[220px] bg-slate-800 hover:bg-slate-800 text-white px-6 py-3 rounded-md font-medium transition"
             >
               Mon dashboard
             </button>
@@ -184,7 +177,7 @@ export default function Navbar({ onNavigate, user, onLogout, isAuthPage, isCusto
       {/* Burger (mobile) */}
       <button
         onClick={toggleMenu}
-        className="md:hidden bg-slate-800 hover:bg-black text-white p-2 rounded-md aspect-square font-medium transition"
+        className="md:hidden bg-slate-800 hover:bg-slate-800 text-white p-2 rounded-md aspect-square font-medium transition"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
