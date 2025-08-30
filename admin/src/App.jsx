@@ -46,6 +46,7 @@ export default function App() {
   const [collaboratorForm, setCollaboratorForm] = useState({ name: '', email: '', password: '', role: 'admin' })
   const [currentUser, setCurrentUser] = useState(null)
   const [needsAdminSetup, setNeedsAdminSetup] = useState(false)
+  const [lastActivity, setLastActivity] = useState(Date.now())
 
   async function login(e) {
     e?.preventDefault()
@@ -265,6 +266,8 @@ export default function App() {
     setSelectedRequest(null)
     setActiveSection('dashboard')
     setNeedsAdminSetup(false)
+    setLastActivity(Date.now())
+    setError('')
   }
 
   function handleAdminSetupComplete(user) {
@@ -273,8 +276,35 @@ export default function App() {
     setActiveSection('dashboard')
   }
 
+  // Gestion du timeout de session (30 minutes d'inactivité)
   useEffect(() => {
     if (!token) return
+
+    const SESSION_TIMEOUT = 30 * 60 * 1000 // 30 minutes
+    
+    const checkSession = () => {
+      const now = Date.now()
+      if (now - lastActivity > SESSION_TIMEOUT) {
+        console.log('🕒 Session expirée après 30 minutes d\'inactivité')
+        logout()
+        setError('Session expirée. Veuillez vous reconnecter.')
+      }
+    }
+
+    const updateActivity = () => {
+      setLastActivity(Date.now())
+    }
+
+    // Vérifier la session toutes les minutes
+    const sessionInterval = setInterval(checkSession, 60000)
+    
+    // Écouter l'activité utilisateur
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click']
+    events.forEach(event => {
+      document.addEventListener(event, updateActivity, true)
+    })
+
+    // Charger les données
     ;(async () => {
       setIsLoading(true)
       try {
@@ -298,7 +328,15 @@ export default function App() {
         setIsLoading(false)
       }
     })()
-  }, [token])
+
+    // Cleanup
+    return () => {
+      clearInterval(sessionInterval)
+      events.forEach(event => {
+        document.removeEventListener(event, updateActivity, true)
+      })
+    }
+  }, [token, lastActivity])
 
   // Afficher l'interface de setup si aucun admin n'existe
   if (needsAdminSetup) {
