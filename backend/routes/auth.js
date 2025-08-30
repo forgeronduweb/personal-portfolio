@@ -127,8 +127,42 @@ router.post('/setup-admin', async (req, res) => {
   }
 });
 
+// Route de vérification du token pour l'admin
+router.get('/verify', protect, async (req, res) => {
+  try {
+    // Le middleware protect a déjà vérifié le token et ajouté req.user
+    const user = await User.findById(req.user.id).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Utilisateur non trouvé'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        isPremium: user.isPremium
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Erreur serveur'
+    });
+  }
+});
+
+// Routes publiques
 router.post('/register', register);
 router.post('/login', login);
+
+// Routes protégées
 router.get('/me', protect, getMe);
 
 module.exports = router;
