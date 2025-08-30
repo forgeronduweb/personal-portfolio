@@ -7,164 +7,101 @@ export default function CustomSiteForm({ onClose }) {
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     email: "",
-    companyName: "",
-    projectType: "",
-    targetAudience: "",
+    purpose: "",
     pages: "",
-    features: "",
-    designStyle: "",
-    attachments: [],
-    budget: "",
+    inspiration: "",
+    designFiles: [],
     timeline: "",
-    additionalInfo: ""
+    budget: ""
   });
 
   const steps = [
     {
-      title: "Adresse e-mail",
+      title: "Votre e-mail pour vous recontacter",
       field: {
         name: "email",
-        label: "Adresse e-mail",
+        label: "Votre e-mail pour vous recontacter :",
         type: "email",
         placeholder: "votre@email.com",
-        required: true,
-        help: "Pour vous recontacter rapidement et vous envoyer le devis"
-      }
-    },
-    {
-      title: "Nom de votre entreprise",
-      field: {
-        name: "companyName",
-        label: "Nom de votre entreprise",
-        type: "text",
-        placeholder: "Votre entreprise ou Aucun si vous en avez pas",
-        required: true,
-        help: "Pour personnaliser votre projet"
-      }
-    },
-    {
-      title: "Type de site souhaité",
-      field: {
-        name: "projectType",
-        label: "Type de site souhaité",
-        type: "select",
-        options: [
-          { value: "", label: "Sélectionnez un type" },
-          { value: "ecommerce", label: "Site e-commerce / Boutique en ligne" },
-          { value: "corporate", label: "Site vitrine / Corporate" },
-          { value: "portfolio", label: "Portfolio / Présentation" },
-          { value: "blog", label: "Blog / Magazine" },
-          { value: "landing", label: "Landing page" },
-          { value: "other", label: "Autre (précisez dans les remarques)" }
-        ],
         required: true
       }
     },
     {
-      title: "Public cible",
+      title: "À quoi servira principalement votre site ?",
       field: {
-        name: "targetAudience",
-        label: "Public cible",
-        type: "textarea",
-        placeholder: "Décrivez votre public cible (ex: professionnels, particuliers, âge, secteur d'activité...)",
-        required: true,
-        help: "Pour adapter le design et les fonctionnalités"
+        name: "purpose",
+        label: "À quoi servira principalement votre site ?",
+        type: "text",
+        placeholder: "Ex: Présenter mon activité, vendre en ligne, gagner des clients...",
+        required: true
       }
     },
     {
-      title: "Pages souhaitées",
+      title: "Pages ou sections souhaitées",
       field: {
         name: "pages",
-        label: "Pages souhaitées",
+        label: "Quelles pages ou sections souhaitez-vous absolument ?",
         type: "textarea",
-        placeholder: "Ex: Accueil, À propos, Services, Portfolio, Contact, Blog, etc.",
-        required: true,
-        help: "Listez les pages principales de votre site"
-      }
-    },
-    {
-      title: "Fonctionnalités spécifiques",
-      field: {
-        name: "features",
-        label: "Fonctionnalités spécifiques",
-        type: "textarea",
-        placeholder: "Ex: formulaire de contact, blog, espace membre, paiement en ligne, newsletter, etc.",
-        required: true,
-        help: "Fonctionnalités particulières dont vous avez besoin"
-      }
-    },
-    {
-      title: "Style de design souhaité",
-      field: {
-        name: "designStyle",
-        label: "Style de design souhaité",
-        type: "select",
-        options: [
-          { value: "", label: "Sélectionnez un style" },
-          { value: "modern", label: "Moderne et épuré" },
-          { value: "classic", label: "Classique et professionnel" },
-          { value: "creative", label: "Créatif et original" },
-          { value: "minimalist", label: "Minimaliste" },
-          { value: "colorful", label: "Coloré et dynamique" },
-          { value: "other", label: "Autre (précisez dans les remarques)" }
-        ],
+        placeholder: "(ex. : Accueil, À propos, Services/Produits, Contact…)",
         required: true
       }
     },
     {
-      title: "Maquette ou références visuelles",
+      title: "Style et inspiration",
       field: {
-        name: "attachments",
-        label: "Avez-vous une maquette ou des références visuelles ?",
-        type: "file",
-        accept: ".jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx",
-        multiple: true,
-        required: false,
-        help: "Uploadez votre maquette, wireframes, ou références visuelles (images, PDF, documents). Maximum 5 fichiers de 5MB chacun."
+        name: "inspiration",
+        label: "Avez-vous un exemple de site qui vous inspire ou une idée du style souhaité ?",
+        type: "textarea",
+        placeholder: "Décrivez le style souhaité ou donnez des exemples de sites que vous aimez...",
+        required: false
       }
     },
     {
-      title: "Budget estimé",
+      title: "Design ou maquette",
       field: {
-        name: "budget",
-        label: "Budget estimé",
-        type: "select",
-        options: [
-          { value: "", label: "Sélectionnez une fourchette" },
-          { value: "150000-300000", label: "150 000 FCFA - 300 000 FCFA" }, // pour freelances, particuliers
-          { value: "300000-600000", label: "300 000 FCFA - 600 000 FCFA" }, // pour petites entreprises
-          { value: "600000-1000000", label: "600 000 FCFA - 1 000 000 FCFA" }, // projets plus sérieux
-          { value: "1000000-2000000", label: "1 000 000 FCFA - 2 000 000 FCFA" }, // PME avec besoins avancés
-          { value: "2000000+", label: "2 000 000 FCFA et plus" }, // cas exceptionnels (gros clients)
-          { value: "flexible", label: "Budget flexible selon les besoins" },
-        ],
-        required: false
+        name: "designFiles",
+        label: "Avez-vous un design, une maquette ou des références visuelles à partager ?",
+        type: "file",
+        accept: ".jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.sketch,.fig,.xd,.ai,.psd",
+        multiple: true,
+        required: false,
+        help: "Formats acceptés : Images (JPG, PNG, GIF, WebP), Documents (PDF, DOC, DOCX), Fichiers design (Sketch, Figma, XD, AI, PSD). Maximum 5 fichiers de 10MB chacun."
       }
     },
     {
       title: "Délai souhaité",
       field: {
         name: "timeline",
-        label: "Délai souhaité",
+        label: "Pour quand aimeriez-vous que le site soit prêt ?",
         type: "select",
         options: [
-          { value: "", label: "Sélectionnez un délai" },
-          { value: "urgent", label: "Urgent (2-3 semaines)" },
+          { value: "", label: "Sélectionnez votre délai préféré" },
+          { value: "asap", label: "Le plus tôt possible (1-2 semaines)" },
+          { value: "urgent", label: "Urgent (3-4 semaines)" },
           { value: "normal", label: "Normal (1-2 mois)" },
-          { value: "flexible", label: "Flexible (selon vos disponibilités)" }
+          { value: "relaxed", label: "Pas pressé (2-3 mois)" },
+          { value: "flexible", label: "Flexible selon vos disponibilités" }
         ],
         required: true
       }
     },
     {
-      title: "Informations complémentaires",
+      title: "Budget prévu",
       field: {
-        name: "additionalInfo",
-        label: "Informations complémentaires",
-        type: "textarea",
-        placeholder: "Précisions, inspirations, contraintes, références de sites que vous aimez, etc.",
-        required: false,
-        help: "Tout ce qui peut nous aider à mieux comprendre votre projet"
+        name: "budget",
+        label: "Quel budget avez-vous prévu pour ce projet ?",
+        type: "select",
+        options: [
+          { value: "", label: "Sélectionnez votre budget" },
+          { value: "under-200k", label: "Moins de 200 000 FCFA" },
+          { value: "200k-400k", label: "200 000 - 400 000 FCFA" },
+          { value: "400k-600k", label: "400 000 - 600 000 FCFA" },
+          { value: "600k-1m", label: "600 000 - 1 000 000 FCFA" },
+          { value: "1m-1.5m", label: "1 000 000 - 1 500 000 FCFA" },
+          { value: "over-1.5m", label: "Plus de 1 500 000 FCFA" },
+          { value: "discuss", label: "À discuter selon les fonctionnalités" }
+        ],
+        required: true
       }
     }
   ];
@@ -207,19 +144,19 @@ export default function CustomSiteForm({ onClose }) {
       
       // Ajouter tous les champs texte
       Object.keys(formData).forEach(key => {
-        if (key !== 'attachments') {
+        if (key !== 'designFiles') {
           formDataToSend.append(key, formData[key]);
         }
       });
       
       // Ajouter les fichiers
-      if (formData.attachments && formData.attachments.length > 0) {
-        formData.attachments.forEach(file => {
-          formDataToSend.append('attachments', file);
+      if (formData.designFiles && formData.designFiles.length > 0) {
+        formData.designFiles.forEach(file => {
+          formDataToSend.append('designFiles', file);
         });
       }
 
-      const response = await fetch('http://localhost:5000/api/site-requests', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/site-requests`, {
         method: 'POST',
         body: formDataToSend
       });
@@ -250,27 +187,20 @@ export default function CustomSiteForm({ onClose }) {
   const isCurrentFieldValid = () => {
     const fieldValue = formData[currentField.name];
     
-    // Pour le dernier champ (additionalInfo), on attend au moins quelque chose même si optionnel
-    if (currentField.name === "additionalInfo") {
-      return fieldValue && fieldValue.trim() !== "";
-    }
-    
     // Pour les fichiers, toujours valide car optionnel
     if (currentField.type === "file") {
       return true;
     }
     
-    // Si le champ n'est pas requis (budget), il est toujours valide
-    if (!currentField.required) {
-      return true;
-    }
-    
     // Pour les champs requis, vérifier qu'ils ne sont pas vides
-    if (currentField.type === "select") {
-      return fieldValue && fieldValue !== "";
+    if (currentField.required) {
+      if (currentField.type === "select") {
+        return fieldValue && fieldValue !== "";
+      }
+      return fieldValue && fieldValue.trim() !== "";
     }
     
-    return fieldValue && fieldValue.trim() !== "";
+    return true;
   };
 
   return (
@@ -347,7 +277,7 @@ export default function CustomSiteForm({ onClose }) {
                         onChange={handleInputChange}
                         accept={currentField.accept}
                         multiple={currentField.multiple}
-                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-slate-50 file:text-slate-700 hover:file:bg-slate-100"
+                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                       />
                       {formData[currentField.name] && formData[currentField.name].length > 0 && (
                         <div className="mt-3">
@@ -363,7 +293,7 @@ export default function CustomSiteForm({ onClose }) {
                         </div>
                       )}
                     </div>
-                  ) : (
+                   ) : (
                     <input
                       type={currentField.type}
                       name={currentField.name}
