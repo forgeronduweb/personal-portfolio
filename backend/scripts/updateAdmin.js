@@ -23,8 +23,8 @@ async function updateAdmin() {
       // Créer un nouvel admin
       const newAdmin = await User.create({
         name: 'Admin',
-        email: 'bahophilomeevrard@gmail.com',
-        password: '21998',
+        email: process.env.ADMIN_EMAIL,
+        password: process.env.ADMIN_PASSWORD,
         role: 'admin',
         isPremium: true
       });
@@ -38,8 +38,8 @@ async function updateAdmin() {
       console.log('Admin trouvé:', admin.email);
       
       // Mettre à jour l'email et le mot de passe
-      admin.email = 'bahophilomeevrard@gmail.com';
-      admin.password = "21998"; // Le middleware pre('save') va hasher automatiquement
+      admin.email = process.env.ADMIN_EMAIL;
+      admin.password = process.env.ADMIN_PASSWORD; // Le middleware pre('save') va hasher automatiquement
       
       await admin.save();
       
@@ -52,8 +52,8 @@ async function updateAdmin() {
 
     console.log('✅ Mise à jour terminée avec succès!');
     console.log('Nouvelles informations de connexion:');
-    console.log('Email: bahophilomeevrard@gmail.com');
-    console.log('Mot de passe: 21998');
+    console.log('Email:', process.env.ADMIN_EMAIL);
+    console.log('Mot de passe: [MASQUÉ]');
     
     process.exit(0);
   } catch (err) {
