@@ -61,10 +61,16 @@ exports.register = async (req, res, next) => {
 // @access  Public (temporaire pour setup initial)
 exports.createAdmin = async (req, res, next) => {
     try {
+        console.log('=== CREATE ADMIN DEBUG ===');
+        console.log('Request body:', req.body);
+        console.log('ADMIN_SETUP_KEY from env:', process.env.ADMIN_SETUP_KEY);
+        console.log('adminKey from request:', req.body.adminKey);
+        
         const { name, email, password, adminKey } = req.body;
 
         // Clé secrète pour créer un admin (sécurité basique)
-        if (adminKey !== 'admin-setup-key-2024') {
+        if (adminKey !== config.ADMIN_SETUP_KEY) {
+            console.log('Admin key mismatch!');
             return res.status(403).json({
                 success: false,
                 message: 'Clé administrateur invalide'

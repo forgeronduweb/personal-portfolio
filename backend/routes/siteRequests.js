@@ -7,23 +7,19 @@ const upload = require('../middleware/upload');
 // @desc    Créer une nouvelle demande de site
 // @route   POST /api/site-requests
 // @access  Public
-router.post('/', upload.array('attachments', 5), async (req, res, next) => {
+router.post('/', upload.array('designFiles', 5), async (req, res, next) => {
     try {
         const {
             email,
-            companyName,
-            projectType,
-            targetAudience,
+            purpose,
             pages,
-            features,
-            designStyle,
+            inspiration,
             budget,
-            timeline,
-            additionalInfo
+            timeline
         } = req.body;
 
         // Traiter les fichiers uploadés
-        const attachments = req.files ? req.files.map(file => ({
+        const designFiles = req.files ? req.files.map(file => ({
             filename: file.filename,
             originalName: file.originalname,
             path: file.path,
@@ -33,16 +29,12 @@ router.post('/', upload.array('attachments', 5), async (req, res, next) => {
 
         const siteRequest = await SiteRequest.create({
             email,
-            companyName,
-            projectType,
-            targetAudience,
+            purpose,
             pages,
-            features,
-            designStyle,
+            inspiration,
+            designFiles,
             budget,
-            timeline,
-            additionalInfo,
-            attachments
+            timeline
         });
 
         res.status(201).json({

@@ -7,19 +7,9 @@ const siteRequestSchema = new mongoose.Schema({
         trim: true,
         lowercase: true
     },
-    companyName: {
+    purpose: {
         type: String,
-        required: [true, "Le nom de l'entreprise est requis"],
-        trim: true
-    },
-    projectType: {
-        type: String,
-        required: [true, "Le type de projet est requis"],
-        enum: ['ecommerce', 'corporate', 'portfolio', 'blog', 'landing', 'other']
-    },
-    targetAudience: {
-        type: String,
-        required: [true, "Le public cible est requis"],
+        required: [true, "L'objectif du site est requis"],
         trim: true
     },
     pages: {
@@ -27,32 +17,17 @@ const siteRequestSchema = new mongoose.Schema({
         required: [true, "Les pages souhaitées sont requises"],
         trim: true
     },
-    features: {
-        type: String,
-        required: [true, "Les fonctionnalités sont requises"],
-        trim: true
-    },
-    designStyle: {
-        type: String,
-        required: [true, "Le style de design est requis"],
-        enum: ['modern', 'classic', 'creative', 'minimalist', 'colorful', 'other']
-    },
-    budget: {
-        type: String,
-        enum: ['150000-300000', '300000-600000', '600000-1000000', '1000000-2000000', '2000000+', 'flexible', ''],
-        default: ''
-    },
-    timeline: {
-        type: String,
-        required: [true, "Le délai est requis"],
-        enum: ['urgent', 'normal', 'flexible']
-    },
-    additionalInfo: {
+    inspiration: {
         type: String,
         trim: true,
         default: ''
     },
-    attachments: [{
+    budget: {
+        type: String,
+        required: [true, "Le budget est requis"],
+        enum: ['under-200k', '200k-400k', '400k-600k', '600k-1m', '1m-1.5m', 'over-1.5m', 'discuss']
+    },
+    designFiles: [{
         filename: {
             type: String,
             required: true
@@ -78,6 +53,11 @@ const siteRequestSchema = new mongoose.Schema({
             default: Date.now
         }
     }],
+    timeline: {
+        type: String,
+        required: [true, "Le délai est requis"],
+        enum: ['asap', 'urgent', 'normal', 'relaxed', 'flexible']
+    },
     status: {
         type: String,
         enum: ['pending', 'in_progress', 'completed', 'cancelled'],
