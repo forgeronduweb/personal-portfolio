@@ -204,46 +204,35 @@ export default function CustomSiteForm({ onClose }) {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="pt-32 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Header du formulaire */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-slate-900 mb-4">
-              Site sur Mesure
-            </h1>
-            <p className="text-lg text-slate-600">
-              Décrivez votre projet pour recevoir un devis personnalisé
-            </p>
+    <div className="min-h-screen bg-white flex flex-col justify-center">
+      <div className="flex-1 flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-2xl mx-auto space-y-8">
+          {/* Barre de progression */}
+          <div className="w-full">
+            <div className="flex justify-between text-sm text-slate-600 mb-2">
+              <span>Étape {currentStep + 1} sur {steps.length}</span>
+              <span>{Math.round(progress)}%</span>
+            </div>
+            <div className="w-full bg-slate-200 rounded-full h-2">
+              <div 
+                className="bg-slate-800 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
           </div>
 
-                     {/* Barre de progression */}
-           <div className="mb-8 max-w-2xl mx-auto">
-             <div className="flex justify-between text-sm text-slate-600 mb-2">
-               <span>Étape {currentStep + 1} sur {steps.length}</span>
-               <span>{Math.round(progress)}%</span>
-             </div>
-             <div className="w-full bg-slate-200 rounded-full h-2">
-               <div 
-                 className="bg-slate-800 h-2 rounded-full transition-all duration-300"
-                 style={{ width: `${progress}%` }}
-               ></div>
-             </div>
-           </div>
+          {/* Formulaire adaptatif */}
+          <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8 sm:p-10 w-full">
+            <div className="space-y-8">
+              <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900 text-center leading-tight">
+                {currentStepData.title}
+              </h2>
 
-           {/* Formulaire avec taille fixe */}
-                       <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8 w-full max-w-2xl mx-auto">
-              <div className="min-h-[300px] flex flex-col">
-               <div className="flex-1">
-                 <h2 className="text-2xl font-semibold text-slate-900 mb-6">
-                   {currentStepData.title}
-                 </h2>
-
-                 <div className="mb-6">
-                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                     {currentField.label}
-                     {currentField.required && <span className="text-red-500 ml-1">*</span>}
-                   </label>
+              <div className="space-y-4">
+                <label className="block text-base font-medium text-slate-700">
+                  {currentField.label}
+                  {currentField.required && <span className="text-red-500 ml-1">*</span>}
+                </label>
 
                    {currentField.type === "select" ? (
                      <select
@@ -251,7 +240,7 @@ export default function CustomSiteForm({ onClose }) {
                        value={formData[currentField.name]}
                        onChange={handleInputChange}
                        required={currentField.required}
-                       className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                       className="w-full px-4 py-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base bg-slate-50 focus:bg-white"
                      >
                        {currentField.options.map((option, optionIndex) => (
                          <option key={optionIndex} value={option.value}>
@@ -267,7 +256,7 @@ export default function CustomSiteForm({ onClose }) {
                        required={currentField.required}
                        placeholder={currentField.placeholder}
                        rows={4}
-                       className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
+                       className="w-full px-4 py-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none text-base bg-slate-50 focus:bg-white"
                      />
                    ) : currentField.type === "file" ? (
                     <div>
@@ -277,7 +266,7 @@ export default function CustomSiteForm({ onClose }) {
                         onChange={handleInputChange}
                         accept={currentField.accept}
                         multiple={currentField.multiple}
-                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                        className="w-full px-4 py-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-slate-50 focus:bg-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                       />
                       {formData[currentField.name] && formData[currentField.name].length > 0 && (
                         <div className="mt-3">
@@ -301,55 +290,54 @@ export default function CustomSiteForm({ onClose }) {
                       onChange={handleInputChange}
                       required={currentField.required}
                       placeholder={currentField.placeholder}
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      className="w-full px-4 py-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base bg-slate-50 focus:bg-white"
                     />
                   )}
 
                    {currentField.help && (
                      <p className="mt-2 text-sm text-slate-500">{currentField.help}</p>
                    )}
-                 </div>
+              </div>
 
-                 {/* Messages d'erreur */}
-                 {error && (
-                   <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                     <p className="text-red-600">{error}</p>
-                   </div>
-                 )}
-               </div>
+              {/* Messages d'erreur */}
+              {error && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
+                  <p className="text-red-600 text-base">{error}</p>
+                </div>
+              )}
 
-               {/* Boutons de navigation fixes en bas */}
-               <div className="flex justify-between items-center pt-6 border-t border-slate-200">
-                 <button
-                   type="button"
-                   onClick={handlePrevious}
-                   disabled={currentStep === 0}
-                   className="px-6 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                 >
-                   Précédent
-                 </button>
+              {/* Boutons de navigation */}
+              <div className="flex justify-between items-center pt-8 border-t border-slate-200">
+                <button
+                  type="button"
+                  onClick={handlePrevious}
+                  disabled={currentStep === 0}
+                  className="px-8 py-4 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                >
+                  Précédent
+                </button>
 
-                 {currentStep < steps.length - 1 ? (
-                   <button
-                     type="button"
-                     onClick={handleNext}
-                     disabled={!isCurrentFieldValid()}
-                     className="px-6 py-3 bg-slate-800 text-white rounded-lg hover:bg-black transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate-800"
-                   >
-                     Suivant
-                   </button>
-                 ) : (
-                   <button
-                     type="submit"
-                     disabled={isLoading || !isCurrentFieldValid()}
-                     className="px-8 py-3 bg-slate-800 text-white rounded-lg hover:bg-black transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                   >
-                     {isLoading ? "Envoi en cours..." : "Envoyer ma demande"}
-                   </button>
-                 )}
-               </div>
-             </div>
-           </form>
+                {currentStep < steps.length - 1 ? (
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    disabled={!isCurrentFieldValid()}
+                    className="px-8 py-4 bg-slate-800 text-white rounded-xl hover:bg-black transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate-800 text-base"
+                  >
+                    Suivant
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={isLoading || !isCurrentFieldValid()}
+                    className="px-10 py-4 bg-slate-800 text-white rounded-xl hover:bg-black transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                  >
+                    {isLoading ? "Envoi..." : "Envoyer ma demande"}
+                  </button>
+                )}
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
