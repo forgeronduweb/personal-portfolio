@@ -6,11 +6,11 @@ export default function Banner() {
   const [isNewsletterOpen, setIsNewsletterOpen] = useState(false);
   return (
     <section className="bg-[url('https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/hero/gridBackground.png')] w-full bg-no-repeat bg-cover bg-center text-sm pb-44 pt-32">
-      <div className="flex items-center gap-2 border border-slate-300 hover:border-slate-400/70 rounded-full w-max mx-auto px-4 py-2 mt-20 md:mt-12">
-        <span>Dernières nouveautés? </span>
+      <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm border border-indigo-200 hover:border-indigo-300 rounded-full w-max mx-auto px-5 py-3 mt-20 md:mt-12 shadow-md">
+        <span className="text-slate-700 font-medium">Dernières nouveautés? </span>
         <button 
           onClick={() => setIsNewsletterOpen(true)}
-          className="flex items-center gap-1 font-medium hover:text-indigo-600 transition-colors"
+          className="flex items-center gap-1 font-semibold text-indigo-600 hover:text-indigo-700 transition-colors"
         >
           <span>En savoir plus</span>
           <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -19,13 +19,12 @@ export default function Banner() {
         </button>
       </div>
 
-      <h5 className="text-4xl md:text-7xl font-medium max-w-[850px] text-center mx-auto mt-8">
-        Votre site web professionnel en location mensuelle
+      <h5 className="text-3xl md:text-6xl font-bold max-w-[1200px] text-center mx-auto mt-8 leading-tight bg-gradient-to-r from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent">
+        Obtenez un site web qui attire<br />vos clients dès aujourd'hui
       </h5>
 
-      <p className="text-sm md:text-base mx-auto max-w-2xl text-center mt-10 max-md:px-2">
-        <strong>3 options disponibles :</strong> Location mensuelle flexible, Achat unique, ou Création sur mesure. 
-        Commencez avec notre formule de location sans gros investissement initial.
+      <p className="text-base md:text-lg mx-auto max-w-3xl text-center mt-10 max-md:px-4 text-slate-700 leading-relaxed">
+        <span className="font-bold text-slate-900">Forgeron du Web</span> analyse vos besoins et vous propose le site web le plus adapté pour votre activité afin de maximiser vos clients, que vous choisissiez la <strong>location</strong>, l'<strong>achat</strong> ou la <strong>création sur mesure</strong>.
       </p>
 
       <div className="mx-auto w-full flex items-center justify-center mt-20">
@@ -34,9 +33,9 @@ export default function Banner() {
             const event = new CustomEvent('navigate', { detail: 'custom-site-form' });
             window.dispatchEvent(event);
           }}
-          className="bg-slate-800 hover:bg-black text-white px-6 py-3 rounded-full font-medium transition"
+          className="bg-slate-800 hover:bg-black text-white px-8 py-4 rounded-full font-medium transition text-lg"
         >
-          Commencer
+          Obtenir mon devis gratuit
         </button>
       </div>
 
