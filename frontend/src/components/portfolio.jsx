@@ -73,7 +73,7 @@ export default function Portfolio() {
                         </p>
                         <button 
                           onClick={() => {
-                            const event = new CustomEvent('navigate', { detail: 'quote' });
+                            const event = new CustomEvent('navigate', { detail: 'custom-site-form' });
                             window.dispatchEvent(event);
                           }}
                           className="bg-white hover:bg-gray-100 text-black px-6 py-3 rounded-lg font-medium transition-colors"

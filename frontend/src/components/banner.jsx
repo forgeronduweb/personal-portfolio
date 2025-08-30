@@ -20,11 +20,12 @@ export default function Banner() {
       </div>
 
       <h5 className="text-4xl md:text-7xl font-medium max-w-[850px] text-center mx-auto mt-8">
-        Votre présence digitale, réinventée avec audace et précision.
+        Votre site web professionnel en location mensuelle
       </h5>
 
       <p className="text-sm md:text-base mx-auto max-w-2xl text-center mt-10 max-md:px-2">
-        Alliant design soigné et technologie performante, nous créons des sites qui reflètent votre identité et captivent votre audience.
+        <strong>3 options disponibles :</strong> Location mensuelle flexible, Achat unique, ou Création sur mesure. 
+        Commencez avec notre formule de location sans gros investissement initial.
       </p>
 
       <div className="mx-auto w-full flex items-center justify-center mt-20">

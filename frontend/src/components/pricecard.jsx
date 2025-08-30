@@ -10,69 +10,70 @@ export default function Pricecard() {
 
     const plans = [
         {
-            name: "Starter",
-            description: "Parfait pour les freelances et petits projets",
-            monthlyPrice: 0,
-            yearlyPrice: 0,
+            name: "Location Starter",
+            description: "Site professionnel en location mensuelle",
+            monthlyPrice: 15000,
+            yearlyPrice: 12000,
             features: [
-                "Template responsive prêt à l'emploi",
-                "Hébergement inclus (1 an)",
-                "Nom de domaine inclus (1 an)",
-                "Support par email",
-                "Formation à l'administration",
-                "Optimisation SEO de base",
-                "Mise en ligne sous 1 semaine"
+                "Site vitrine 5 pages responsive",
+                "Template moderne personnalisable",
+                "Hébergement et maintenance inclus",
+                "Nom de domaine .com inclus",
+                "Mises à jour de sécurité automatiques",
+                "Support technique par email",
+                "Sauvegarde quotidienne",
+                "Certificat SSL inclus"
             ],
             popular: false,
             color: "border-gray-200",
-            bestFor: "Freelances, artisans, petites entreprises"
+            bestFor: "Particuliers, petites entreprises"
         },
         {
-            name: "Professional",
-            description: "Idéal pour les entreprises en croissance",
-            monthlyPrice: 0,
-            yearlyPrice: 0,
+            name: "Location Pro",
+            description: "Solution complète en location pour professionnels",
+            monthlyPrice: 35000,
+            yearlyPrice: 28000,
             features: [
-                "Site sur mesure personnalisé",
-                "Hébergement premium inclus (1 an)",
-                "Nom de domaine inclus (1 an)",
-                "Support prioritaire 24/7",
-                "Interface d'administration avancée",
-                "Optimisation SEO complète",
-                "Intégration réseaux sociaux",
-                "Analytics Google inclus",
-                "Mise en ligne sous 2-3 semaines",
-                "1 mois de support gratuit"
+                "Site professionnel pages illimitées",
+                "Portfolio/catalogue produits avancé",
+                "Système de devis intégré",
+                "Blog et actualités",
+                "Hébergement premium inclus",
+                "Analytics et statistiques détaillées",
+                "Intégrations réseaux sociaux",
+                "Support prioritaire",
+                "Mises à jour fonctionnelles incluses",
+                "Formation à la gestion (1h)"
             ],
             popular: true,
             color: "border-gray-200",
-            bestFor: "PME, startups, professionnels libéraux"
+            bestFor: "Freelances, PME, entrepreneurs"
         },
         {
-            name: "Enterprise",
-            description: "Pour les grandes organisations",
-            monthlyPrice: 0,
-            yearlyPrice: 0,
+            name: "Location E-commerce",
+            description: "Boutique en ligne en location mensuelle",
+            monthlyPrice: 65000,
+            yearlyPrice: 52000,
             features: [
-                "Site e-commerce complet",
-                "Hébergement haute performance",
-                "Nom de domaine + certificat SSL",
-                "Support dédié avec gestionnaire de compte",
-                "Formation équipe complète",
-                "Optimisation SEO avancée",
-                "Intégrations API personnalisées",
-                "Sauvegardes automatiques",
-                "Maintenance préventive incluse",
-                "Mise en ligne sous 1-2 mois",
-                "3 mois de support gratuit"
+                "Boutique e-commerce complète",
+                "Catalogue produits illimité",
+                "Paiements sécurisés (Mobile Money, CB)",
+                "Gestion commandes et stock",
+                "Hébergement e-commerce haute performance",
+                "Certificat SSL premium inclus",
+                "Mises à jour sécurité automatiques",
+                "Support technique prioritaire",
+                "Analytics ventes détaillées",
+                "Sauvegarde et restauration",
+                "Formation e-commerce incluse"
             ],
             popular: false,
             color: "border-gray-200",
-            bestFor: "Grandes entreprises, e-commerce"
+            bestFor: "Commerçants, artisans, e-boutiques"
         }
     ];
 
-    // Conversion en francs CFA (1 EUR ≈ 655 XOF)
+    // Formatage des prix en FCFA
     const formatPrice = (price) => {
         return price.toLocaleString('fr-FR');
     };
@@ -83,17 +84,17 @@ export default function Pricecard() {
                 {/* Header */}
                 <div className="text-center mb-12">
                     <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-4">
-                        Nos offres de création web
+                        Formules de Location de Sites Web
                     </h1>
                     <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                        Des solutions web professionnelles adaptées à tous les budgets. 
-                        Basculez entre facturation mensuelle et annuelle pour des économies importantes.
+                        <strong>3 façons d'obtenir votre site :</strong> Location mensuelle, Achat unique, ou Sur mesure. 
+                        La location vous permet d'avoir un site professionnel sans gros investissement initial.
                     </p>
                     
                     {/* Toggle Billing */}
                     <div className="flex items-center justify-center space-x-4 mb-8 ml-5">
                         <span className={`text-lg ${!isYearly ? 'font-semibold text-gray-900' : 'text-gray-500'}`}>
-                            Mensuel
+                            Sans engagement
                         </span>
                         <button 
                             type="button"
@@ -109,12 +110,12 @@ export default function Pricecard() {
                             ></span>
                         </button>
                         <span className={`text-lg ${isYearly ? 'font-semibold text-gray-900' : 'text-gray-500'}`}>
-                            Annuel
+                            Engagement 12 mois
                         </span>
                         <div className="w-48 h-8 hidden md:flex items-center justify-start ml-2">
                             {isYearly && (
                                 <span className="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
-                                    Économisez jusqu'à 20%
+                                    -20% avec engagement
                                 </span>
                             )}
                         </div>
@@ -124,11 +125,11 @@ export default function Pricecard() {
                     <div className="text-center mb-8 md:hidden">
                         {isYearly ? (
                             <span className="bg-green-100 text-green-800 text-sm font-medium px-3 py-2 rounded-full">
-                                Économisez jusqu'à 20%
+                                -20% avec engagement 12 mois
                             </span>
                         ) : (
                             <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-2 rounded-full">
-                                Facturation mensuelle
+                                Location mensuelle flexible
                             </span>
                         )}
                     </div>
@@ -174,11 +175,11 @@ export default function Pricecard() {
                                         </span>
                                     </div>
                                     <p className="text-sm text-gray-500 mt-1">
-                                        {isYearly ? '/mois, facturé annuellement' : '/mois'}
+                                        {isYearly ? '/mois (engagement 12 mois)' : '/mois (sans engagement)'}
                                     </p>
                                     {isYearly && (
                                         <p className="text-xs text-green-600 mt-1 font-medium">
-                                            Économie de {formatPrice(plan.monthlyPrice - plan.yearlyPrice)} FCFA/mois
+                                            Économie de {formatPrice(plan.monthlyPrice - plan.yearlyPrice)} FCFA
                                         </p>
                                     )}
                                 </div>

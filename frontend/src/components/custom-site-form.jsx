@@ -20,7 +20,7 @@ export default function CustomSiteForm({ onClose }) {
       title: "Votre e-mail pour vous recontacter",
       field: {
         name: "email",
-        label: "Votre e-mail pour vous recontacter :",
+        label: "Saisissez votre adresse e-mail pour que nous puissions vous recontacter avec votre devis personnalisé",
         type: "email",
         placeholder: "votre@email.com",
         required: true
@@ -30,7 +30,7 @@ export default function CustomSiteForm({ onClose }) {
       title: "À quoi servira principalement votre site ?",
       field: {
         name: "purpose",
-        label: "À quoi servira principalement votre site ?",
+        label: "Décrivez l'objectif principal de votre site web (présentation, vente, génération de leads, etc.)",
         type: "text",
         placeholder: "Ex: Présenter mon activité, vendre en ligne, gagner des clients...",
         required: true
@@ -40,7 +40,7 @@ export default function CustomSiteForm({ onClose }) {
       title: "Pages ou sections souhaitées",
       field: {
         name: "pages",
-        label: "Quelles pages ou sections souhaitez-vous absolument ?",
+        label: "Listez les pages et sections que vous souhaitez absolument avoir sur votre site",
         type: "textarea",
         placeholder: "(ex. : Accueil, À propos, Services/Produits, Contact…)",
         required: true
@@ -50,7 +50,7 @@ export default function CustomSiteForm({ onClose }) {
       title: "Style et inspiration",
       field: {
         name: "inspiration",
-        label: "Avez-vous un exemple de site qui vous inspire ou une idée du style souhaité ?",
+        label: "Partagez vos idées de style, couleurs préférées ou des exemples de sites qui vous inspirent",
         type: "textarea",
         placeholder: "Décrivez le style souhaité ou donnez des exemples de sites que vous aimez...",
         required: false
@@ -60,19 +60,19 @@ export default function CustomSiteForm({ onClose }) {
       title: "Design ou maquette",
       field: {
         name: "designFiles",
-        label: "Avez-vous un design, une maquette ou des références visuelles à partager ?",
+        label: "Uploadez une archive contenant vos maquettes, designs ou références visuelles si vous en avez",
         type: "file",
-        accept: ".jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.sketch,.fig,.xd,.ai,.psd",
-        multiple: true,
+        accept: ".zip,.rar",
+        multiple: false,
         required: false,
-        help: "Formats acceptés : Images (JPG, PNG, GIF, WebP), Documents (PDF, DOC, DOCX), Fichiers design (Sketch, Figma, XD, AI, PSD). Maximum 5 fichiers de 10MB chacun."
+        help: "Formats acceptés : Archives ZIP ou RAR contenant vos designs, maquettes ou références visuelles. Maximum 1 fichier de 50MB."
       }
     },
     {
       title: "Délai souhaité",
       field: {
         name: "timeline",
-        label: "Pour quand aimeriez-vous que le site soit prêt ?",
+        label: "Indiquez dans quel délai vous aimeriez que votre site soit prêt et en ligne",
         type: "select",
         options: [
           { value: "", label: "Sélectionnez votre délai préféré" },
@@ -89,7 +89,7 @@ export default function CustomSiteForm({ onClose }) {
       title: "Budget prévu",
       field: {
         name: "budget",
-        label: "Quel budget avez-vous prévu pour ce projet ?",
+        label: "Sélectionnez la fourchette de budget que vous avez prévue pour ce projet",
         type: "select",
         options: [
           { value: "", label: "Sélectionnez votre budget" },
@@ -103,7 +103,7 @@ export default function CustomSiteForm({ onClose }) {
         ],
         required: true
       }
-    }
+    },
   ];
 
   const handleInputChange = (e) => {
@@ -235,19 +235,41 @@ export default function CustomSiteForm({ onClose }) {
                 </label>
 
                    {currentField.type === "select" ? (
-                     <select
-                       name={currentField.name}
-                       value={formData[currentField.name]}
-                       onChange={handleInputChange}
-                       required={currentField.required}
-                       className="w-full px-4 py-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-base bg-slate-50 focus:bg-white"
-                     >
-                       {currentField.options.map((option, optionIndex) => (
-                         <option key={optionIndex} value={option.value}>
-                           {option.label}
-                         </option>
-                       ))}
-                     </select>
+                     <div className="relative">
+                       <select
+                         name={currentField.name}
+                         value={formData[currentField.name]}
+                         onChange={handleInputChange}
+                         required={currentField.required}
+                         className="w-full px-6 py-4 pr-12 border-2 border-slate-200 rounded-2xl focus:border-blue-400 focus:outline-none transition-all duration-300 text-base bg-gradient-to-r from-white to-slate-50 hover:from-slate-50 hover:to-white appearance-none cursor-pointer shadow-sm hover:shadow-md"
+                         style={{
+                           backgroundImage: 'none'
+                         }}
+                       >
+                         {currentField.options.map((option, optionIndex) => (
+                           <option 
+                             key={optionIndex} 
+                             value={option.value} 
+                             className="bg-white py-4 px-4 text-slate-700 hover:bg-blue-50 hover:text-blue-700 border-b border-slate-100 last:border-b-0"
+                             style={{
+                               padding: '12px 16px',
+                               backgroundColor: option.value === '' ? '#f8fafc' : '#ffffff',
+                               color: option.value === '' ? '#64748b' : '#334155',
+                               fontWeight: option.value === '' ? '500' : '400'
+                             }}
+                           >
+                             {option.label}
+                           </option>
+                         ))}
+                       </select>
+                       <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                         <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                           <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                           </svg>
+                         </div>
+                       </div>
+                     </div>
                    ) : currentField.type === "textarea" ? (
                      <textarea
                        name={currentField.name}

@@ -14,19 +14,19 @@ export default function About() {
               <div className="w-24 h-[3px] rounded-full bg-gradient-to-r from-indigo-600 to-[#DDD9FF] mb-3"></div>
 
               <p className="mt-3 leading-relaxed">
-                On part tous du même constat : avoir un site web professionnel est aujourd'hui indispensable pour exister en ligne… mais ça peut vite devenir <strong>cher</strong>, <strong>long</strong> et <strong>compliqué</strong>.
+                En tant que freelance créatif, vous savez à quel point il est crucial d'avoir une présence en ligne qui reflète votre talent. Mais créer un portfolio professionnel peut être <strong>coûteux</strong>, <strong>chronophage</strong> et <strong>technique</strong>.
               </p>
               <p className="mt-3 leading-relaxed">
-                Beaucoup d'entreprises repoussent leur projet faute de temps ou de budget. Pendant ce temps, designers UI, community managers, infographistes et autres freelances se font recaler par des clients ou recruteurs car ils n'ont pas de portfolio en ligne.
+                Trop de designers UI, community managers, infographistes et autres créatifs perdent des opportunités faute d'un portfolio en ligne percutant. Pendant ce temps, gérer ses projets, ses clients et sa comptabilité devient un véritable casse-tête.
               </p>
               <p className="mt-3 leading-relaxed">
-                C'est pour changer ça que <strong>Forgeron du Web</strong> existe : une plateforme pensée pour vous permettre de lancer votre site en un rien de temps grâce à des templates prêts à l'emploi, optimisés pour vos besoins spécifiques.
+                C'est pourquoi <strong>Forgeron du Web</strong> existe : une plateforme tout-en-un conçue spécialement pour les freelances créatifs. Créez votre portfolio en quelques clics, gérez vos projets, suivez vos revenus et développez votre activité.
               </p>
               <p className="mt-3 leading-relaxed">
-                Vous préférez un site unique ? Pas de problème, vous pouvez aussi demander une création sur mesure, personnalisée à votre image.
+                Besoin d'un site unique ? Notre équipe crée des portfolios sur mesure qui mettent en valeur votre créativité et attirent vos clients idéaux.
               </p>
               <p className="mt-4 font-semibold leading-relaxed">
-                Ma mission est simple : <em>rendre le web professionnel accessible à tous, sans compromis sur la qualité, la performance ou le design.</em>
+                Ma mission : <em>donner aux freelances créatifs les outils pour réussir en ligne et gérer efficacement leur activité.</em>
               </p>
             </div>
 
